@@ -20,7 +20,7 @@ public class Room : MonoBehaviour {
 		get { return x_pos; }
 	}
 	public int RightBound {
-		get { return y_pos + width; }
+		get { return x_pos + width; }
 	}
 
 	//Spaces are the areas where another room cannot be (too close to this one)

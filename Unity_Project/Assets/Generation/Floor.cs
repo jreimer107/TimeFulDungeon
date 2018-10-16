@@ -4,34 +4,43 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Floor : MonoBehaviour {
-    public List<Room> room_list;
-    public int [,] grid;
+	public enum TileType {
+		Void, Room, Cooridor, Wall,
+	}
+
+	public List<Room> room_list;
+    public TileType[][] tiles;
 	System.Random rng = new System.Random();
 
 	//Level generation!
 	public Floor() {
-		grid = new int[Constants.FLOOR_WIDTH, Constants.FLOOR_HEIGHT];
+		//Create tile grid
+		tiles = new TileType[Constants.FLOOR_WIDTH][];
+		for (int row = 0; row < tiles.Length; row++) {
+			tiles[row] = new TileType[Constants.FLOOR_HEIGHT];
+		}
 
 		//Attempt to place a room some number of times
         for (int attempt = 0; attempt < Constants.ROOM_ATTEMPTS; attempt++) {
 			AddRoom(randRoom()); //Creates and adds a random room if it fits in the grid
         }
-		//Copy rooms into grid
-		foreach (Room room in room_list.list) {
+
+		//Copy rooms into tile grid
+		foreach (Room room in room_list) {
 			for (int x = room.LeftBound; x < room.RightBound; x++) {
 				for (int y = room.LowerBound; y < room.UpperBound; y++) {
-					grid[x, y] = Constants.FLOOR;
+					tiles[x][y] = TileType.Room;
 				}
 			}
 		}
-
+		
 		//Walk from one random room to another
 		//Pick two rooms, make sure they are not the same room
 		Room start = room_list[rng.Next(room_list.Count)];
 		Room end;
 		do {
 			end = room_list[rng.Next(room_list.Count)];
-		} while (Object.ReferenceEquals(start, end));
+		} while (System.Object.ReferenceEquals(start, end));
 
 		//Pick closest walls of both rooms
 		//Get distances between facing walls
@@ -55,8 +64,7 @@ public class Floor : MonoBehaviour {
 		if (shortest_index == 0) { //Start is left of end, right wall to left wall
 			start_x = start.RightBound;
 			start_y = rng.Next(start.LowerBound, start.UpperBound);
-			end_x = 
-
+			end_x = 0; //TODO: Pathing
 		}
 
     }
