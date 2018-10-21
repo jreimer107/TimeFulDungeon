@@ -16,7 +16,7 @@ public class BoardHolder : MonoBehaviour {
 	private GameObject boardHolder;
 
 	// Use this for initialization
-	private void Start () {
+	public void Setup () {
 		boardHolder = new GameObject("BoardHolder");
 		Floor floor = new Floor();
 		InstantiateTiles(floor.tiles);

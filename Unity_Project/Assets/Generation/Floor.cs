@@ -3,17 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Floor : MonoBehaviour {
+public class Floor {
 	public enum TileType {
 		Void, Room, Cooridor, Wall,
 	}
 
-	public List<Room> room_list;
+	private List<Room> room_list;
     public TileType[][] tiles;
-	System.Random rng = new System.Random();
+	private System.Random rng = new System.Random();
 
 	//Level generation!
 	public Floor() {
+		//Create room list
+		room_list = new List<Room>();
+
 		//Create tile grid
 		tiles = new TileType[Constants.FLOOR_WIDTH][];
 		for (int row = 0; row < tiles.Length; row++) {
@@ -33,7 +36,11 @@ public class Floor : MonoBehaviour {
 				}
 			}
 		}
-		
+
+	
+
+		/*
+
 		//Walk from one random room to another
 		//Pick two rooms, make sure they are not the same room
 		Room start = room_list[rng.Next(room_list.Count)];
@@ -66,7 +73,7 @@ public class Floor : MonoBehaviour {
 			start_y = rng.Next(start.LowerBound, start.UpperBound);
 			end_x = 0; //TODO: Pathing
 		}
-
+		*/
     }
 
 
@@ -76,9 +83,15 @@ public class Floor : MonoBehaviour {
 	/// <param name="newRoom">The new room to be added.</param>
 	/// <returns>True if the room was successfully added, false otherwise.</returns>
 	public bool AddRoom(Room newRoom) {
+		//Make sure floor is inside the floor border
+		if (!IsInsideFloor(newRoom)) {
+			return true;
+		}
+
+		//Make sure room doesn't overap other rooms
 		bool space_taken = false;
 		foreach (Room room in room_list) {
-			if (CheckRoomOverlap(newRoom, room)) {
+			if (OverlapsRoom(newRoom, room)) {
 				space_taken = true;
 				break;
 			}
@@ -87,7 +100,7 @@ public class Floor : MonoBehaviour {
 			room_list.Add(newRoom);
 			return true;
 		}
-		else return false;
+		return false;
 	}
 
 
@@ -97,19 +110,30 @@ public class Floor : MonoBehaviour {
 	/// <param name="r1">The first room to compare.</param>
 	/// <param name="r2">The second room to compare.</param>
 	/// <returns>True if the rooms overlap or are within the GAP of each other, false otherwise.</returns>
-	public bool CheckRoomOverlap(Room r1, Room r2) {
-		return !(r1.LeftBound > r2.RightSpace) &&
-			   !(r1.RightBound < r2.LeftSpace) &&
-			   !(r1.UpperBound > r2.LowerSpace) &&
-			   !(r1.LowerBound < r2.UpperSpace);
+	public bool OverlapsRoom(Room r1, Room r2) {
+		return !(r1.LeftBound > r2.RightBound) &&
+			   !(r1.RightBound < r2.LeftBound) &&
+			   !(r1.UpperBound > r2.LowerBound) &&
+			   !(r1.LowerBound < r2.UpperBound);
 	}
 
-
+	/// <summary>
+	/// Checks to see if a room is within the floor border.
+	/// </summary>
+	/// <param name="room">The room to check.</param>
+	/// <returns>True if the room is completely within the border, false otherwise.</returns>
+	public bool IsInsideFloor(Room room) {
+		return (room.LeftSpace > 0 &&
+				room.RightSpace < Constants.FLOOR_WIDTH &&
+				room.UpperSpace < Constants.FLOOR_HEIGHT &&
+				room.LowerSpace > 0);
+	}
+	
 //Generates a random room
 	public Room randRoom() {
 		//Create randomly placed and sized region
-		int room_x = rng.Next(0, Constants.FLOOR_WIDTH);
-		int room_y = rng.Next(0, Constants.FLOOR_HEIGHT);
+		int room_x = rng.Next(0, Constants.FLOOR_WIDTH - 1);
+		int room_y = rng.Next(0, Constants.FLOOR_HEIGHT - 1);
 		int room_w, room_h;
 		do {
 			room_w = (int)Gauss(Constants.MAX_ROOM_SIZE / 2, 2.5);
@@ -137,4 +161,22 @@ public class Floor : MonoBehaviour {
 		w = Math.Sqrt(-2 * Math.Log(w) / w);
 		return mean + deviation * x1 * w;
     }
+
+	public void Print() {
+		string floor_bin = "";
+		for (int x = 0; x < tiles.Length; x++) {
+			for (int y = 0; y < tiles[0].Length; y++) {
+				if (tiles[x][y] == TileType.Room) {
+					floor_bin += "1";
+				}
+				else {
+					floor_bin += "0";
+				}
+			}
+			floor_bin += "\n";
+		}
+		Debug.Log(floor_bin);
+
+		Debug.Log("Done");
+	}
 }

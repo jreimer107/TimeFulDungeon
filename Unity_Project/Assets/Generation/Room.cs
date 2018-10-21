@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Room : MonoBehaviour {
+public class Room {
     public int x_pos;
     public int y_pos;
     public int width;
