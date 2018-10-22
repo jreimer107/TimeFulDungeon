@@ -1,21 +1,25 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = System.Random;
 
 public class Floor {
 	public enum TileType {
-		Void, Room, Cooridor, Wall,
+		Void, Room, Cooridor, Wall, Border,
+	}
+	public enum Direction {
+		Up, Down, Left, Right,
 	}
 
 	private List<Room> room_list;
     public TileType[][] tiles;
-	private System.Random rng = new System.Random();
+	private Random rng;
 
 	//Level generation!
 	public Floor() {
 		//Create room list
 		room_list = new List<Room>();
+		rng = new Random();
 
 		//Create tile grid
 		tiles = new TileType[Constants.FLOOR_WIDTH][];
@@ -25,7 +29,7 @@ public class Floor {
 
 		//Attempt to place a room some number of times
         for (int attempt = 0; attempt < Constants.ROOM_ATTEMPTS; attempt++) {
-			AddRoom(randRoom()); //Creates and adds a random room if it fits in the grid
+			AddRoom(RandRoom()); //Creates and adds a random room if it fits in the grid
         }
 
 		//Copy rooms into tile grid
@@ -37,44 +41,83 @@ public class Floor {
 			}
 		}
 
-	
+		//Draw outer border of level
+		for (int y = 0; y < tiles[0].Length; y++) {
+			tiles[0][y] = TileType.Border;
+		}
+		for (int y = 0; y < tiles[0].Length; y++) {
+			tiles[Constants.FLOOR_WIDTH - 1][y] = TileType.Border;
+		}
+		for (int x = 0; x < tiles.Length; x++) {
+			tiles[x][0] = TileType.Border;
+		}
+		for (int x = 0; x < tiles.Length; x++) {
+			tiles[x][Constants.FLOOR_HEIGHT - 1] = TileType.Border;
+		}
+	}
 
-		/*
 
+	public void GeneratePath() {
 		//Walk from one random room to another
 		//Pick two rooms, make sure they are not the same room
 		Room start = room_list[rng.Next(room_list.Count)];
 		Room end;
 		do {
 			end = room_list[rng.Next(room_list.Count)];
-		} while (System.Object.ReferenceEquals(start, end));
+		} while (ReferenceEquals(start, end));
 
-		//Pick closest walls of both rooms
-		//Get distances between facing walls
-		int[] distances = {
-			Math.Abs(end.LeftBound - start.RightBound),		//Start is left of end
-			Math.Abs(start.LeftBound - end.RightBound),		//Start is right of end
-			Math.Abs(end.LowerBound - start.UpperBound),	//Start is below end
-			Math.Abs(start.LowerBound - end.UpperBound)		//Start is above end
-		};
-		//Find the shortest of those
-		int shortest_index = 0;
-		int shortest_distance = Int32.MaxValue;
-		for (int i = 0; i < distances.Length; i++) {
-			if (distances[i] < shortest_distance) {
-				shortest_index = i;
-				shortest_distance = distances[i];
+		//Pick start and end coordintes
+		Coordinate startPos = start.GetRandCoordinate();
+		Coordinate endPos = end.GetRandCoordinate();
+		Coordinate currPos = new Coordinate(startPos.x, startPos.y);
+
+		//Load dirChangeInterval, will be decremented every tile moved until 0
+		//At that point the direction will randomly change
+		int dirChangeInterval = rng.Next(Constants.PATH_DIR_CHANGE_INTERVAL_MIN, Constants.PATH_DIR_CHANGE_INTERVAL_MAX);
+
+		//Direction variable to remember which way we are going
+		Direction dir = Direction.Left;
+
+		//Distance coordiante that will be used to determine direction change probabilities
+		Coordinate distance = startPos.DistanceFrom(endPos);
+
+		//Direction probabilities, have to use ints bc can't compare doubles, range from 100 to 0
+		//horizontalDirChance is the proportion of the directional distances (x_dist / y_dist)
+		//x/yDirChance are 100% to right direction when far away and 50% when close
+		int xDirChance, yDirChance, horizontalDirChance;
+
+		//Randomly path to that point
+		while (!currPos.Equals(endPos)) {
+			//Update distance
+			distance = currPos.DistanceFrom(endPos);
+
+			//The farther in one direction from the endpoint, the more likely the path will take that direction
+			//Can change directions every random interval
+			if (dirChangeInterval == 0) {
+				//Update direction probabilities
+				horizontalDirChance = distance.x % distance.y;
+				//Get remainder of distance/max. Scale to 50-100. Don't have to worry about mod rollover bc won't happen
+				xDirChance = (distance.x % Constants.ROOM_MIN_WIDTH) / 2 + 50;
+				yDirChance = (distance.y % Constants.ROOM_MIN_HEIGHT) / 2 + 50;
+
+				//Determine whether going horizontal or vertical
+				//horizontalDirChance can be > 1 so need to invert if so and then act accordingly
+				if (distance.x > distance.y) { //Higher x chance than y chance
+					if (horizontalDirChance > rng.Next(100)) { //x happens
+
+					}
+
+				}
+				else { //Higher y chance than x chance
+					if (horizontalDirChance > rng.NextDouble) {
+
+					}
+				}
 			}
-		}
 
-		int start_x, start_y, end_x, end_y;
-		if (shortest_index == 0) { //Start is left of end, right wall to left wall
-			start_x = start.RightBound;
-			start_y = rng.Next(start.LowerBound, start.UpperBound);
-			end_x = 0; //TODO: Pathing
+
 		}
-		*/
-    }
+	}
 
 
 	/// <summary>
@@ -85,7 +128,7 @@ public class Floor {
 	public bool AddRoom(Room newRoom) {
 		//Make sure floor is inside the floor border
 		if (!IsInsideFloor(newRoom)) {
-			return true;
+			return false;
 		}
 
 		//Make sure room doesn't overap other rooms
@@ -100,6 +143,7 @@ public class Floor {
 			room_list.Add(newRoom);
 			return true;
 		}
+		
 		return false;
 	}
 
@@ -111,10 +155,10 @@ public class Floor {
 	/// <param name="r2">The second room to compare.</param>
 	/// <returns>True if the rooms overlap or are within the GAP of each other, false otherwise.</returns>
 	public bool OverlapsRoom(Room r1, Room r2) {
-		return !(r1.LeftBound > r2.RightBound) &&
-			   !(r1.RightBound < r2.LeftBound) &&
-			   !(r1.UpperBound > r2.LowerBound) &&
-			   !(r1.LowerBound < r2.UpperBound);
+		return !(r1.LeftBound >= r2.RightSpace ||
+				 r2.LeftBound >= r1.RightSpace ||
+				 r1.UpperBound <= r2.LowerSpace ||
+				 r2.UpperBound <= r1.LowerSpace);
 	}
 
 	/// <summary>
@@ -123,24 +167,24 @@ public class Floor {
 	/// <param name="room">The room to check.</param>
 	/// <returns>True if the room is completely within the border, false otherwise.</returns>
 	public bool IsInsideFloor(Room room) {
-		return (room.LeftSpace > 0 &&
-				room.RightSpace < Constants.FLOOR_WIDTH &&
-				room.UpperSpace < Constants.FLOOR_HEIGHT &&
-				room.LowerSpace > 0);
+		return (room.LeftSpace >= 0 &&
+				room.RightSpace <= Constants.FLOOR_WIDTH &&
+				room.UpperSpace <= Constants.FLOOR_HEIGHT &&
+				room.LowerSpace >= 0);
 	}
 	
 //Generates a random room
-	public Room randRoom() {
+	public Room RandRoom() {
 		//Create randomly placed and sized region
-		int room_x = rng.Next(0, Constants.FLOOR_WIDTH - 1);
-		int room_y = rng.Next(0, Constants.FLOOR_HEIGHT - 1);
+		int room_x = rng.Next(Constants.FLOOR_WIDTH - 1);
+		int room_y = rng.Next(Constants.FLOOR_HEIGHT - 1);
 		int room_w, room_h;
 		do {
-			room_w = (int)Gauss(Constants.MAX_ROOM_SIZE / 2, 2.5);
-		} while (room_w < Constants.MIN_ROOM_WIDTH);
+			room_w = (int)Gauss(Constants.ROOM_SIZE_MEAN, Constants.ROOM_SIZE_DEVIATION);
+		} while (room_w < Constants.ROOM_MIN_WIDTH);
 		do {
-			room_h = (int)Gauss(Constants.MAX_ROOM_SIZE / 2, 2.5);
-		} while (room_h < Constants.MIN_ROOM_HEIGHT);
+			room_h = (int)Gauss(Constants.ROOM_SIZE_MEAN, Constants.ROOM_SIZE_DEVIATION);
+		} while (room_h < Constants.ROOM_MIN_HEIGHT);
 
 		return new Room(room_x, room_y, room_w, room_h);
 	}
@@ -153,7 +197,7 @@ public class Floor {
 	public double Gauss(double mean, double deviation) {
         double x1, x2, w;
 		do {
-			x1 = rng.NextDouble() * 2 - 1; //double -1 to 1
+			x1 = rng.NextDouble() * 2 - 1;
 			x2 = rng.NextDouble() * 2 - 1;
 			w = x1 * x1 + x2 * x2;
 		} while (w < 0 || w > 1);

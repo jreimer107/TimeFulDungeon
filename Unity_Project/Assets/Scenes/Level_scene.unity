@@ -113,6 +113,48 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &289722275
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4966456811261226, guid: 86f9c8f3126f0bd4cac2645aa7fac8ae, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 171.11847
+      objectReference: {fileID: 0}
+    - target: {fileID: 4966456811261226, guid: 86f9c8f3126f0bd4cac2645aa7fac8ae, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 85.005936
+      objectReference: {fileID: 0}
+    - target: {fileID: 4966456811261226, guid: 86f9c8f3126f0bd4cac2645aa7fac8ae, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -3.4375
+      objectReference: {fileID: 0}
+    - target: {fileID: 4966456811261226, guid: 86f9c8f3126f0bd4cac2645aa7fac8ae, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4966456811261226, guid: 86f9c8f3126f0bd4cac2645aa7fac8ae, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4966456811261226, guid: 86f9c8f3126f0bd4cac2645aa7fac8ae, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4966456811261226, guid: 86f9c8f3126f0bd4cac2645aa7fac8ae, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4966456811261226, guid: 86f9c8f3126f0bd4cac2645aa7fac8ae, type: 2}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 86f9c8f3126f0bd4cac2645aa7fac8ae, type: 2}
+  m_IsPrefabAsset: 0
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -399,6 +441,7 @@ MonoBehaviour:
   - {fileID: 1588656393914772, guid: 64f8a89457058fa40ac3ef7a979d06c7, type: 2}
   wallTiles:
   - {fileID: 1888058963388606, guid: cc4995aae7b658e478589699e7598e11, type: 2}
+  borderTile: {fileID: 1291116187743872, guid: 86f9c8f3126f0bd4cac2645aa7fac8ae, type: 2}
   player: {fileID: 0}
 --- !u!114 &1749125525
 MonoBehaviour:

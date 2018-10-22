@@ -1,18 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿public static class Constants {
 
-public static class Constants {
-    public const int ROOM_ATTEMPTS = 120;
-    public const int FLOOR_WIDTH = 200; //these two in number of tiles
-    public const int FLOOR_HEIGHT = 200;
+    //Floor stuff
+    public const int FLOOR_WIDTH = 100; //these two in number of tiles
+    public const int FLOOR_HEIGHT = 64; //16:9 ish
     public const int TILE_WIDTH = 32; //these two in pixels
     public const int TILE_HEIGHT = 32;
-    public const int MIN_ROOM_WIDTH = 5;
-    public const int MIN_ROOM_HEIGHT = 5;
-	public const int MAX_ROOM_SIZE = 30;
-	public const int FLOOR = -5;
+
+	//Room Generation
+	public const int ROOM_ATTEMPTS = 120;
+	public const int ROOM_MIN_WIDTH = 5;
+    public const int ROOM_MIN_HEIGHT = 5;
+	public const int MAX_ROOM_SIZE = 25;
+	public const int ROOM_SIZE_MEAN = MAX_ROOM_SIZE / 2;
+	public const float ROOM_SIZE_DEVIATION = (float) 2.7;
 	public const int ROOM_GAP = 2;
+
+	//Pathing
 	public const int PATHS_MIN = 5;
 	public const int PATHS_MAX = 10;
+	public const int PATH_DIR_CHANGE_INTERVAL_MIN = 3;
+	public const int PATH_DIR_CHANGE_INTERVAL_MAX = 10;
+
 }

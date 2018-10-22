@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = System.Random;
 
 public class Room {
     public int x_pos;
@@ -38,10 +39,25 @@ public class Room {
 	}
 
 	public Room (int x, int y, int w, int h) {
-        this.x_pos = x;
-        this.y_pos = y;
-        this.width = w;
-        this.height = h;
-		this.connected = false;
+        x_pos = x;
+        y_pos = y;
+        width = w;
+        height = h;
+		connected = false;
+	}
+
+	public Coordinate GetRandCoordinate() {
+		int randX = GetRandXPos();
+		int randY = GetRandYPos();
+		return new Coordinate(randX, randY);
+	}
+
+	public int GetRandXPos() {
+		Random rng = new Random();
+		return rng.Next(LeftBound + 1, RightBound - 1);
+	}
+	public int GetRandYPos() {
+		Random rng = new Random();
+		return rng.Next(LowerBound + 1, UpperBound - 1);
 	}
 }

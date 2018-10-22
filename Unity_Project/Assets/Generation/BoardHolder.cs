@@ -9,6 +9,7 @@ public class BoardHolder : MonoBehaviour {
 
 	public GameObject[] floorTiles;
 	public GameObject[] wallTiles;
+	public GameObject borderTile;
 	public GameObject player;
 
 	private TileType[][] tiles;
@@ -19,22 +20,30 @@ public class BoardHolder : MonoBehaviour {
 	public void Setup () {
 		boardHolder = new GameObject("BoardHolder");
 		Floor floor = new Floor();
-		InstantiateTiles(floor.tiles);
+		InstantiateGrid(floor.tiles);
 		//Set
 	}
 	
-	private void InstantiateTiles(Floor.TileType[][] grid) {
+	private void InstantiateGrid(Floor.TileType[][] grid) {
 		for (int x = 0; x < grid.Length; x++) {
 			for (int y = 0; y < grid[0].Length; y++) {
 				if (grid[x][y] == Floor.TileType.Room) {
-					Vector3 position = new Vector3(x, y, 0f);
-					GameObject tileInstance = Instantiate(floorTiles[0], position, Quaternion.identity) as GameObject;
-					//Set tile's parent to boardholder
-					tileInstance.transform.parent = boardHolder.transform;
+					InstantiateTile(x, y, floorTiles[0]);
+				}
+				else if (grid[x][y] == Floor.TileType.Border) {
+					InstantiateTile(x, y, borderTile);
 				}
 			}
 		}
 	}
+
+	private void InstantiateTile(int x_pos, int y_pos, GameObject type) {
+		Vector3 position = new Vector3(x_pos, y_pos, 0f);
+		GameObject tileInstance = Instantiate(type, position, Quaternion.identity) as GameObject;
+		//Set tile's parent to boardholder
+		tileInstance.transform.parent = boardHolder.transform;
+	}
+
 
 
 	// Update is called once per frame
