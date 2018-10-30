@@ -18,7 +18,7 @@
 	//Pathing
 	public const int PATHS_MIN = 5;
 	public const int PATHS_MAX = 10;
-	public const int PATH_DIR_CHANGE_INTERVAL_MIN = 3;
+	public const int PATH_DIR_CHANGE_INTERVAL_MIN = 1;
 	public const int PATH_DIR_CHANGE_INTERVAL_MAX = 10;
 
 }

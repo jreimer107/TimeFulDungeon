@@ -8,7 +8,7 @@ public class Room {
     public int y_pos;
     public int width;
     public int height;
-	public bool connected;
+	public List<Room> connectedRooms;
 
 	//Bounds are tiles taken up by the room
 	public int UpperBound {
@@ -43,7 +43,7 @@ public class Room {
         y_pos = y;
         width = w;
         height = h;
-		connected = false;
+		connectedRooms = new List<Room>();
 	}
 
 	public Coordinate GetRandCoordinate() {
@@ -54,10 +54,39 @@ public class Room {
 
 	public int GetRandXPos() {
 		Random rng = new Random();
-		return rng.Next(LeftBound + 1, RightBound - 1);
+		return rng.Next(LeftBound, RightBound);
 	}
 	public int GetRandYPos() {
 		Random rng = new Random();
-		return rng.Next(LowerBound + 1, UpperBound - 1);
+		return rng.Next(LowerBound, UpperBound);
+	}
+
+	public Coordinate[] GetRandEntrance() {
+		Random rng = new Random();
+		Coordinate[] entranceTiles = new Coordinate[2];
+		Path.Direction wall = (Path.Direction)rng.Next(4);
+		int rand_x = GetRandXPos();
+		int rand_y = GetRandYPos();
+
+		if (wall == Path.Direction.Right) {
+			entranceTiles[0] = new Coordinate(RightBound + 1, rand_y);
+			entranceTiles[0] = new Coordinate(RightBound + 2, rand_y);
+		}
+		else if (wall == Path.Direction.Up) {
+			entranceTiles[0] = new Coordinate(rand_x, UpperBound + 1);
+			entranceTiles[0] = new Coordinate(rand_x, UpperBound + 2);
+		}
+		else if (wall == Path.Direction.Left) {
+			entranceTiles[0] = new Coordinate(LeftBound + 1, rand_y);
+			entranceTiles[0] = new Coordinate(LeftBound + 2, rand_y);
+		}
+		else { //if (wall == Path.Direction.Up) {
+			//return new Coordinate(rng.Next(RightBound, LeftBound), LowerSpace);
+		}
+		return null;
+	}
+
+	public void CoalesceConnections(List<Room> connectedRooms) {
+
 	}
 }

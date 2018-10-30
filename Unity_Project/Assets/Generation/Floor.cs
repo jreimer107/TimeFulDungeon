@@ -5,20 +5,19 @@ using Random = System.Random;
 
 public class Floor {
 	public enum TileType {
-		Void, Room, Cooridor, Wall, Border,
+		Void, Room, Path, Wall, Border,
 	}
-	public enum Direction {
-		Up, Down, Left, Right,
-	}
-
+		
 	private List<Room> room_list;
-    public TileType[][] tiles;
+	private List<Path> path_list;
+	public TileType[][] tiles;
 	private Random rng;
 
 	//Level generation!
 	public Floor() {
 		//Create room list
 		room_list = new List<Room>();
+		path_list = new List<Path>();
 		rng = new Random();
 
 		//Create tile grid
@@ -28,9 +27,19 @@ public class Floor {
 		}
 
 		//Attempt to place a room some number of times
-        for (int attempt = 0; attempt < Constants.ROOM_ATTEMPTS; attempt++) {
+		for (int attempt = 0; attempt < Constants.ROOM_ATTEMPTS; attempt++) {
 			AddRoom(RandRoom()); //Creates and adds a random room if it fits in the grid
-        }
+		}
+
+
+		//One path for testing
+		path_list.Add(new Path(room_list));
+		/*
+		//Create minimum number of paths
+		for (int i = 0; i < Constants.PATHS_MIN; i++) {
+			path_list.Add(new Path(room_list));
+		}
+		*/
 
 		//Copy rooms into tile grid
 		foreach (Room room in room_list) {
@@ -38,6 +47,13 @@ public class Floor {
 				for (int y = room.LowerBound; y < room.UpperBound; y++) {
 					tiles[x][y] = TileType.Room;
 				}
+			}
+		}
+
+		//Copy paths into tile grid
+		foreach (Path path in path_list) {
+			foreach (Coordinate coord in path.pathCoords) {
+				tiles[coord.x][coord.y] = TileType.Path;
 			}
 		}
 
@@ -53,69 +69,6 @@ public class Floor {
 		}
 		for (int x = 0; x < tiles.Length; x++) {
 			tiles[x][Constants.FLOOR_HEIGHT - 1] = TileType.Border;
-		}
-	}
-
-
-	public void GeneratePath() {
-		//Walk from one random room to another
-		//Pick two rooms, make sure they are not the same room
-		Room start = room_list[rng.Next(room_list.Count)];
-		Room end;
-		do {
-			end = room_list[rng.Next(room_list.Count)];
-		} while (ReferenceEquals(start, end));
-
-		//Pick start and end coordintes
-		Coordinate startPos = start.GetRandCoordinate();
-		Coordinate endPos = end.GetRandCoordinate();
-		Coordinate currPos = new Coordinate(startPos.x, startPos.y);
-
-		//Load dirChangeInterval, will be decremented every tile moved until 0
-		//At that point the direction will randomly change
-		int dirChangeInterval = rng.Next(Constants.PATH_DIR_CHANGE_INTERVAL_MIN, Constants.PATH_DIR_CHANGE_INTERVAL_MAX);
-
-		//Direction variable to remember which way we are going
-		Direction dir = Direction.Left;
-
-		//Distance coordiante that will be used to determine direction change probabilities
-		Coordinate distance = startPos.DistanceFrom(endPos);
-
-		//Direction probabilities, have to use ints bc can't compare doubles, range from 100 to 0
-		//horizontalDirChance is the proportion of the directional distances (x_dist / y_dist)
-		//x/yDirChance are 100% to right direction when far away and 50% when close
-		int xDirChance, yDirChance, horizontalDirChance;
-
-		//Randomly path to that point
-		while (!currPos.Equals(endPos)) {
-			//Update distance
-			distance = currPos.DistanceFrom(endPos);
-
-			//The farther in one direction from the endpoint, the more likely the path will take that direction
-			//Can change directions every random interval
-			if (dirChangeInterval == 0) {
-				//Update direction probabilities
-				horizontalDirChance = distance.x % distance.y;
-				//Get remainder of distance/max. Scale to 50-100. Don't have to worry about mod rollover bc won't happen
-				xDirChance = (distance.x % Constants.ROOM_MIN_WIDTH) / 2 + 50;
-				yDirChance = (distance.y % Constants.ROOM_MIN_HEIGHT) / 2 + 50;
-
-				//Determine whether going horizontal or vertical
-				//horizontalDirChance can be > 1 so need to invert if so and then act accordingly
-				if (distance.x > distance.y) { //Higher x chance than y chance
-					if (horizontalDirChance > rng.Next(100)) { //x happens
-
-					}
-
-				}
-				else { //Higher y chance than x chance
-					if (horizontalDirChance > rng.NextDouble) {
-
-					}
-				}
-			}
-
-
 		}
 	}
 
@@ -172,7 +125,8 @@ public class Floor {
 				room.UpperSpace <= Constants.FLOOR_HEIGHT &&
 				room.LowerSpace >= 0);
 	}
-	
+
+
 //Generates a random room
 	public Room RandRoom() {
 		//Create randomly placed and sized region

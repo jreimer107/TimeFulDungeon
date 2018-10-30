@@ -10,6 +10,7 @@ public class BoardHolder : MonoBehaviour {
 	public GameObject[] floorTiles;
 	public GameObject[] wallTiles;
 	public GameObject borderTile;
+	public GameObject pathTile;
 	public GameObject player;
 
 	private TileType[][] tiles;
@@ -29,6 +30,9 @@ public class BoardHolder : MonoBehaviour {
 			for (int y = 0; y < grid[0].Length; y++) {
 				if (grid[x][y] == Floor.TileType.Room) {
 					InstantiateTile(x, y, floorTiles[0]);
+				}
+				else if (grid[x][y] == Floor.TileType.Path) {
+					InstantiateTile(x, y, pathTile);
 				}
 				else if (grid[x][y] == Floor.TileType.Border) {
 					InstantiateTile(x, y, borderTile);
