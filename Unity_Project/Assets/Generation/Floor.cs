@@ -31,16 +31,6 @@ public class Floor {
 			AddRoom(RandRoom()); //Creates and adds a random room if it fits in the grid
 		}
 
-
-		//One path for testing
-		path_list.Add(new Path(room_list));
-		/*
-		//Create minimum number of paths
-		for (int i = 0; i < Constants.PATHS_MIN; i++) {
-			path_list.Add(new Path(room_list));
-		}
-		*/
-
 		//Copy rooms into tile grid
 		foreach (Room room in room_list) {
 			for (int x = room.LeftBound; x < room.RightBound; x++) {
@@ -50,10 +40,29 @@ public class Floor {
 			}
 		}
 
+
+		//One path for testing
+		Room start = room_list[rng.Next(room_list.Count)];
+		Room end;
+		do {
+			end = room_list[rng.Next(room_list.Count)];
+		} while (ReferenceEquals(start, end));
+		path_list.Add(new Path(start, end, tiles));
+		/*
+		//Create minimum number of paths
+		for (int i = 0; i < Constants.PATHS_MIN; i++) {
+			path_list.Add(new Path(room_list));
+		}
+		*/
+
+
+
 		//Copy paths into tile grid
 		foreach (Path path in path_list) {
 			foreach (Coordinate coord in path.pathCoords) {
+				//if (tiles[coord.x][coord.y] != TileType.Room) {
 				tiles[coord.x][coord.y] = TileType.Path;
+				//}
 			}
 		}
 

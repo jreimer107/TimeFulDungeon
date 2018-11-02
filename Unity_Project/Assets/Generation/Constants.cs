@@ -1,8 +1,8 @@
 ﻿public static class Constants {
 
     //Floor stuff
-    public const int FLOOR_WIDTH = 100; //these two in number of tiles
-    public const int FLOOR_HEIGHT = 64; //16:9 ish
+    public const int FLOOR_WIDTH = 75; //these two in number of tiles
+    public const int FLOOR_HEIGHT = 75; //16:9 ish
     public const int TILE_WIDTH = 32; //these two in pixels
     public const int TILE_HEIGHT = 32;
 
@@ -13,7 +13,7 @@
 	public const int MAX_ROOM_SIZE = 25;
 	public const int ROOM_SIZE_MEAN = MAX_ROOM_SIZE / 2;
 	public const float ROOM_SIZE_DEVIATION = (float) 2.7;
-	public const int ROOM_GAP = 2;
+	public const int ROOM_GAP = 3;
 
 	//Pathing
 	public const int PATHS_MIN = 5;

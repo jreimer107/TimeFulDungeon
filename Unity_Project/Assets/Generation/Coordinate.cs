@@ -48,10 +48,10 @@ public class Coordinate {
 	/// <param name="room">Room object to compare against.</param>
 	/// <returns>True if point is inside room, false otherwise.</returns>
 	public bool IsInsideRoom(Room room) {
-		return (x > room.LeftBound &&
-				x < room.RightBound &&
-				y > room.LowerBound &&
-				y < room.UpperBound);
+		return (x >= room.LeftBound &&
+				x <= room.RightBound &&
+				y >= room.LowerBound &&
+				y <= room.UpperBound);
 	}
 
 	/// <summary>
@@ -61,7 +61,7 @@ public class Coordinate {
 	/// <returns>True if the coordinate is in the list, false otherwise.</returns>
 	public bool IsInList(List<Coordinate> coord_list) {
 		foreach (Coordinate coord in coord_list) {
-			if (coord.x == x && coord.y == y && coord.F == F) {
+			if (coord.x == x && coord.y == y) {
 				return true;
 			}
 		}
@@ -81,4 +81,17 @@ public class Coordinate {
 	public Coordinate Clone() {
 		return new Coordinate(x, y, F, parent);
 	}
+
+	public bool IsInBounds() {
+		return !(x < 0 ||
+				x >= Constants.FLOOR_WIDTH ||
+				y < 0 ||
+				y >= Constants.FLOOR_HEIGHT);
+	}
+
+	//public bool IsAdjacentToRoom(Floor.TileType[][] tilegrid, Room[] exclusionList = null) {
+	//	if (tilegrid[x + 1][y] == Floor.TileType.Room && !IsInRooms(exclusionList)) {
+	//		if ()
+	//	}
+	//}
 }
