@@ -40,20 +40,15 @@ public class Floor {
 			}
 		}
 
-
-		//One path for testing
-		Room start = room_list[rng.Next(room_list.Count)];
-		Room end;
-		do {
-			end = room_list[rng.Next(room_list.Count)];
-		} while (ReferenceEquals(start, end));
-		path_list.Add(new Path(start, end, tiles));
-		/*
 		//Create minimum number of paths
 		for (int i = 0; i < Constants.PATHS_MIN; i++) {
-			path_list.Add(new Path(room_list));
+			Room start = room_list[rng.Next(room_list.Count)];
+			Room end;
+			do {
+				end = room_list[rng.Next(room_list.Count)];
+			} while (ReferenceEquals(start, end));
+			path_list.Add(new Path(start, end, tiles));
 		}
-		*/
 
 
 

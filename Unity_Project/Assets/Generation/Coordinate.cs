@@ -83,15 +83,46 @@ public class Coordinate {
 	}
 
 	public bool IsInBounds() {
-		return !(x < 0 ||
-				x >= Constants.FLOOR_WIDTH ||
-				y < 0 ||
-				y >= Constants.FLOOR_HEIGHT);
+		return !(
+			x < 0 ||
+			x >= Constants.FLOOR_WIDTH ||
+			y < 0 ||
+			y >= Constants.FLOOR_HEIGHT
+		);
+	}
+	
+	public List<Coordinate> GetAdjacents(int distance = 1, bool diagonals = false) {
+		List<Coordinate> adjacents = new List<Coordinate> {
+			new Coordinate(x + distance, y),
+			new Coordinate(x - distance, y),
+			new Coordinate(x, y + distance),
+			new Coordinate(x, y - distance),
+		};
+
+		if (diagonals) {
+			Coordinate[] diags = {
+				new Coordinate(x + distance, y + distance),
+				new Coordinate(x + distance, y - distance),
+				new Coordinate(x - distance, y + distance),
+				new Coordinate(x - distance, y - distance)
+			};
+			adjacents.AddRange(diags);
+		}
+
+		adjacents.RemoveAll(x => !x.IsInBounds());
+
+		return adjacents;
 	}
 
-	//public bool IsAdjacentToRoom(Floor.TileType[][] tilegrid, Room[] exclusionList = null) {
-	//	if (tilegrid[x + 1][y] == Floor.TileType.Room && !IsInRooms(exclusionList)) {
-	//		if ()
-	//	}
-	//}
+
+	public bool IsAdjacentToRoom(Floor.TileType[][] tilegrid, Room[] exclusionList = null, int distance = 1) {
+		List<Coordinate> adjacents = GetAdjacents(distance, true);
+
+		foreach (Coordinate adj in adjacents) {
+			if (tilegrid[adj.x][adj.y] == Floor.TileType.Room && !adj.IsInRooms(exclusionList)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
