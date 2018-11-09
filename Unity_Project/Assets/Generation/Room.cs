@@ -61,31 +61,6 @@ public class Room {
 		return rng.Next(LowerBound, UpperBound);
 	}
 
-	public Coordinate[] GetRandEntrance() {
-		Random rng = new Random();
-		Coordinate[] entranceTiles = new Coordinate[2];
-		Path.Direction wall = (Path.Direction)rng.Next(4);
-		int rand_x = GetRandXPos();
-		int rand_y = GetRandYPos();
-
-		if (wall == Path.Direction.Right) {
-			entranceTiles[0] = new Coordinate(RightBound + 1, rand_y);
-			entranceTiles[0] = new Coordinate(RightBound + 2, rand_y);
-		}
-		else if (wall == Path.Direction.Up) {
-			entranceTiles[0] = new Coordinate(rand_x, UpperBound + 1);
-			entranceTiles[0] = new Coordinate(rand_x, UpperBound + 2);
-		}
-		else if (wall == Path.Direction.Left) {
-			entranceTiles[0] = new Coordinate(LeftBound + 1, rand_y);
-			entranceTiles[0] = new Coordinate(LeftBound + 2, rand_y);
-		}
-		else { //if (wall == Path.Direction.Up) {
-			//return new Coordinate(rng.Next(RightBound, LeftBound), LowerSpace);
-		}
-		return null;
-	}
-
 	public void CoalesceConnections(List<Room> connectedRooms) {
 
 	}

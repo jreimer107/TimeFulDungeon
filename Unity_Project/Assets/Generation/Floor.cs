@@ -47,11 +47,19 @@ public class Floor {
 			do {
 				end = room_list[rng.Next(room_list.Count)];
 			} while (ReferenceEquals(start, end));
-			path_list.Add(new Path(start, end, tiles));
+			Path newPath = new Path(start, end, tiles);
+			path_list.Add(newPath);
+
+			//Each path depends on other paths so add it immediately
+			foreach (Coordinate coord in newPath.pathCoords) {
+				//if (tiles[coord.x][coord.y] != TileType.Room) {
+				tiles[coord.x][coord.y] = TileType.Path;
+				//}
+			}
 		}
 
 
-
+		/*
 		//Copy paths into tile grid
 		foreach (Path path in path_list) {
 			foreach (Coordinate coord in path.pathCoords) {
@@ -60,6 +68,7 @@ public class Floor {
 				//}
 			}
 		}
+		*/
 
 		//Draw outer border of level
 		for (int y = 0; y < tiles[0].Length; y++) {

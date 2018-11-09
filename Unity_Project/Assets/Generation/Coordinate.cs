@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// Simple wrapper class for two integers that make up x and y of a coordinate pair.
@@ -90,33 +91,52 @@ public class Coordinate {
 			y >= Constants.FLOOR_HEIGHT
 		);
 	}
+
+	public static bool IsInBounds(int x, int y) {
+		return !(
+			x < 0 ||
+			x >= Constants.FLOOR_WIDTH ||
+			y < 0 ||
+			y >= Constants.FLOOR_HEIGHT
+		);
+	}
 	
-	public List<Coordinate> GetAdjacents(int distance = 1, bool diagonals = false) {
-		List<Coordinate> adjacents = new List<Coordinate> {
-			new Coordinate(x + distance, y),
-			new Coordinate(x - distance, y),
-			new Coordinate(x, y + distance),
-			new Coordinate(x, y - distance),
-		};
+	public List<Coordinate> GetAdjacents(bool diagonals = false, bool boundsCheck = true) {
+		List<Coordinate> adjacents;
+
 
 		if (diagonals) {
-			Coordinate[] diags = {
-				new Coordinate(x + distance, y + distance),
-				new Coordinate(x + distance, y - distance),
-				new Coordinate(x - distance, y + distance),
-				new Coordinate(x - distance, y - distance)
+			adjacents = new List<Coordinate> {
+				new Coordinate(x + 1, y),
+				new Coordinate(x + 1, y + 1),
+				new Coordinate(x, y + 1),
+				new Coordinate(x - 1, y + 1),
+				new Coordinate(x - 1, y),
+				new Coordinate(x - 1, y - 1),
+				new Coordinate(x, y - 1),
+				new Coordinate(x + 1, y - 1),
 			};
-			adjacents.AddRange(diags);
+		}
+		else {
+			adjacents = new List<Coordinate> {
+				new Coordinate(x + 1, y),
+				new Coordinate(x, y + 1),
+				new Coordinate(x - 1, y),
+				new Coordinate(x, y - 1)
+			};
 		}
 
-		adjacents.RemoveAll(x => !x.IsInBounds());
+		if (boundsCheck) {
+			adjacents.RemoveAll(x => !x.IsInBounds());
+		}
+		
 
 		return adjacents;
 	}
 
 
-	public bool IsAdjacentToRoom(Floor.TileType[][] tilegrid, Room[] exclusionList = null, int distance = 1) {
-		List<Coordinate> adjacents = GetAdjacents(distance, true);
+	public bool IsAdjacentToRoom(Floor.TileType[][] tilegrid, Room[] exclusionList = null) {
+		List<Coordinate> adjacents = GetAdjacents(true);
 
 		foreach (Coordinate adj in adjacents) {
 			if (tilegrid[adj.x][adj.y] == Floor.TileType.Room && !adj.IsInRooms(exclusionList)) {
@@ -125,4 +145,52 @@ public class Coordinate {
 		}
 		return false;
 	}
+
+
+	//The whole point of this is to avoid 2x2 path boxes, which look ugly
+	//To avoid a 2x2 box you need to make sure that:
+	//	you dont put a tile in a corner
+	//	you dont put two tiles alongside another path
+	//This includes the current tile, as that would be a tile in this situation
+	public bool IsAdjacentToPath(Coordinate current, Floor.TileType[][] tilegrid) {
+		List<Coordinate> adjacents = GetAdjacents(true, false);
+
+		bool horizontalOrientation = current.x != x;
+
+		//Get tile statuses
+		bool east = adjacents[0].IsInBounds() && (tilegrid[x + 1][y] == Floor.TileType.Path || adjacents[0].Equals(current));
+		bool northeast = adjacents[1].IsInBounds() && (tilegrid[x + 1][y + 1] == Floor.TileType.Path || adjacents[1].Equals(current));
+		bool north = adjacents[2].IsInBounds() && (tilegrid[x][y + 1] == Floor.TileType.Path || adjacents[2].Equals(current));
+		bool northwest = adjacents[3].IsInBounds() && (tilegrid[x - 1][y + 1] == Floor.TileType.Path || adjacents[3].Equals(current));
+		bool west = adjacents[4].IsInBounds() && (tilegrid[x - 1][y] == Floor.TileType.Path || adjacents[4].Equals(current));
+		bool southwest = adjacents[5].IsInBounds() && (tilegrid[x - 1][y - 1] == Floor.TileType.Path || adjacents[5].Equals(current));
+		bool south = adjacents[6].IsInBounds() && (tilegrid[x][y - 1] == Floor.TileType.Path || adjacents[6].Equals(current));
+		bool southeast = adjacents[7].IsInBounds() && (tilegrid[x + 1][y - 1] == Floor.TileType.Path || adjacents[7].Equals(current));
+		
+		//If we are in a corner, return true
+		if ((east && northeast && north) ||
+			(north && northwest && west) ||
+			(west && southwest && south) ||
+			(south && southeast && east)) {
+			return true;
+		}
+
+		//If we are alongside a path, return true
+		if (horizontalOrientation) { //Curr is same horizontal as us
+			if ((northwest && north && northeast) ||
+				(southwest && south && southeast)) {
+				return true;
+			}
+		}
+		else { //Curr is same vertical as us
+			if ((northwest && west && southwest) ||
+				(northeast && east && southeast)) {
+				return true;
+			}
+		}
+		//Debug.Log(string.Format("({0},{1}) is ok.", x, y));
+
+		return false;
+	}
+
 }

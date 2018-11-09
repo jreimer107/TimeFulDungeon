@@ -58,9 +58,12 @@ public class Path {
 
 			//Adjacent tiles that may be considered. To be considered they must not be next to a non-terminus room.
 			List<Coordinate> adjacents = currPos.GetAdjacents();
-			adjacents.RemoveAll(x => x.IsAdjacentToRoom(tilegrid, termini) || x.IsInList(closedList));
+			adjacents.RemoveAll(x => x.IsAdjacentToRoom(tilegrid, termini) || x.IsAdjacentToPath(currPos, tilegrid) || x.IsInList(closedList));
 			foreach (Coordinate adj in adjacents) {
 				int newF = G + Math.Abs(endPos.x - adj.x) + Math.Abs(endPos.y - adj.y);
+				if (tilegrid[adj.x][adj.y] != Floor.TileType.Path) { //try to reuse paths
+					newF += 7;
+				}
 				if (!adj.IsInList(openList)) { //not in open list
 					//Compute its F score, set its parent, and add it to the list
 					adj.F = newF;
