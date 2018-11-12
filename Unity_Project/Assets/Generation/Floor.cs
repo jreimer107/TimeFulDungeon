@@ -41,34 +41,48 @@ public class Floor {
 		}
 
 		//Create minimum number of paths
-		for (int i = 0; i < Constants.PATHS_MIN; i++) {
+		do {
 			Room start = room_list[rng.Next(room_list.Count)];
 			Room end;
 			do {
 				end = room_list[rng.Next(room_list.Count)];
 			} while (ReferenceEquals(start, end));
 			Path newPath = new Path(start, end, tiles);
-			path_list.Add(newPath);
 
 			//Each path depends on other paths so add it immediately
 			foreach (Coordinate coord in newPath.pathCoords) {
+				//Check if is already path
+				if (tiles[coord.x][coord.y] == TileType.Path) {
+					//Find which path
+					foreach (Path p in path_list) {
+						if (p.pathCoords.Contains(coord)) {
+							Debug.Log("In an existing path");
+
+						}
+					}
+				}
+
 				//if (tiles[coord.x][coord.y] != TileType.Room) {
 				tiles[coord.x][coord.y] = TileType.Path;
 				//}
 			}
-		}
 
-
-		/*
-		//Copy paths into tile grid
-		foreach (Path path in path_list) {
-			foreach (Coordinate coord in path.pathCoords) {
-				//if (tiles[coord.x][coord.y] != TileType.Room) {
-				tiles[coord.x][coord.y] = TileType.Path;
-				//}
+			//Idea: combine path objects if they intersect.
+			List<Path> absorbed = new List<Path>(); //Build list of paths to be absorbed
+			foreach (Path other in path_list) {
+				if (newPath.Intersects(other) || newPath.ShareEndpoint(other)) { //If they intersect
+					absorbed.Add(other);
+				}
 			}
-		}
-		*/
+			//Absorb and remove each path found
+			foreach (Path other in absorbed) {
+				newPath.Absorb(other);
+				path_list.Remove(other);
+			}
+			path_list.Add(newPath);
+			
+		} while (path_list.Count != 1 || path_list[0].connectedRooms.Count != room_list.Count);
+		
 
 		//Draw outer border of level
 		for (int y = 0; y < tiles[0].Length; y++) {

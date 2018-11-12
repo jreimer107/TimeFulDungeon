@@ -8,7 +8,7 @@ public class Room {
     public int y_pos;
     public int width;
     public int height;
-	public List<Room> connectedRooms;
+	public List<Path> connectedPaths;
 
 	//Bounds are tiles taken up by the room
 	public int UpperBound {
@@ -43,7 +43,7 @@ public class Room {
         y_pos = y;
         width = w;
         height = h;
-		connectedRooms = new List<Room>();
+		connectedPaths = new List<Path>();
 	}
 
 	public Coordinate GetRandCoordinate() {
@@ -61,7 +61,11 @@ public class Room {
 		return rng.Next(LowerBound, UpperBound);
 	}
 
-	public void CoalesceConnections(List<Room> connectedRooms) {
-
+	//Coalesce the connectedRooms lists of each path connected to this room
+	public void CoalesceConnections(Room other) {
+		foreach (Path p in connectedPaths) {
+			other.connectedPaths.Add(p);
+		}
+		connectedPaths = other.connectedPaths;
 	}
 }

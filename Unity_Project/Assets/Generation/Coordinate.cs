@@ -135,14 +135,21 @@ public class Coordinate {
 	}
 
 
-	public bool IsAdjacentToRoom(Floor.TileType[][] tilegrid, Room[] exclusionList = null) {
+	public bool IsAdjacentToRoom(Floor.TileType[][] tilegrid, Room[] exclusionList, Coordinate prev) {
 		List<Coordinate> adjacents = GetAdjacents(true);
 
+		//Check for non terminus rooms (cannot touch at all)
 		foreach (Coordinate adj in adjacents) {
 			if (tilegrid[adj.x][adj.y] == Floor.TileType.Room && !adj.IsInRooms(exclusionList)) {
 				return true;
 			}
 		}
+
+		//Check for terminus rooms (can enter, but cannot run alongside)
+		bool horizontalOrientation = prev.x != x;
+
+		//Get tile statuses
+
 		return false;
 	}
 
@@ -192,5 +199,41 @@ public class Coordinate {
 
 		return false;
 	}
+
+	/*
+	private bool[] GetTileStatuses(Floor.TileType type, Floor.TileType[][] tilegrid, Coordinate prev) {
+		List<Coordinate> adjs = GetAdjacents(true, false);
+
+		bool horizontalOrientation = prev.x != x;
+
+		//Get tile statuses
+		bool east = adjs[0].IsInBounds() && (tilegrid[x + 1][y] == Floor.TileType.Path || adjs[0].Equals(prev));
+		bool northeast = adjs[1].IsInBounds() && (tilegrid[x + 1][y + 1] == Floor.TileType.Path || adjs[1].Equals(prev));
+		bool north = adjs[2].IsInBounds() && (tilegrid[x][y + 1] == Floor.TileType.Path || adjs[2].Equals(prev));
+		bool northwest = adjs[3].IsInBounds() && (tilegrid[x - 1][y + 1] == Floor.TileType.Path || adjs[3].Equals(prev));
+		bool west = adjs[4].IsInBounds() && (tilegrid[x - 1][y] == Floor.TileType.Path || adjs[4].Equals(prev));
+		bool southwest = adjs[5].IsInBounds() && (tilegrid[x - 1][y - 1] == Floor.TileType.Path || adjs[5].Equals(prev));
+		bool south = adjs[6].IsInBounds() && (tilegrid[x][y - 1] == Floor.TileType.Path || adjs[6].Equals(prev));
+		bool southeast = adjs[7].IsInBounds() && (tilegrid[x + 1][y - 1] == Floor.TileType.Path || adjs[7].Equals(prev));
+		
+		bool[] statuses = new bool[adjs.Count];
+		for () {
+			statuses[]
+		}
+
+		bool[] statuses = {
+			east,
+			northeast,
+			north,
+			northwest,
+			west,
+			southwest,
+			south,
+			southeast
+		};
+		return statuses;
+		
+	}
+	*/
 
 }
