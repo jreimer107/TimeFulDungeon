@@ -50,9 +50,9 @@ public class Coordinate {
 	/// <returns>True if point is inside room, false otherwise.</returns>
 	public bool IsInsideRoom(Room room) {
 		return (x >= room.LeftBound &&
-				x <= room.RightBound &&
+				x < room.RightBound &&
 				y >= room.LowerBound &&
-				y <= room.UpperBound);
+				y < room.UpperBound);
 	}
 
 	/// <summary>
@@ -136,44 +136,34 @@ public class Coordinate {
 
 
 	public bool IsAdjacentToRoom(Floor.TileType[][] tilegrid, Room[] exclusionList, Coordinate prev) {
-		List<Coordinate> adjacents = GetAdjacents(true);
+		//If we're in a terminus room then don't check anything
+		if (IsInRooms(exclusionList)) {
+			return false;
+		}
 
-		//Check for non terminus rooms (cannot touch at all)
+		//Check if next to non terminus rooms (cannot touch)
+		List<Coordinate> adjacents = GetAdjacents(true);
 		foreach (Coordinate adj in adjacents) {
 			if (tilegrid[adj.x][adj.y] == Floor.TileType.Room && !adj.IsInRooms(exclusionList)) {
 				return true;
 			}
 		}
 
+
 		//Check for terminus rooms (can enter, but cannot run alongside)
-		bool horizontalOrientation = prev.x != x;
+		List<Coordinate> adjs = GetAdjacents(true, false);
+
 
 		//Get tile statuses
+		bool east =		 adjs[0].IsInBounds() && (tilegrid[adjs[0].x][adjs[0].y] != Floor.TileType.Void || adjs[0].Equals(prev));
+		bool northeast = adjs[1].IsInBounds() && (tilegrid[adjs[1].x][adjs[1].y] != Floor.TileType.Void || adjs[1].Equals(prev));
+		bool north =	 adjs[2].IsInBounds() && (tilegrid[adjs[2].x][adjs[2].y] != Floor.TileType.Void || adjs[2].Equals(prev));
+		bool northwest = adjs[3].IsInBounds() && (tilegrid[adjs[3].x][adjs[3].y] != Floor.TileType.Void || adjs[3].Equals(prev));
+		bool west =		 adjs[4].IsInBounds() && (tilegrid[adjs[4].x][adjs[4].y] != Floor.TileType.Void || adjs[4].Equals(prev));
+		bool southwest = adjs[5].IsInBounds() && (tilegrid[adjs[5].x][adjs[5].y] != Floor.TileType.Void || adjs[5].Equals(prev));
+		bool south =	 adjs[6].IsInBounds() && (tilegrid[adjs[6].x][adjs[6].y] != Floor.TileType.Void || adjs[6].Equals(prev));
+		bool southeast = adjs[7].IsInBounds() && (tilegrid[adjs[7].x][adjs[7].y] != Floor.TileType.Void || adjs[7].Equals(prev));
 
-		return false;
-	}
-
-
-	//The whole point of this is to avoid 2x2 path boxes, which look ugly
-	//To avoid a 2x2 box you need to make sure that:
-	//	you dont put a tile in a corner
-	//	you dont put two tiles alongside another path
-	//This includes the current tile, as that would be a tile in this situation
-	public bool IsAdjacentToPath(Coordinate current, Floor.TileType[][] tilegrid) {
-		List<Coordinate> adjacents = GetAdjacents(true, false);
-
-		bool horizontalOrientation = current.x != x;
-
-		//Get tile statuses
-		bool east = adjacents[0].IsInBounds() && (tilegrid[x + 1][y] == Floor.TileType.Path || adjacents[0].Equals(current));
-		bool northeast = adjacents[1].IsInBounds() && (tilegrid[x + 1][y + 1] == Floor.TileType.Path || adjacents[1].Equals(current));
-		bool north = adjacents[2].IsInBounds() && (tilegrid[x][y + 1] == Floor.TileType.Path || adjacents[2].Equals(current));
-		bool northwest = adjacents[3].IsInBounds() && (tilegrid[x - 1][y + 1] == Floor.TileType.Path || adjacents[3].Equals(current));
-		bool west = adjacents[4].IsInBounds() && (tilegrid[x - 1][y] == Floor.TileType.Path || adjacents[4].Equals(current));
-		bool southwest = adjacents[5].IsInBounds() && (tilegrid[x - 1][y - 1] == Floor.TileType.Path || adjacents[5].Equals(current));
-		bool south = adjacents[6].IsInBounds() && (tilegrid[x][y - 1] == Floor.TileType.Path || adjacents[6].Equals(current));
-		bool southeast = adjacents[7].IsInBounds() && (tilegrid[x + 1][y - 1] == Floor.TileType.Path || adjacents[7].Equals(current));
-		
 		//If we are in a corner, return true
 		if ((east && northeast && north) ||
 			(north && northwest && west) ||
@@ -182,58 +172,55 @@ public class Coordinate {
 			return true;
 		}
 
-		//If we are alongside a path, return true
-		if (horizontalOrientation) { //Curr is same horizontal as us
-			if ((northwest && north && northeast) ||
-				(southwest && south && southeast)) {
-				return true;
-			}
+		return false;
+	}
+	
+	//The whole point of this is to avoid 2x2 path boxes, which look ugly
+	//To avoid a 2x2 box you need to make sure that:
+	//	you dont put a tile in a corner
+	//	you dont put two tiles alongside another path
+	//This includes the current tile, as that would be a tile in this situation
+	//So just don't make a corner (including the current tile)
+	public bool IsAdjacentToPath(Floor.TileType[][] tilegrid, Coordinate prev) {
+		List<Coordinate> adjs = GetAdjacents(true, false);
+		
+
+		//Get tile statuses
+		bool east =		 adjs[0].IsInBounds() && (tilegrid[adjs[0].x][adjs[0].y] == Floor.TileType.Path || adjs[0].Equals(prev));
+		bool northeast = adjs[1].IsInBounds() && (tilegrid[adjs[1].x][adjs[1].y] == Floor.TileType.Path || adjs[1].Equals(prev));
+		bool north =	 adjs[2].IsInBounds() && (tilegrid[adjs[2].x][adjs[2].y] == Floor.TileType.Path || adjs[2].Equals(prev));
+		bool northwest = adjs[3].IsInBounds() && (tilegrid[adjs[3].x][adjs[3].y] == Floor.TileType.Path || adjs[3].Equals(prev));
+		bool west =		 adjs[4].IsInBounds() && (tilegrid[adjs[4].x][adjs[4].y] == Floor.TileType.Path || adjs[4].Equals(prev));
+		bool southwest = adjs[5].IsInBounds() && (tilegrid[adjs[5].x][adjs[5].y] == Floor.TileType.Path || adjs[5].Equals(prev));
+		bool south =	 adjs[6].IsInBounds() && (tilegrid[adjs[6].x][adjs[6].y] == Floor.TileType.Path || adjs[6].Equals(prev));
+		bool southeast = adjs[7].IsInBounds() && (tilegrid[adjs[7].x][adjs[7].y] == Floor.TileType.Path || adjs[7].Equals(prev));
+
+		//If we are in a corner, return true
+		if ((east && northeast && north) ||
+			(north && northwest && west) ||
+			(west && southwest && south) ||
+			(south && southeast && east)) {
+			return true;
 		}
-		else { //Curr is same vertical as us
-			if ((northwest && west && southwest) ||
-				(northeast && east && southeast)) {
-				return true;
-			}
-		}
-		//Debug.Log(string.Format("({0},{1}) is ok.", x, y));
 
 		return false;
 	}
 
-	/*
-	private bool[] GetTileStatuses(Floor.TileType type, Floor.TileType[][] tilegrid, Coordinate prev) {
-		List<Coordinate> adjs = GetAdjacents(true, false);
 
-		bool horizontalOrientation = prev.x != x;
+	private bool[] GetTileStatuses(Floor.TileType type, Floor.TileType[][] tilegrid, Coordinate prev) {
+		Coordinate[] adjs = GetAdjacents(true, false).ToArray();
+
 
 		//Get tile statuses
-		bool east = adjs[0].IsInBounds() && (tilegrid[x + 1][y] == Floor.TileType.Path || adjs[0].Equals(prev));
-		bool northeast = adjs[1].IsInBounds() && (tilegrid[x + 1][y + 1] == Floor.TileType.Path || adjs[1].Equals(prev));
-		bool north = adjs[2].IsInBounds() && (tilegrid[x][y + 1] == Floor.TileType.Path || adjs[2].Equals(prev));
-		bool northwest = adjs[3].IsInBounds() && (tilegrid[x - 1][y + 1] == Floor.TileType.Path || adjs[3].Equals(prev));
-		bool west = adjs[4].IsInBounds() && (tilegrid[x - 1][y] == Floor.TileType.Path || adjs[4].Equals(prev));
-		bool southwest = adjs[5].IsInBounds() && (tilegrid[x - 1][y - 1] == Floor.TileType.Path || adjs[5].Equals(prev));
-		bool south = adjs[6].IsInBounds() && (tilegrid[x][y - 1] == Floor.TileType.Path || adjs[6].Equals(prev));
-		bool southeast = adjs[7].IsInBounds() && (tilegrid[x + 1][y - 1] == Floor.TileType.Path || adjs[7].Equals(prev));
-		
-		bool[] statuses = new bool[adjs.Count];
-		for () {
-			statuses[]
+		//Counter clockwise from east
+		bool[] statuses = new bool[adjs.Length];
+		for (int i = 0; i < adjs.Length; i++) {
+			statuses[i] = adjs[i].IsInBounds() && (tilegrid[adjs[i].x][adjs[i].y] == type || adjs[i].Equals(prev));
 		}
 
-		bool[] statuses = {
-			east,
-			northeast,
-			north,
-			northwest,
-			west,
-			southwest,
-			south,
-			southeast
-		};
+
 		return statuses;
 		
 	}
-	*/
 
 }

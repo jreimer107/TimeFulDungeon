@@ -24,6 +24,9 @@ public class Floor {
 		tiles = new TileType[Constants.FLOOR_WIDTH][];
 		for (int row = 0; row < tiles.Length; row++) {
 			tiles[row] = new TileType[Constants.FLOOR_HEIGHT];
+			for (int col = 0; col < tiles[0].Length; col++) {
+				tiles[row][col] = TileType.Void;
+			}
 		}
 
 		//Attempt to place a room some number of times
@@ -62,9 +65,9 @@ public class Floor {
 					}
 				}
 
-				//if (tiles[coord.x][coord.y] != TileType.Room) {
-				tiles[coord.x][coord.y] = TileType.Path;
-				//}
+				if (tiles[coord.x][coord.y] != TileType.Room) {
+					tiles[coord.x][coord.y] = TileType.Path;
+				}
 			}
 
 			//Idea: combine path objects if they intersect.

@@ -51,7 +51,7 @@ public class Path {
 
 			//Adjacent tiles that may be considered. To be considered they must not be next to a non-terminus room.
 			List<Coordinate> adjacents = currPos.GetAdjacents();
-			adjacents.RemoveAll(x => x.IsAdjacentToRoom(tilegrid, termini, currPos) || x.IsAdjacentToPath(currPos, tilegrid) || x.IsInList(closedList));
+			adjacents.RemoveAll(x => x.IsAdjacentToRoom(tilegrid, termini, currPos) || x.IsAdjacentToPath(tilegrid, currPos) || x.IsInList(closedList));
 			foreach (Coordinate adj in adjacents) {
 				int newF = G + Math.Abs(endPos.x - adj.x) + Math.Abs(endPos.y - adj.y);
 				if (tilegrid[adj.x][adj.y] != Floor.TileType.Path) { //try to reuse paths
@@ -91,28 +91,6 @@ public class Path {
 			}
 		}
 		return false;
-	}
-
-
-	//There are two cases where we need to coalesce connections.
-	//One is where the path intersects another path
-	//The other is at the start and end when the path attaches to rooms.
-	public void CoalesceConnections(Path other) {
-		//If we are here we have intersected with another path
-		//Add the current path's connected rooms to the other's
-		
-		//The paths might have intersected a common path and would share the same connectedRooms list
-		if (!ReferenceEquals(connectedRooms, other.connectedRooms)) {
-			//If we are here we have two paths that are not connected and do not share any rooms in connectedRooms lists
-			foreach (Room r in connectedRooms) {
-				//The other path might be connected to more paths
-				//Those paths will all reference the same connectedRooms list
-				other.connectedRooms.Add(r);
-			}
-			//Point the current path's connected rooms to the other's so that they reference the same list.
-			//Adding to one of the connected lists would connect to every path's list
-			connectedRooms = other.connectedRooms;
-		}
 	}
 
 
