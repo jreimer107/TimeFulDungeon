@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
 	public static GameManager instance = null;
-	private BoardHolder board;
+	//public GameObject board;
 
 	void Awake() {
 		if (instance == null) {
@@ -15,9 +15,9 @@ public class GameManager : MonoBehaviour {
 		}
 
 		DontDestroyOnLoad(gameObject);
-		board = GetComponent<BoardHolder>();
+		//board = Instantiate
 
-		board.Setup();
+		//board.Setup();
 	}
 
 

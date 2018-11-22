@@ -155,14 +155,14 @@ public class Coordinate {
 
 
 		//Get tile statuses
-		bool east =		 adjs[0].IsInBounds() && (tilegrid[adjs[0].x][adjs[0].y] != Floor.TileType.Void || adjs[0].Equals(prev));
-		bool northeast = adjs[1].IsInBounds() && (tilegrid[adjs[1].x][adjs[1].y] != Floor.TileType.Void || adjs[1].Equals(prev));
-		bool north =	 adjs[2].IsInBounds() && (tilegrid[adjs[2].x][adjs[2].y] != Floor.TileType.Void || adjs[2].Equals(prev));
-		bool northwest = adjs[3].IsInBounds() && (tilegrid[adjs[3].x][adjs[3].y] != Floor.TileType.Void || adjs[3].Equals(prev));
-		bool west =		 adjs[4].IsInBounds() && (tilegrid[adjs[4].x][adjs[4].y] != Floor.TileType.Void || adjs[4].Equals(prev));
-		bool southwest = adjs[5].IsInBounds() && (tilegrid[adjs[5].x][adjs[5].y] != Floor.TileType.Void || adjs[5].Equals(prev));
-		bool south =	 adjs[6].IsInBounds() && (tilegrid[adjs[6].x][adjs[6].y] != Floor.TileType.Void || adjs[6].Equals(prev));
-		bool southeast = adjs[7].IsInBounds() && (tilegrid[adjs[7].x][adjs[7].y] != Floor.TileType.Void || adjs[7].Equals(prev));
+		bool east =		 adjs[0].IsInBounds() && (tilegrid[adjs[0].x][adjs[0].y] != Floor.TileType.Wall || adjs[0].Equals(prev));
+		bool northeast = adjs[1].IsInBounds() && (tilegrid[adjs[1].x][adjs[1].y] != Floor.TileType.Wall || adjs[1].Equals(prev));
+		bool north =	 adjs[2].IsInBounds() && (tilegrid[adjs[2].x][adjs[2].y] != Floor.TileType.Wall || adjs[2].Equals(prev));
+		bool northwest = adjs[3].IsInBounds() && (tilegrid[adjs[3].x][adjs[3].y] != Floor.TileType.Wall || adjs[3].Equals(prev));
+		bool west =		 adjs[4].IsInBounds() && (tilegrid[adjs[4].x][adjs[4].y] != Floor.TileType.Wall || adjs[4].Equals(prev));
+		bool southwest = adjs[5].IsInBounds() && (tilegrid[adjs[5].x][adjs[5].y] != Floor.TileType.Wall || adjs[5].Equals(prev));
+		bool south =	 adjs[6].IsInBounds() && (tilegrid[adjs[6].x][adjs[6].y] != Floor.TileType.Wall || adjs[6].Equals(prev));
+		bool southeast = adjs[7].IsInBounds() && (tilegrid[adjs[7].x][adjs[7].y] != Floor.TileType.Wall || adjs[7].Equals(prev));
 
 		//If we are in a corner, return true
 		if ((east && northeast && north) ||

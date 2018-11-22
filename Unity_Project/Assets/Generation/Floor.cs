@@ -25,7 +25,7 @@ public class Floor {
 		for (int row = 0; row < tiles.Length; row++) {
 			tiles[row] = new TileType[Constants.FLOOR_HEIGHT];
 			for (int col = 0; col < tiles[0].Length; col++) {
-				tiles[row][col] = TileType.Void;
+				tiles[row][col] = TileType.Wall;
 			}
 		}
 
