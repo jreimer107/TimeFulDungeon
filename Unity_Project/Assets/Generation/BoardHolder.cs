@@ -9,6 +9,8 @@ public class BoardHolder : MonoBehaviour {
 	public Tile wallTile;
 	public Tile borderTile;
 	public Tile pathTile;
+	public Tile entranceTile;
+	public Tile exitTile;
 	public GameObject player;
 
 	public Tilemap tilemap;
@@ -33,6 +35,12 @@ public class BoardHolder : MonoBehaviour {
 				}
 				else if (grid[x][y] == Floor.TileType.Border) {
 					tilemap.SetTile(position, borderTile);
+				}
+				else if (grid[x][y] == Floor.TileType.Entrance) {
+					tilemap.SetTile(position, entranceTile);
+				}
+				else if (grid[x][y] == Floor.TileType.Exit) {
+					tilemap.SetTile(position, exitTile);
 				}
 				else {
 					tilemap.SetTile(position, wallTile);
