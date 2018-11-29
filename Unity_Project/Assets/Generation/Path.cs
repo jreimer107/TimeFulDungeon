@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class Path {
+public class Hall {
 	public List<Coordinate> pathCoords;
 	public List<Room> connectedRooms;
 
@@ -14,7 +14,7 @@ public class Path {
 	//Trying out this fancy A* pathfinding!
 	//So we want to path from one random room to another
 	//Avoid other rooms as obstacles to cause more interesting behavior
-	public Path(Room startRoom, Room endRoom, Floor.TileType[][] tilegrid) {
+	public Hall(Room startRoom, Room endRoom, Floor.TileType[][] tilegrid) {
 		connectedRooms = new List<Room> { startRoom, endRoom };
 		pathCoords = ShortestPath(startRoom, endRoom, tilegrid);
 	}
@@ -84,7 +84,7 @@ public class Path {
 		return pathCoords;
 	}
 
-	public bool Intersects(Path other) {
+	public bool Intersects(Hall other) {
 		foreach (Coordinate c in pathCoords) {
 			if (other.pathCoords.Contains(c)) {
 				return true;
@@ -94,7 +94,7 @@ public class Path {
 	}
 
 
-	public void Absorb(Path other) {
+	public void Absorb(Hall other) {
 		//Coalesce coordinates into one list
 		foreach (Coordinate c in other.pathCoords) {
 			if (!c.IsInList(pathCoords)) {
@@ -111,7 +111,7 @@ public class Path {
 	}
 
 
-	public bool ShareEndpoint(Path other) {
+	public bool ShareEndpoint(Hall other) {
 		foreach (Room r in connectedRooms) {
 			if (other.connectedRooms.Contains(r)) {
 				return true;

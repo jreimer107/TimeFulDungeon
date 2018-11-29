@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 using Random = System.Random;
 
 public class Floor {
 	public enum TileType {
-		Void, Room, Path, Wall, Border,
+		Void, Room, Path, Wall, Border, Entrance, Exit,
 	}
 		
 	private List<Room> room_list;
-	private List<Path> path_list;
+	private List<Hall> path_list;
 	public TileType[][] tiles;
 	private Random rng;
+	public Coordinate entrance;
+	public Coordinate exit;
 
 	//Level generation!
 	public Floor() {
 		//Create room list
 		room_list = new List<Room>();
-		path_list = new List<Path>();
+		path_list = new List<Hall>();
 		rng = new Random();
 
 		//Create tile grid
@@ -50,35 +51,25 @@ public class Floor {
 			do {
 				end = room_list[rng.Next(room_list.Count)];
 			} while (ReferenceEquals(start, end));
-			Path newPath = new Path(start, end, tiles);
+			Hall newPath = new Hall(start, end, tiles);
 
-			//Each path depends on other paths so add it immediately
+			//Set tiles to be paths unless they are already something else
 			foreach (Coordinate coord in newPath.pathCoords) {
-				//Check if is already path
-				if (tiles[coord.x][coord.y] == TileType.Path) {
-					//Find which path
-					foreach (Path p in path_list) {
-						if (p.pathCoords.Contains(coord)) {
-							Debug.Log("In an existing path");
-
-						}
-					}
-				}
-
-				if (tiles[coord.x][coord.y] != TileType.Room) {
+				if (tiles[coord.x][coord.y] == TileType.Wall) {
 					tiles[coord.x][coord.y] = TileType.Path;
 				}
 			}
 
+			//Each path depends on other paths so add it immediately
 			//Idea: combine path objects if they intersect.
-			List<Path> absorbed = new List<Path>(); //Build list of paths to be absorbed
-			foreach (Path other in path_list) {
+			List<Hall> absorbed = new List<Hall>(); //Build list of paths to be absorbed
+			foreach (Hall other in path_list) {
 				if (newPath.Intersects(other) || newPath.ShareEndpoint(other)) { //If they intersect
 					absorbed.Add(other);
 				}
 			}
 			//Absorb and remove each path found
-			foreach (Path other in absorbed) {
+			foreach (Hall other in absorbed) {
 				newPath.Absorb(other);
 				path_list.Remove(other);
 			}
@@ -100,6 +91,16 @@ public class Floor {
 		for (int x = 0; x < tiles.Length; x++) {
 			tiles[x][Constants.FLOOR_HEIGHT - 1] = TileType.Border;
 		}
+
+		//Place entrance and exit
+		do {
+			entrance = room_list[rng.Next(room_list.Count)].GetRandCoordinate();
+		} while (entrance.IsNextToPath(tiles));
+		do {
+			exit = room_list[rng.Next(room_list.Count)].GetRandCoordinate();
+		} while (exit.IsNextToPath(tiles) || entrance.Equals(exit));
+		tiles[entrance.x][entrance.y] = TileType.Entrance;
+		tiles[exit.x][exit.y] = TileType.Exit;
 	}
 
 
@@ -189,22 +190,4 @@ public class Floor {
 		w = Math.Sqrt(-2 * Math.Log(w) / w);
 		return mean + deviation * x1 * w;
     }
-
-	public void Print() {
-		string floor_bin = "";
-		for (int x = 0; x < tiles.Length; x++) {
-			for (int y = 0; y < tiles[0].Length; y++) {
-				if (tiles[x][y] == TileType.Room) {
-					floor_bin += "1";
-				}
-				else {
-					floor_bin += "0";
-				}
-			}
-			floor_bin += "\n";
-		}
-		Debug.Log(floor_bin);
-
-		Debug.Log("Done");
-	}
 }

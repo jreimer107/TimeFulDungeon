@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PlayerController : MonoBehaviour {
+public class CharacterController : MonoBehaviour {
 	[Range(0, .3f)] [SerializeField] private float MovementSmoothing = .05f; //How much to smooth movement
 	[SerializeField] private LayerMask CollisionLayers; //Mask determining what the player runs into
 
@@ -19,17 +19,17 @@ public class PlayerController : MonoBehaviour {
 		
 	}
 
-	private void Move(float move) {
+	public void Move(float horizontal, float vertical) {
 		//Move player by finding target velocity
-		Vector3 targetVelocity = new Vector2(move * 10f, rbody.velocity.y);
+		Vector3 targetVelocity = new Vector2(horizontal * 10f, vertical * 10f);
 		//And then smoothing it out and applying it to the character
 		rbody.velocity = Vector3.SmoothDamp(rbody.velocity, targetVelocity, ref velocity, MovementSmoothing);
 
 		//If input is moving the player right and player is facing left
-		if (move > 0 && !FacingRight) {
+		if (horizontal > 0 && !FacingRight) {
 			Flip();
 		}
-		else if (move < 0 && FacingRight) {
+		else if (horizontal < 0 && FacingRight) {
 			Flip();
 		}
 	}

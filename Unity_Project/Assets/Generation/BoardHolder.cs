@@ -12,13 +12,13 @@ public class BoardHolder : MonoBehaviour {
 	public GameObject player;
 
 	public Tilemap tilemap;
-
+	private Floor floor;
 
 	// Use this for initialization
 	public void Awake () {
-		Floor floor = new Floor();
+		floor = new Floor();
 		InstantiateGrid(floor.tiles);
-		//Set
+		PlacePlayer();
 	}
 	
 	private void InstantiateGrid(Floor.TileType[][] grid) {
@@ -34,8 +34,14 @@ public class BoardHolder : MonoBehaviour {
 				else if (grid[x][y] == Floor.TileType.Border) {
 					tilemap.SetTile(position, borderTile);
 				}
-				
+				else {
+					tilemap.SetTile(position, wallTile);
+				}
 			}
 		}
+	}
+
+	private void PlacePlayer() {
+		player.transform.position = new Vector3(floor.entrance.x + 0.5f, floor.entrance.y + 0.5f, 0f);
 	}
 }

@@ -223,4 +223,11 @@ public class Coordinate {
 		
 	}
 
+	public bool IsNextToPath(Floor.TileType[][] tilegrid) {
+		return (tilegrid[x + 1][y] == Floor.TileType.Path ||
+				tilegrid[x - 1][y] == Floor.TileType.Path ||
+				tilegrid[x][y + 1] == Floor.TileType.Path ||
+				tilegrid[x][y - 1] == Floor.TileType.Path);
+	}
+
 }

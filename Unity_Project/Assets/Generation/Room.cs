@@ -1,14 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 using Random = System.Random;
 
 public class Room {
+	//publics to be accessed by other classes
     public int x_pos;
     public int y_pos;
     public int width;
     public int height;
-	public List<Path> connectedPaths;
+	public List<Hall> connectedPaths;
 
 	//Bounds are tiles taken up by the room
 	public int UpperBound {
@@ -43,7 +42,7 @@ public class Room {
         y_pos = y;
         width = w;
         height = h;
-		connectedPaths = new List<Path>();
+		connectedPaths = new List<Hall>();
 	}
 
 	public Coordinate GetRandCoordinate() {
@@ -63,7 +62,7 @@ public class Room {
 
 	//Coalesce the connectedRooms lists of each path connected to this room
 	public void CoalesceConnections(Room other) {
-		foreach (Path p in connectedPaths) {
+		foreach (Hall p in connectedPaths) {
 			other.connectedPaths.Add(p);
 		}
 		connectedPaths = other.connectedPaths;
