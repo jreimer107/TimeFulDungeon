@@ -190,4 +190,7 @@ public class Floor {
 		w = Math.Sqrt(-2 * Math.Log(w) / w);
 		return mean + deviation * x1 * w;
     }
+
+	//Interaction with coordinate
+
 }

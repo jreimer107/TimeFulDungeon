@@ -3,11 +3,12 @@ using Random = System.Random;
 
 public class Room {
 	//publics to be accessed by other classes
-    public int x_pos;
-    public int y_pos;
-    public int width;
-    public int height;
+	public int x_pos;
+	public int y_pos;
+	public int width;
+	public int height;
 	public List<Hall> connectedPaths;
+	private Random rng;
 
 	//Bounds are tiles taken up by the room
 	public int UpperBound {
@@ -37,12 +38,27 @@ public class Room {
 		get { return RightBound + Constants.ROOM_GAP; }
 	}
 
-	public Room (int x, int y, int w, int h) {
-        x_pos = x;
-        y_pos = y;
-        width = w;
-        height = h;
+	public Room(int x, int y, int w, int h) {
+		x_pos = x;
+		y_pos = y;
+		width = w;
+		height = h;
 		connectedPaths = new List<Hall>();
+		rng = new Random();
+	}
+
+
+	public Coordinate GetRandEntrance() {
+		int side = this.rng.Next(3);
+		if (side == 0) { //Left side
+			return new Coordinate(this.x_pos - 1, this.GetRandYPos());
+		} else if (side == 1) { //Top
+			return new Coordinate(this.GetRandXPos(), this.y_pos + this.height + 1);
+		} else if (side == 2) { //Right
+			return new Coordinate(this.x_pos + this.width + 1, this.GetRandYPos());
+		} else { //Bottom
+			return new Coordinate(this.GetRandXPos(), this.y_pos - 1);
+		}
 	}
 
 	public Coordinate GetRandCoordinate() {
@@ -52,11 +68,9 @@ public class Room {
 	}
 
 	public int GetRandXPos() {
-		Random rng = new Random();
 		return rng.Next(LeftBound, RightBound);
 	}
 	public int GetRandYPos() {
-		Random rng = new Random();
 		return rng.Next(LowerBound, UpperBound);
 	}
 

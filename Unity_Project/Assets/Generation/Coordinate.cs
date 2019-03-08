@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 /// <summary>
 /// Simple wrapper class for two integers that make up x and y of a coordinate pair.
 /// </summary>
-public class Coordinate {
+public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 	public int x;
 	public int y;
 	public int F; //Weight/score for pathfinding.
@@ -22,8 +23,81 @@ public class Coordinate {
 		this.parent = parent;
 	}
 
+	public int CompareTo(Coordinate other) {
+		if (this.x != other.x) {
+			return this.x.CompareTo(other.x);
+		}
+		return this.y.CompareTo(other.y);
+	}
+
 	public bool Equals(Coordinate other) {
 		return (this.x == other.x && this.y == other.y);
+	}
+
+	public List<Coordinate> getCardinalSuccessors() {
+		return new List<Coordinate> {
+			new Coordinate(x + 1, y),
+			new Coordinate(x, y + 1),
+			new Coordinate(x - 1, y),
+			new Coordinate(x, y - 1)
+		};
+	}
+
+	public List<Coordinate> getAllSuccessors() {
+		return new List<Coordinate> {
+				new Coordinate(x + 1, y),
+				new Coordinate(x + 1, y + 1),
+				new Coordinate(x, y + 1),
+				new Coordinate(x - 1, y + 1),
+				new Coordinate(x - 1, y),
+				new Coordinate(x - 1, y - 1),
+				new Coordinate(x, y - 1),
+				new Coordinate(x + 1, y - 1),
+			};
+	}
+
+	public List<Coordinate> GetValidSuccessors(Floor.TileType[][] tiles) {
+		List<Coordinate> cardinalSuccessors = this.getCardinalSuccessors();
+		cardinalSuccessors.RemoveAll(x => !x.IsInBounds());
+
+		//Build surrounding area grid to see which tiles are good/bad
+		bool[,] inUse = new bool[5, 5];
+		for (int row = 0; row < 5; row++) {
+			for (int col = 0; col < 5; col++) {
+				int realX = this.x - 2 + row;
+				int realY = this.y - 2 + col;
+				if (Coordinate.IsInBounds(realX, realY) ||
+					tiles[realX][realY] != Floor.TileType.Wall ||
+					(realX == this.x && realY == this.y)) {
+					inUse[row, col] = true;
+				} else {
+					inUse[row, col] = false;
+				}
+			}
+		}
+
+		//Remove all successors that make a 2x2box
+		cardinalSuccessors.RemoveAll(x => x.makesBox(inUse));
+		return cardinalSuccessors;
+	}
+
+	private bool makesBox(bool[,] inUse) {
+		bool e = inUse[this.x + 1, this.y];
+		bool ne = inUse[this.x + 1, this.y + 1];
+		bool n = inUse[this.x, this.y + 1];
+		bool nw = inUse[this.x - 1, this.y + 1];
+		bool w = inUse[this.x - 1, this.y];
+		bool sw = inUse[this.x - 1, this.y - 1];
+		bool s = inUse[this.x, this.y - 1];
+		bool se = inUse[this.x + 1, this.y - 1];
+
+		if ((e && ne && n) ||
+			(n && nw && w) ||
+			(w && sw && s) ||
+			(s && s && se)) {
+			return true;
+		}
+		return false;
 	}
 
 	public Coordinate DistanceFrom(Coordinate other) {
@@ -55,30 +129,6 @@ public class Coordinate {
 				y < room.UpperBound);
 	}
 
-	/// <summary>
-	/// Checks if the coordinate is in a given list of coordinates.
-	/// </summary>
-	/// <param name="coord_list">The list of coordinates to parse.</param>
-	/// <returns>True if the coordinate is in the list, false otherwise.</returns>
-	public bool IsInList(List<Coordinate> coord_list) {
-		foreach (Coordinate coord in coord_list) {
-			if (coord.x == x && coord.y == y) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public static Coordinate FindSmallestF(List<Coordinate> coord_list) {
-		Coordinate smallestF = coord_list[0];
-		foreach (Coordinate coord in coord_list) {
-			if (coord.F < smallestF.F) {
-				smallestF = coord;
-			}
-		}
-		return smallestF;
-	}
-
 	public Coordinate Clone() {
 		return new Coordinate(x, y, F, parent);
 	}
@@ -100,7 +150,7 @@ public class Coordinate {
 			y >= Constants.FLOOR_HEIGHT
 		);
 	}
-	
+
 	public List<Coordinate> GetAdjacents(bool diagonals = false, bool boundsCheck = true) {
 		List<Coordinate> adjacents;
 
@@ -116,8 +166,7 @@ public class Coordinate {
 				new Coordinate(x, y - 1),
 				new Coordinate(x + 1, y - 1),
 			};
-		}
-		else {
+		} else {
 			adjacents = new List<Coordinate> {
 				new Coordinate(x + 1, y),
 				new Coordinate(x, y + 1),
@@ -129,7 +178,7 @@ public class Coordinate {
 		if (boundsCheck) {
 			adjacents.RemoveAll(x => !x.IsInBounds());
 		}
-		
+
 
 		return adjacents;
 	}
@@ -155,13 +204,13 @@ public class Coordinate {
 
 
 		//Get tile statuses
-		bool east =		 adjs[0].IsInBounds() && (tilegrid[adjs[0].x][adjs[0].y] != Floor.TileType.Wall || adjs[0].Equals(prev));
+		bool east = adjs[0].IsInBounds() && (tilegrid[adjs[0].x][adjs[0].y] != Floor.TileType.Wall || adjs[0].Equals(prev));
 		bool northeast = adjs[1].IsInBounds() && (tilegrid[adjs[1].x][adjs[1].y] != Floor.TileType.Wall || adjs[1].Equals(prev));
-		bool north =	 adjs[2].IsInBounds() && (tilegrid[adjs[2].x][adjs[2].y] != Floor.TileType.Wall || adjs[2].Equals(prev));
+		bool north = adjs[2].IsInBounds() && (tilegrid[adjs[2].x][adjs[2].y] != Floor.TileType.Wall || adjs[2].Equals(prev));
 		bool northwest = adjs[3].IsInBounds() && (tilegrid[adjs[3].x][adjs[3].y] != Floor.TileType.Wall || adjs[3].Equals(prev));
-		bool west =		 adjs[4].IsInBounds() && (tilegrid[adjs[4].x][adjs[4].y] != Floor.TileType.Wall || adjs[4].Equals(prev));
+		bool west = adjs[4].IsInBounds() && (tilegrid[adjs[4].x][adjs[4].y] != Floor.TileType.Wall || adjs[4].Equals(prev));
 		bool southwest = adjs[5].IsInBounds() && (tilegrid[adjs[5].x][adjs[5].y] != Floor.TileType.Wall || adjs[5].Equals(prev));
-		bool south =	 adjs[6].IsInBounds() && (tilegrid[adjs[6].x][adjs[6].y] != Floor.TileType.Wall || adjs[6].Equals(prev));
+		bool south = adjs[6].IsInBounds() && (tilegrid[adjs[6].x][adjs[6].y] != Floor.TileType.Wall || adjs[6].Equals(prev));
 		bool southeast = adjs[7].IsInBounds() && (tilegrid[adjs[7].x][adjs[7].y] != Floor.TileType.Wall || adjs[7].Equals(prev));
 
 		//If we are in a corner, return true
@@ -174,7 +223,7 @@ public class Coordinate {
 
 		return false;
 	}
-	
+
 	//The whole point of this is to avoid 2x2 path boxes, which look ugly
 	//To avoid a 2x2 box you need to make sure that:
 	//	you dont put a tile in a corner
@@ -183,16 +232,16 @@ public class Coordinate {
 	//So just don't make a corner (including the current tile)
 	public bool IsAdjacentToPath(Floor.TileType[][] tilegrid, Coordinate prev) {
 		List<Coordinate> adjs = GetAdjacents(true, false);
-		
+
 
 		//Get tile statuses
-		bool east =		 adjs[0].IsInBounds() && (tilegrid[adjs[0].x][adjs[0].y] == Floor.TileType.Path || adjs[0].Equals(prev));
+		bool east = adjs[0].IsInBounds() && (tilegrid[adjs[0].x][adjs[0].y] == Floor.TileType.Path || adjs[0].Equals(prev));
 		bool northeast = adjs[1].IsInBounds() && (tilegrid[adjs[1].x][adjs[1].y] == Floor.TileType.Path || adjs[1].Equals(prev));
-		bool north =	 adjs[2].IsInBounds() && (tilegrid[adjs[2].x][adjs[2].y] == Floor.TileType.Path || adjs[2].Equals(prev));
+		bool north = adjs[2].IsInBounds() && (tilegrid[adjs[2].x][adjs[2].y] == Floor.TileType.Path || adjs[2].Equals(prev));
 		bool northwest = adjs[3].IsInBounds() && (tilegrid[adjs[3].x][adjs[3].y] == Floor.TileType.Path || adjs[3].Equals(prev));
-		bool west =		 adjs[4].IsInBounds() && (tilegrid[adjs[4].x][adjs[4].y] == Floor.TileType.Path || adjs[4].Equals(prev));
+		bool west = adjs[4].IsInBounds() && (tilegrid[adjs[4].x][adjs[4].y] == Floor.TileType.Path || adjs[4].Equals(prev));
 		bool southwest = adjs[5].IsInBounds() && (tilegrid[adjs[5].x][adjs[5].y] == Floor.TileType.Path || adjs[5].Equals(prev));
-		bool south =	 adjs[6].IsInBounds() && (tilegrid[adjs[6].x][adjs[6].y] == Floor.TileType.Path || adjs[6].Equals(prev));
+		bool south = adjs[6].IsInBounds() && (tilegrid[adjs[6].x][adjs[6].y] == Floor.TileType.Path || adjs[6].Equals(prev));
 		bool southeast = adjs[7].IsInBounds() && (tilegrid[adjs[7].x][adjs[7].y] == Floor.TileType.Path || adjs[7].Equals(prev));
 
 		//If we are in a corner, return true
@@ -220,7 +269,7 @@ public class Coordinate {
 
 
 		return statuses;
-		
+
 	}
 
 	public bool IsNextToPath(Floor.TileType[][] tilegrid) {
