@@ -209,7 +209,7 @@ Camera:
   m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
-  m_OcclusionCulling: 0
+  m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
 --- !u!4 &519420032
@@ -220,7 +220,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -290,6 +290,37 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1981763423}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1366395370 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114452477805542484, guid: e93ab3209c971734a96555e1daafe6da,
+    type: 3}
+  m_PrefabInstance: {fileID: 1981763423}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1366395369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 143e8a240834d4544aeb77b5d034ca91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!95 &1366395371
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1366395369}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 32e5fd63ee04d4b499459bf82778cd07, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!4 &1366395373 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4678304027998024, guid: e93ab3209c971734a96555e1daafe6da,
@@ -454,6 +485,12 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 6dd6cb83bb28a014cb21e1a4a96cb765,
+        type: 3}
+    - target: {fileID: 212350261414658562, guid: e93ab3209c971734a96555e1daafe6da,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 3e618e272e2aac34a8af9581bbc1cc0d,
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e93ab3209c971734a96555e1daafe6da, type: 3}
@@ -768,6 +805,6 @@ PrefabInstance:
         type: 3}
       propertyPath: player
       value: 
-      objectReference: {fileID: 1366395373}
+      objectReference: {fileID: 1366395370}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 80660aa9d9fe86440a39d8636dff52fb, type: 3}

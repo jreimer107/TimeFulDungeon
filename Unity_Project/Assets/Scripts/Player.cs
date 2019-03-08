@@ -9,11 +9,10 @@ public class Player : MonoBehaviour {
 	[SerializeField] private Rigidbody2D rbody;
 
 	private Vector3 velocity = Vector3.zero;
-	private Vector2 direction;
 	private float horizontalMove = 0f;
 	private float verticalMove = 0f;
 
-	private bool FacingRight = false;
+	private bool FacingRight = true;
 
 	// Use this for initialization
 	void Start () {
