@@ -6,10 +6,9 @@ using UnityEngine;
 /// Simple wrapper class for two integers that make up x and y of a coordinate pair.
 /// </summary>
 public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
-	public int x;
-	public int y;
-	public int F; //Weight/score for pathfinding.
-	public Coordinate parent;
+	public readonly int x, y;
+	public int F { get; set; } //Weight/score for pathfinding.
+	public Coordinate parent { get; set; }
 
 	/// <summary>
 	/// Constructor for Coordinate.
@@ -29,7 +28,7 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 		}
 		return this.y.CompareTo(other.y);
 	}
-	
+
 	internal class CoordinateFComparer : IComparer<Coordinate> {
 		public int Compare(Coordinate x, Coordinate y) {
 			return x.F.CompareTo(y.F);
@@ -94,12 +93,6 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 			return true;
 		}
 		return false;
-	}
-
-	public Coordinate DistanceFrom(Coordinate other) {
-		int x_distance = this.x - other.x;
-		int y_distance = this.y - other.y;
-		return new Coordinate(x_distance, y_distance);
 	}
 
 	public Coordinate Clone() {

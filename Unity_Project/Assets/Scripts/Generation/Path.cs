@@ -58,43 +58,17 @@ public class Hall {
 				}
 
 
+				//Check if Coordinate exists in open
 				Coordinate existing;
 				if (open.TryGetValue(currPos, existing)) {
+					//If it does and is better, replace the existing with the new
 					if (currPos.F < existing.F) {
 						open.Remove(existing);
 						open.Add(currPos);
 					}
 				} else {
+					//If it doesn't exist, add it
 					open.Add(currPos);
-				}
-
-
-				//Find place to put new node and place where it already exists
-				bool added = false;
-				bool found = false;
-				LinkedListNode<Coordinate> check = open.First;
-				while (check) {
-					//Only look at part of list with higher F values
-					if (suc.F < check.Value.F) {
-						//By being here we have found a spot, add if we haven't already
-						if (!added) {
-							open.AddBefore(check, suc);
-							added = true;
-						}
-
-						//If we find our node, remove it as we have a better one
-						if (suc.Equals(check.Value)) {
-							open.Remove(check);
-							found = true;
-							break;
-						}
-					}
-					check = check.Next;
-				}
-
-				//If we didn't add or find our node, then it should be at the end
-				if (!added && !found) {
-					open.AddLast(suc);
 				}
 			}
 			G++;
