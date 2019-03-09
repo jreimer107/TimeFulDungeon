@@ -6,10 +6,10 @@ public class Floor {
 	public enum TileType {
 		Void, Room, Path, Wall, Border, Entrance, Exit,
 	}
-		
+
 	private List<Room> room_list;
 	private List<Hall> path_list;
-	public TileType[][] tiles;
+	public TileType[,] tiles;
 	private Random rng;
 	public Coordinate entrance;
 	public Coordinate exit;
@@ -22,11 +22,10 @@ public class Floor {
 		rng = new Random();
 
 		//Create tile grid
-		tiles = new TileType[Constants.FLOOR_WIDTH][];
+		tiles = new TileType[Constants.FLOOR_WIDTH, Constants.FLOOR_HEIGHT];
 		for (int row = 0; row < tiles.Length; row++) {
-			tiles[row] = new TileType[Constants.FLOOR_HEIGHT];
 			for (int col = 0; col < tiles[0].Length; col++) {
-				tiles[row][col] = TileType.Wall;
+				tiles[row, col] = TileType.Wall;
 			}
 		}
 
@@ -39,7 +38,7 @@ public class Floor {
 		foreach (Room room in room_list) {
 			for (int x = room.LeftBound; x < room.RightBound; x++) {
 				for (int y = room.LowerBound; y < room.UpperBound; y++) {
-					tiles[x][y] = TileType.Room;
+					tiles[x, y] = TileType.Room;
 				}
 			}
 		}
@@ -55,8 +54,8 @@ public class Floor {
 
 			//Set tiles to be paths unless they are already something else
 			foreach (Coordinate coord in newPath.pathCoords) {
-				if (tiles[coord.x][coord.y] == TileType.Wall) {
-					tiles[coord.x][coord.y] = TileType.Path;
+				if (tiles[coord.x, coord.y] == TileType.Wall) {
+					tiles[coord.x, coord.y] = TileType.Path;
 				}
 			}
 
@@ -74,22 +73,22 @@ public class Floor {
 				path_list.Remove(other);
 			}
 			path_list.Add(newPath);
-			
+
 		} while (path_list.Count != 1 || path_list[0].connectedRooms.Count != room_list.Count);
-		
+
 
 		//Draw outer border of level
 		for (int y = 0; y < tiles[0].Length; y++) {
-			tiles[0][y] = TileType.Border;
+			tiles[0, y] = TileType.Border;
 		}
 		for (int y = 0; y < tiles[0].Length; y++) {
-			tiles[Constants.FLOOR_WIDTH - 1][y] = TileType.Border;
+			tiles[Constants.FLOOR_WIDTH - 1, y] = TileType.Border;
 		}
 		for (int x = 0; x < tiles.Length; x++) {
-			tiles[x][0] = TileType.Border;
+			tiles[x, 0] = TileType.Border;
 		}
 		for (int x = 0; x < tiles.Length; x++) {
-			tiles[x][Constants.FLOOR_HEIGHT - 1] = TileType.Border;
+			tiles[x, Constants.FLOOR_HEIGHT - 1] = TileType.Border;
 		}
 
 		//Place entrance and exit
@@ -99,8 +98,8 @@ public class Floor {
 		do {
 			exit = room_list[rng.Next(room_list.Count)].GetRandCoordinate();
 		} while (exit.IsNextToPath(tiles) || entrance.Equals(exit));
-		tiles[entrance.x][entrance.y] = TileType.Entrance;
-		tiles[exit.x][exit.y] = TileType.Exit;
+		tiles[entrance.x, entrance.y] = TileType.Entrance;
+		tiles[exit.x, exit.y] = TileType.Exit;
 	}
 
 
@@ -127,7 +126,7 @@ public class Floor {
 			room_list.Add(newRoom);
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -158,7 +157,7 @@ public class Floor {
 	}
 
 
-//Generates a random room
+	//Generates a random room
 	public Room RandRoom() {
 		//Create randomly placed and sized region
 		int room_x = rng.Next(Constants.FLOOR_WIDTH - 1);
@@ -180,7 +179,7 @@ public class Floor {
 	//Generates random doubles based on the mean and deviation fed in.
 	//Also I have no idea how it works.
 	public double Gauss(double mean, double deviation) {
-        double x1, x2, w;
+		double x1, x2, w;
 		do {
 			x1 = rng.NextDouble() * 2 - 1;
 			x2 = rng.NextDouble() * 2 - 1;
@@ -189,7 +188,7 @@ public class Floor {
 
 		w = Math.Sqrt(-2 * Math.Log(w) / w);
 		return mean + deviation * x1 * w;
-    }
+	}
 
 	//Interaction with coordinate
 

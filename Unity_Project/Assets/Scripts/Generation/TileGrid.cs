@@ -15,7 +15,7 @@ public class TileGrid {
 		// for (int row = 0; row < tiles.Length; row++) {
 		// 	tiles[row] = new TileType[height];
 		// 	for (int col = 0; col < tiles[0].Length; col++) {
-		// 		tiles[row][col] = TileType.Wall;
+		// 		tiles[row, col] = TileType.Wall;
 		// 	}
 		// }
 	}

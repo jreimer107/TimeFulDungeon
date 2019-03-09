@@ -23,23 +23,23 @@ public class BoardHolder : MonoBehaviour {
 		PlacePlayer();
 	}
 	
-	private void InstantiateGrid(Floor.TileType[][] grid) {
+	private void InstantiateGrid(Floor.TileType[, ] grid) {
 		for (int x = 0; x < grid.Length; x++) {
 			for (int y = 0; y < grid[0].Length; y++) {
 				Vector3Int position = new Vector3Int(x, y, 0);
-				if (grid[x][y] == Floor.TileType.Room) {
+				if (grid[x, y] == Floor.TileType.Room) {
 					tilemap.SetTile(position, roomTile);
 				}
-				else if (grid[x][y] == Floor.TileType.Path) {
+				else if (grid[x, y] == Floor.TileType.Path) {
 					tilemap.SetTile(position, pathTile);
 				}
-				else if (grid[x][y] == Floor.TileType.Border) {
+				else if (grid[x, y] == Floor.TileType.Border) {
 					tilemap.SetTile(position, borderTile);
 				}
-				else if (grid[x][y] == Floor.TileType.Entrance) {
+				else if (grid[x, y] == Floor.TileType.Entrance) {
 					tilemap.SetTile(position, entranceTile);
 				}
-				else if (grid[x][y] == Floor.TileType.Exit) {
+				else if (grid[x, y] == Floor.TileType.Exit) {
 					tilemap.SetTile(position, exitTile);
 				}
 				else {
