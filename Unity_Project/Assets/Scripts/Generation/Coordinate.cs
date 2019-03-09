@@ -7,19 +7,15 @@ using UnityEngine;
 /// </summary>
 public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 	public readonly int x, y;
-	public int F { get; set; } //Weight/score for pathfinding.
-	public Coordinate parent { get; set; }
 
 	/// <summary>
 	/// Constructor for Coordinate.
 	/// </summary>
 	/// <param name="x_pos">x position integer.</param>
 	/// <param name="y_pos">y position integer.</param>
-	public Coordinate(int x_pos, int y_pos, int F = 0, Coordinate parent = null) {
+	public Coordinate(int x_pos, int y_pos) {
 		this.x = x_pos;
 		this.y = y_pos;
-		this.F = F;
-		this.parent = parent;
 	}
 
 	public int CompareTo(Coordinate other) {
@@ -29,9 +25,9 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 		return this.y.CompareTo(other.y);
 	}
 
-	internal class CoordinateFComparer : IComparer<Coordinate> {
-		public int Compare(Coordinate x, Coordinate y) {
-			return x.F.CompareTo(y.F);
+	internal class CoordinateFComparer : IComparer<Tuple<Coordinate, int>> {
+		public int Compare(Tuple<Coordinate, int> x, Tuple<Coordinate, int> y) {
+			return x.Item2.CompareTo(y.Item2);
 		}
 	}
 
@@ -96,7 +92,7 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 	}
 
 	public Coordinate Clone() {
-		return new Coordinate(x, y, F, parent);
+		return new Coordinate(x, y);
 	}
 
 	public bool IsInBounds() {
@@ -125,5 +121,9 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 			}
 		}
 		return false;
+	}
+
+	public static heuristic(Coordinate a, Coordinate b) {
+		return Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y);
 	}
 }

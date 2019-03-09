@@ -27,17 +27,21 @@ public class Hall {
 		Coordinate startPos = startRoom.GetRandEntrance();
 		Coordinate endPos = endRoom.GetRandEntrance();
 
+		Dictionary<Coordinate, Coordinate> parents = new Dictionary<Coordinate, Coordinate>();
+		Dictionary<Coordinate, int> costs = new Dictionary<Coordinate, int>();
+
+
 		//Coordinates being considered to find the closest path
-		SortedSet<Coordinate> open = new SortedSet<Coordinate>(Coordinate.CoordinateFComparer);
+		SortedSet<Tuple<Coordinate, int>> open = new SortedSet<Tuple<Coordinate, int>>(Coordinate.CoordinateFComparer);
 		//Coordinates that have already been considered and do not have to be considered again
 		HashSet<Coordinate> closed = new HashSet<Coordinate>();
 
 		//Add starting position to closed list
 		open.Add(startPos);
-
-		int G = 1;
+		parents[startPos] = null;
+		costs[startPos] = 0;
 		Coordinate currPos; //tile to analyze
-		do {
+		while (open.Count) {
 			currPos = open.Min; //Get square with lowest F
 			open.Remove(currPos);
 			closed.Add(currPos);    //Switch square from open to closed list
@@ -48,37 +52,25 @@ public class Hall {
 			}
 
 			//Get valid successors. To be valid must not form a 2x2 box with anything.
-			List<Coordinate> successors = currPos.getSuccessors(tilegrid);
-			successors.RemoveAll(x => closed.Contains(x));
-			foreach (Coordinate suc in successors) {
-				//Compute F score of analyzed tile
-				suc.F = G + Math.Abs(endPos.x - suc.x) + Math.Abs(endPos.y - suc.y);
-				if (tilegrid[suc.x, suc.y] != Floor.TileType.Path) { //try to reuse paths
-					suc.F += 7;
-				}
+			foreach (Coordinate suc in currPos.getSuccessors(tilegrid).RemoveAll(x => closed.Contains(x))) {
+				//Get G value, adjust to reuse paths
+				int newCost = costs[currPos] + (tilegrid[suc.x, suc.y] != Floor.TileType.Path) ? 7 : 1;
 
-
-				//Check if Coordinate exists in open
-				Coordinate existing;
-				if (open.TryGetValue(currPos, existing)) {
-					//If it does and is better, replace the existing with the new
-					if (currPos.F < existing.F) {
-						open.Remove(existing);
-						open.Add(currPos);
-					}
-				} else {
-					//If it doesn't exist, add it
-					open.Add(currPos);
+				//Only edit dictionaries if node is new or better
+				if (!costs.ContainsKey(suc) || newCost < costs[suc]) {
+					//Add node to open with F based on G and H values as priority
+					open.Add(Tuple.Create(suc, newCost + Coordinate.heuristic(suc, endPos)));
+					costs[suc] = newCost;
+					parents[suc] = currPos;
 				}
 			}
-			G++;
-		} while (open.Count != 0);
+		}
 
 		//Now start at end and work backward through parents
 		List<Coordinate> pathCoords = new List<Coordinate>();
 		while (currPos != null) {
 			pathCoords.Add(currPos);
-			currPos = currPos.parent;
+			currPos = parents[currPos];
 		}
 		return pathCoords;
 	}
@@ -118,9 +110,4 @@ public class Hall {
 		}
 		return false;
 	}
-
-
-
 }
-
-
