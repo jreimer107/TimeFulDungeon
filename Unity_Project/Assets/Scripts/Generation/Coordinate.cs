@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using System;
 using UnityEngine;
 
@@ -35,7 +36,7 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 		return (this.x == other.x && this.y == other.y);
 	}
 
-	public int GetHashCode() {
+	public override int GetHashCode() {
 		int hash = 13;
 		hash = (hash * 7) + this.x.GetHashCode();
 		hash = (hash * 7) + this.y.GetHashCode();
@@ -44,10 +45,10 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 
 	public List<Coordinate> getSuccessors(Floor.TileType[,] tiles) {
 		List<Coordinate> successors = new List<Coordinate> {
-			new Coordinate(x + 1, y, 0, this),
-			new Coordinate(x, y + 1, 0, this),
-			new Coordinate(x - 1, y, 0, this),
-			new Coordinate(x, y - 1, 0, this)
+			new Coordinate(x + 1, y),
+			new Coordinate(x, y + 1),
+			new Coordinate(x - 1, y),
+			new Coordinate(x, y - 1)
 		};
 		successors.RemoveAll(x => !x.IsInBounds());
 
@@ -123,7 +124,7 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 		return false;
 	}
 
-	public static heuristic(Coordinate a, Coordinate b) {
+	public static int heuristic(Coordinate a, Coordinate b) {
 		return Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y);
 	}
 }

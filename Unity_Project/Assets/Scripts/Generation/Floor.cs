@@ -23,8 +23,8 @@ public class Floor {
 
 		//Create tile grid
 		tiles = new TileType[Constants.FLOOR_WIDTH, Constants.FLOOR_HEIGHT];
-		for (int row = 0; row < tiles.Length; row++) {
-			for (int col = 0; col < tiles[0].Length; col++) {
+		for (int row = 0; row < tiles.GetLength(0); row++) {
+			for (int col = 0; col < tiles.GetLength(1); col++) {
 				tiles[row, col] = TileType.Wall;
 			}
 		}
@@ -78,16 +78,16 @@ public class Floor {
 
 
 		//Draw outer border of level
-		for (int y = 0; y < tiles[0].Length; y++) {
+		for (int y = 0; y < tiles.GetLength(1); y++) {
 			tiles[0, y] = TileType.Border;
 		}
-		for (int y = 0; y < tiles[0].Length; y++) {
+		for (int y = 0; y < tiles.GetLength(1); y++) {
 			tiles[Constants.FLOOR_WIDTH - 1, y] = TileType.Border;
 		}
-		for (int x = 0; x < tiles.Length; x++) {
+		for (int x = 0; x < tiles.GetLength(0); x++) {
 			tiles[x, 0] = TileType.Border;
 		}
-		for (int x = 0; x < tiles.Length; x++) {
+		for (int x = 0; x < tiles.GetLength(0); x++) {
 			tiles[x, Constants.FLOOR_HEIGHT - 1] = TileType.Border;
 		}
 

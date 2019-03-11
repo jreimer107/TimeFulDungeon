@@ -32,18 +32,19 @@ public class Hall {
 
 
 		//Coordinates being considered to find the closest path
-		SortedSet<Tuple<Coordinate, int>> open = new SortedSet<Tuple<Coordinate, int>>(Coordinate.CoordinateFComparer);
+		SortedSet<Tuple<Coordinate, int>> open = new SortedSet<Tuple<Coordinate, int>>(new Coordinate.CoordinateFComparer());
 		//Coordinates that have already been considered and do not have to be considered again
 		HashSet<Coordinate> closed = new HashSet<Coordinate>();
 
 		//Add starting position to closed list
-		open.Add(startPos);
+		open.Add(Tuple.Create(startPos, 0));
 		parents[startPos] = null;
 		costs[startPos] = 0;
-		Coordinate currPos; //tile to analyze
-		while (open.Count) {
-			currPos = open.Min; //Get square with lowest F
-			open.Remove(currPos);
+		Coordinate currPos = null;   //tile to analyze
+		while (open.Count > 0) {
+			Tuple<Coordinate, int> currTup = open.Min; //Get square with lowest F
+			currPos = currTup.Item1;
+			open.Remove(currTup);
 			closed.Add(currPos);    //Switch square from open to closed list
 
 			if (currPos.Equals(endPos)) {
@@ -52,9 +53,11 @@ public class Hall {
 			}
 
 			//Get valid successors. To be valid must not form a 2x2 box with anything.
-			foreach (Coordinate suc in currPos.getSuccessors(tilegrid).RemoveAll(x => closed.Contains(x))) {
+			List<Coordinate> successors = currPos.getSuccessors(tilegrid);
+			successors.RemoveAll(x => closed.Contains(x));
+			foreach (Coordinate suc in successors) {
 				//Get G value, adjust to reuse paths
-				int newCost = costs[currPos] + (tilegrid[suc.x, suc.y] != Floor.TileType.Path) ? 7 : 1;
+				int newCost = costs[currPos] + ((tilegrid[suc.x, suc.y] != Floor.TileType.Path) ? 7 : 1);
 
 				//Only edit dictionaries if node is new or better
 				if (!costs.ContainsKey(suc) || newCost < costs[suc]) {

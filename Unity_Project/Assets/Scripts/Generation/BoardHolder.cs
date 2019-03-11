@@ -24,8 +24,8 @@ public class BoardHolder : MonoBehaviour {
 	}
 	
 	private void InstantiateGrid(Floor.TileType[, ] grid) {
-		for (int x = 0; x < grid.Length; x++) {
-			for (int y = 0; y < grid[0].Length; y++) {
+		for (int x = 0; x < grid.GetLength(0); x++) {
+			for (int y = 0; y < grid.GetLength(1); y++) {
 				Vector3Int position = new Vector3Int(x, y, 0);
 				if (grid[x, y] == Floor.TileType.Room) {
 					tilemap.SetTile(position, roomTile);
