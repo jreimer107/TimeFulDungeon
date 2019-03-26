@@ -1,8 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 using Random = System.Random;
 
 public class Floor {
+	//Floor constraints
+	private readonly int FloorWidth;
+	private readonly int FloorHeight;
+
+	//Room generation
+	public readonly int RoomSizeMin;
+	private readonly int RoomSizeMax;
+	private readonly int RoomAttempts;
+	private readonly int RoomSizeMean;
+	private readonly float RoomSizeDeviation;
+
+	//Pathing
+	private readonly int MinPaths;
+	private readonly int MaxPaths;
+
+
 	public enum TileType {
 		Void, Room, Path, Wall, Border, Entrance, Exit,
 	}
@@ -14,15 +31,21 @@ public class Floor {
 	public Coordinate entrance;
 	public Coordinate exit;
 
+	private GenConfig gencfg;
+
+
 	//Level generation!
 	public Floor() {
+		//Set up variables
+		gencfg = GameObject.Find("Tilemap").GetComponent<GenConfig>();
+
 		//Create room list
 		room_list = new List<Room>();
 		path_list = new List<Hall>();
 		rng = new Random();
 
 		//Create tile grid
-		tiles = new TileType[Constants.FLOOR_WIDTH, Constants.FLOOR_HEIGHT];
+		tiles = new TileType[gencfg.FloorWidth, gencfg.FloorHeight];
 		for (int row = 0; row < tiles.GetLength(0); row++) {
 			for (int col = 0; col < tiles.GetLength(1); col++) {
 				tiles[row, col] = TileType.Wall;
@@ -30,7 +53,7 @@ public class Floor {
 		}
 
 		//Attempt to place a room some number of times
-		for (int attempt = 0; attempt < Constants.ROOM_ATTEMPTS; attempt++) {
+		for (int attempt = 0; attempt < gencfg.RoomAttempts; attempt++) {
 			AddRoom(RandRoom()); //Creates and adds a random room if it fits in the grid
 		}
 
@@ -44,6 +67,7 @@ public class Floor {
 		}
 
 		//Create minimum number of paths
+		int numPaths = 0;
 		do {
 			Room start = room_list[rng.Next(room_list.Count)];
 			Room end;
@@ -74,6 +98,11 @@ public class Floor {
 			}
 			path_list.Add(newPath);
 
+			numPaths++;
+			if (numPaths >= gencfg.MaxPaths) {
+				break;
+			}
+
 		} while (path_list.Count != 1 || path_list[0].connectedRooms.Count != room_list.Count);
 
 
@@ -82,13 +111,13 @@ public class Floor {
 			tiles[0, y] = TileType.Border;
 		}
 		for (int y = 0; y < tiles.GetLength(1); y++) {
-			tiles[Constants.FLOOR_WIDTH - 1, y] = TileType.Border;
+			tiles[gencfg.FloorWidth - 1, y] = TileType.Border;
 		}
 		for (int x = 0; x < tiles.GetLength(0); x++) {
 			tiles[x, 0] = TileType.Border;
 		}
 		for (int x = 0; x < tiles.GetLength(0); x++) {
-			tiles[x, Constants.FLOOR_HEIGHT - 1] = TileType.Border;
+			tiles[x, gencfg.FloorHeight - 1] = TileType.Border;
 		}
 
 		//Place entrance and exit
@@ -151,8 +180,8 @@ public class Floor {
 	/// <returns>True if the room is completely within the border, false otherwise.</returns>
 	public bool IsInsideFloor(Room room) {
 		return (room.LeftSpace >= 0 &&
-				room.RightSpace <= Constants.FLOOR_WIDTH &&
-				room.UpperSpace <= Constants.FLOOR_HEIGHT &&
+				room.RightSpace <= gencfg.FloorWidth &&
+				room.UpperSpace <= gencfg.FloorHeight &&
 				room.LowerSpace >= 0);
 	}
 
@@ -160,15 +189,15 @@ public class Floor {
 	//Generates a random room
 	public Room RandRoom() {
 		//Create randomly placed and sized region
-		int room_x = rng.Next(Constants.FLOOR_WIDTH - 1);
-		int room_y = rng.Next(Constants.FLOOR_HEIGHT - 1);
+		int room_x = rng.Next(gencfg.FloorWidth - 1);
+		int room_y = rng.Next(gencfg.FloorHeight - 1);
 		int room_w, room_h;
 		do {
-			room_w = (int)Gauss(Constants.ROOM_SIZE_MEAN, Constants.ROOM_SIZE_DEVIATION);
-		} while (room_w < Constants.ROOM_MIN_WIDTH);
+			room_w = (int)Gauss(gencfg.RoomSizeMean, gencfg.RoomSizeDeviation);
+		} while (room_w < gencfg.RoomSizeMin);
 		do {
-			room_h = (int)Gauss(Constants.ROOM_SIZE_MEAN, Constants.ROOM_SIZE_DEVIATION);
-		} while (room_h < Constants.ROOM_MIN_HEIGHT);
+			room_h = (int)Gauss(gencfg.RoomSizeMean, gencfg.RoomSizeDeviation);
+		} while (room_h < gencfg.RoomSizeMin);
 
 		return new Room(room_x, room_y, room_w, room_h);
 	}

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Random = System.Random;
+using UnityEngine;
 
 public class Room {
 	//publics to be accessed by other classes
@@ -26,16 +27,16 @@ public class Room {
 
 	//Spaces are the areas where another room cannot be (too close to this one)
 	public int UpperSpace {
-		get { return UpperBound + Constants.ROOM_GAP; }
+		get { return UpperBound + GameObject.Find("Tilemap").GetComponent<GenConfig>().RoomGap; }
 	}
 	public int LowerSpace {
-		get { return LowerBound - Constants.ROOM_GAP; }
+		get { return LowerBound - GameObject.Find("Tilemap").GetComponent<GenConfig>().RoomGap; }
 	}
 	public int LeftSpace {
-		get { return LeftBound - Constants.ROOM_GAP; }
+		get { return LeftBound - GameObject.Find("Tilemap").GetComponent<GenConfig>().RoomGap; }
 	}
 	public int RightSpace {
-		get { return RightBound + Constants.ROOM_GAP; }
+		get { return RightBound + GameObject.Find("Tilemap").GetComponent<GenConfig>().RoomGap; }
 	}
 
 	public Room(int x, int y, int w, int h) {

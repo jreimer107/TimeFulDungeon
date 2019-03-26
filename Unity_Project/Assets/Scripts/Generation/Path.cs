@@ -1,26 +1,19 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class Hall {
 	public List<Coordinate> pathCoords;
 	public List<Room> connectedRooms;
 
-
-	public enum Direction {
-		Right, Up, Left, Down,
-	}
-
-
-	//Trying out this fancy A* pathfinding!
-	//So we want to path from one random room to another
-	//Avoid other rooms as obstacles to cause more interesting behavior
 	public Hall(Room startRoom, Room endRoom, Floor.TileType[,] tilegrid) {
 		connectedRooms = new List<Room> { startRoom, endRoom };
 		pathCoords = ShortestPath(startRoom, endRoom, tilegrid);
 	}
 
-
+	//So we want to path from one random room to another
+	//Avoid other rooms as obstacles to cause more interesting behavior
 	private static List<Coordinate> ShortestPath(Room startRoom, Room endRoom, Floor.TileType[,] tilegrid) {
 		//Get random endpoints outside of given rooms
 		//This way all rooms are obstacles
@@ -30,31 +23,29 @@ public class Hall {
 		Dictionary<Coordinate, Coordinate> parents = new Dictionary<Coordinate, Coordinate>();
 		Dictionary<Coordinate, int> costs = new Dictionary<Coordinate, int>();
 
-
 		//Coordinates being considered to find the closest path
-		SortedSet<Tuple<Coordinate, int>> open = new SortedSet<Tuple<Coordinate, int>>(new Coordinate.CoordinateFComparer());
+		MinHeap<Coordinate> open = new MinHeap<Coordinate>(100);
 		//Coordinates that have already been considered and do not have to be considered again
 		HashSet<Coordinate> closed = new HashSet<Coordinate>();
 
 		//Add starting position to closed list
-		open.Add(Tuple.Create(startPos, 0));
+		open.Add(startPos, Coordinate.heuristic(startPos, endPos));
 		parents[startPos] = null;
 		costs[startPos] = 0;
 		Coordinate currPos = null;   //tile to analyze
-		while (open.Count > 0) {
-			Tuple<Coordinate, int> currTup = open.Min; //Get square with lowest F
-			currPos = currTup.Item1;
-			open.Remove(currTup);
+		while (!open.IsEmpty()) {
+			currPos = open.Pop();
 			closed.Add(currPos);    //Switch square from open to closed list
 
+			//We've added destination to the closed list, found a path
 			if (currPos.Equals(endPos)) {
-				//We've added destination to the closed list, found a path
 				break;
 			}
 
 			//Get valid successors. To be valid must not form a 2x2 box with anything.
 			List<Coordinate> successors = currPos.getSuccessors(tilegrid);
 			successors.RemoveAll(x => closed.Contains(x));
+			Debug.Log(String.Format("Succs post filter: {0}", string.Join(", ", successors)));
 			foreach (Coordinate suc in successors) {
 				//Get G value, adjust to reuse paths
 				int newCost = costs[currPos] + ((tilegrid[suc.x, suc.y] != Floor.TileType.Path) ? 7 : 1);
@@ -62,9 +53,11 @@ public class Hall {
 				//Only edit dictionaries if node is new or better
 				if (!costs.ContainsKey(suc) || newCost < costs[suc]) {
 					//Add node to open with F based on G and H values as priority
-					open.Add(Tuple.Create(suc, newCost + Coordinate.heuristic(suc, endPos)));
+					open.Add(suc, newCost + Coordinate.heuristic(suc, endPos));
 					costs[suc] = newCost;
 					parents[suc] = currPos;
+				} else {
+					Debug.Log(String.Format("Node {0} was worse", suc));
 				}
 			}
 		}

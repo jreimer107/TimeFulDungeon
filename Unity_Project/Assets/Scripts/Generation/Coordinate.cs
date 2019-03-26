@@ -26,12 +26,6 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 		return this.y.CompareTo(other.y);
 	}
 
-	internal class CoordinateFComparer : IComparer<Tuple<Coordinate, int>> {
-		public int Compare(Tuple<Coordinate, int> x, Tuple<Coordinate, int> y) {
-			return x.Item2.CompareTo(y.Item2);
-		}
-	}
-
 	public bool Equals(Coordinate other) {
 		return (this.x == other.x && this.y == other.y);
 	}
@@ -41,6 +35,10 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 		hash = (hash * 7) + this.x.GetHashCode();
 		hash = (hash * 7) + this.y.GetHashCode();
 		return hash;
+	}
+
+	public override string ToString() {
+		return String.Format("({0},{1})", this.x, this.y);
 	}
 
 	public List<Coordinate> getSuccessors(Floor.TileType[,] tiles) {
@@ -58,9 +56,9 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 			for (int col = 0; col < 5; col++) {
 				int realX = this.x - 2 + row;
 				int realY = this.y - 2 + col;
-				if (Coordinate.IsInBounds(realX, realY) ||
-					tiles[realX, realY] != Floor.TileType.Wall ||
-					(realX == this.x && realY == this.y)) {
+				if (!Coordinate.IsInBounds(realX, realY) ||         //Not in bounds
+					tiles[realX, realY] != Floor.TileType.Wall ||   //Is taken
+					(realX == this.x && realY == this.y)) {         //Is the current square
 					inUse[row, col] = true;
 				} else {
 					inUse[row, col] = false;
@@ -69,24 +67,26 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 		}
 
 		//Remove all successors that make a 2x2box
-		successors.RemoveAll(x => x.makesBox(inUse));
+		successors.RemoveAll(suc => suc.makesBox(inUse, suc.x - this.x + 2, suc.y - this.y + 2));
+		Debug.Log(String.Format("Curr: {0}, Valid successors: {1}", this.ToString(), string.Join(", ", successors)));
 		return successors;
 	}
 
-	private bool makesBox(bool[,] inUse) {
-		bool e = inUse[this.x + 1, this.y];
-		bool ne = inUse[this.x + 1, this.y + 1];
-		bool n = inUse[this.x, this.y + 1];
-		bool nw = inUse[this.x - 1, this.y + 1];
-		bool w = inUse[this.x - 1, this.y];
-		bool sw = inUse[this.x - 1, this.y - 1];
-		bool s = inUse[this.x, this.y - 1];
-		bool se = inUse[this.x + 1, this.y - 1];
+	private bool makesBox(bool[,] inUse, int x_pos, int y_pos) {
+		bool e = inUse[x_pos + 1, y_pos];
+		bool ne = inUse[x_pos + 1, y_pos + 1];
+		bool n = inUse[x_pos, y_pos + 1];
+		bool nw = inUse[x_pos - 1, y_pos + 1];
+		bool w = inUse[x_pos - 1, y_pos];
+		bool sw = inUse[x_pos - 1, y_pos - 1];
+		bool s = inUse[x_pos, y_pos - 1];
+		bool se = inUse[x_pos + 1, y_pos - 1];
 
 		if ((e && ne && n) ||
 			(n && nw && w) ||
 			(w && sw && s) ||
 			(s && s && se)) {
+			//Debug.Log(String.Format("Taken: x_pos: {0}, y_pos:{1}", x_pos, y_pos));
 			return true;
 		}
 		return false;
@@ -97,20 +97,22 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 	}
 
 	public bool IsInBounds() {
+		GenConfig gencfg = GameObject.Find("Tilemap").GetComponent<GenConfig>();
 		return !(
 			x < 0 ||
-			x >= Constants.FLOOR_WIDTH ||
+			x >= gencfg.FloorWidth ||
 			y < 0 ||
-			y >= Constants.FLOOR_HEIGHT
+			y >= gencfg.FloorHeight
 		);
 	}
 
 	public static bool IsInBounds(int x, int y) {
+		GenConfig gencfg = GameObject.Find("Tilemap").GetComponent<GenConfig>();
 		return !(
 			x < 0 ||
-			x >= Constants.FLOOR_WIDTH ||
+			x >= gencfg.FloorWidth ||
 			y < 0 ||
-			y >= Constants.FLOOR_HEIGHT
+			y >= gencfg.FloorHeight
 		);
 	}
 
