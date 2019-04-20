@@ -68,7 +68,11 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 
 		//Remove all successors that make a 2x2box
 		successors.RemoveAll(suc => suc.makesBox(inUse, suc.x - this.x + 2, suc.y - this.y + 2));
-		Debug.Log(String.Format("Curr: {0}, Valid successors: {1}", this.ToString(), string.Join(", ", successors)));
+
+		//Remove all successors that are diagonal to a room
+		//if ()
+
+		//Debug.Log(String.Format("Curr: {0}, Valid successors: {1}", this.ToString(), string.Join(", ", successors)));
 		return successors;
 	}
 

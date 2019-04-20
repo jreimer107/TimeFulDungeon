@@ -1,15 +1,15 @@
 fileFormatVersion: 2
-guid: c7f3171e3d84d3c4a97faadb5ecedb37
+guid: f3276b2f6f1ca2f4183d16ed155ff398
 TextureImporter:
   fileIDToRecycleName:
-    21300000: this_one_run_0
-    21300002: this_one_run_1
-    21300004: this_one_run_2
-    21300006: this_one_run_3
-    21300008: this_one_run_4
-    21300010: this_one_run_5
-    21300012: this_one_run_6
-    21300014: this_one_run_7
+    21300000: weapon_attempt_0
+    21300002: weapon_attempt_1
+    21300004: weapon_attempt_2
+    21300006: weapon_attempt_3
+    21300008: weapon_attempt_4
+    21300010: weapon_attempt_5
+    21300012: weapon_attempt_6
+    21300014: weapon_attempt_7
   externalObjects: {}
   serializedVersion: 9
   mipmaps:
@@ -68,10 +68,10 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 2
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -79,10 +79,10 @@ TextureImporter:
     androidETC2FallbackOverride: 0
   - serializedVersion: 2
     buildTarget: Standalone
-    maxTextureSize: 256
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -92,161 +92,161 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: this_one_run_0
+      name: weapon_attempt_0
       rect:
         serializedVersion: 2
-        x: 5
-        y: 70
-        width: 21
-        height: 31
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 3
+        y: 76
+        width: 29
+        height: 8
+      alignment: 9
+      pivot: {x: 0.25407645, y: 0.5000019}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 10b7f7d2c864fa34686493cb243ed884
+      spriteID: 04aa03f21831875479bfce3b00012780
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: this_one_run_1
+      name: weapon_attempt_1
       rect:
         serializedVersion: 2
-        x: 38
-        y: 71
-        width: 21
-        height: 31
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 34
+        y: 74
+        width: 30
+        height: 11
+      alignment: 9
+      pivot: {x: 0.2416022, y: 0.6127569}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 575ad4e46a17f8144a615fcd284afe37
+      spriteID: 84512ff3d216ebc4b8e02b9fec698123
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: this_one_run_2
+      name: weapon_attempt_2
       rect:
         serializedVersion: 2
-        x: 69
+        x: 64
         y: 72
-        width: 23
-        height: 31
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 30
+        height: 14
+      alignment: 9
+      pivot: {x: 0.29328182, y: 0.6771878}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 18a17d38d5f7f1c4480bee101fd58d36
+      spriteID: bb51189c62ed1994eb5ec8cd99095e9a
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: this_one_run_3
+      name: weapon_attempt_3
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 39
+        width: 30
+        height: 11
+      alignment: 9
+      pivot: {x: 0.24160208, y: 0.584567}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 01f7146f8f7a9e141aa52bde17eb5920
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: weapon_attempt_4
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 41
+        width: 29
+        height: 8
+      alignment: 9
+      pivot: {x: 0.27546114, y: 0.422482}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1b29ad3831ddf5e48b9a4cbeb9049561
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: weapon_attempt_5
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 41
+        width: 28
+        height: 16
+      alignment: 9
+      pivot: {x: 0.3117387, y: 0.30620217}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1df8c7632e51bf348bf31961543758d5
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: weapon_attempt_6
       rect:
         serializedVersion: 2
         x: 6
-        y: 36
-        width: 21
-        height: 31
+        y: 5
+        width: 26
+        height: 28
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dccec4458097bfc41a52fb7f4bb9464e
+      spriteID: 89d2e143e8f7fb94c90d927d6940603b
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: this_one_run_4
+      name: weapon_attempt_7
       rect:
         serializedVersion: 2
-        x: 37
-        y: 35
-        width: 21
-        height: 31
+        x: 35
+        y: 6
+        width: 28
+        height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ff93932b7e631584c847d43107168064
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: this_one_run_5
-      rect:
-        serializedVersion: 2
-        x: 70
-        y: 36
-        width: 21
-        height: 31
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e3e6a5a9639196d4eb8b8fbd9569d81e
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: this_one_run_6
-      rect:
-        serializedVersion: 2
-        x: 7
-        y: 2
-        width: 21
-        height: 31
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4f1d3ee20b936b449aca1223ce52bab3
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: this_one_run_7
-      rect:
-        serializedVersion: 2
-        x: 38
-        y: 1
-        width: 21
-        height: 31
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7df7bef7ca785b64f9bbc8d119efc0de
+      spriteID: 192e6906f860e0d47be57c49de4099ed
       vertices: []
       indices: 
       edges: []
@@ -254,7 +254,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 1c3129b0e90c10a47aa2d1d4323c0852
+    spriteID: 4f40dc765e4d6194086db3c9321859dd
     vertices: []
     indices: 
     edges: []
