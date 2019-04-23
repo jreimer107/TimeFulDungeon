@@ -30,6 +30,10 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 		return (this.x == other.x && this.y == other.y);
 	}
 
+	public bool Equals(int x, int y) {
+		return (this.x == x && this.y == y);
+	}
+
 	public override int GetHashCode() {
 		int hash = 13;
 		hash = (hash * 7) + this.x.GetHashCode();
@@ -41,60 +45,83 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 		return String.Format("({0},{1})", this.x, this.y);
 	}
 
-	public List<Coordinate> getSuccessors(Floor.TileType[,] tiles) {
+	public List<Coordinate> getSuccessors(Floor.TileType[,] tiles, Coordinate prev) {
+
+		//Just do it manually
 		List<Coordinate> successors = new List<Coordinate> {
 			new Coordinate(x + 1, y),
 			new Coordinate(x, y + 1),
 			new Coordinate(x - 1, y),
 			new Coordinate(x, y - 1)
+
 		};
-		successors.RemoveAll(x => !x.IsInBounds());
-
-		//Build surrounding area grid to see which tiles are good/bad
-		bool[,] inUse = new bool[5, 5];
-		for (int row = 0; row < 5; row++) {
-			for (int col = 0; col < 5; col++) {
-				int realX = this.x - 2 + row;
-				int realY = this.y - 2 + col;
-				if (!Coordinate.IsInBounds(realX, realY) ||         //Not in bounds
-					tiles[realX, realY] != Floor.TileType.Wall ||   //Is taken
-					(realX == this.x && realY == this.y)) {         //Is the current square
-					inUse[row, col] = true;
-				} else {
-					inUse[row, col] = false;
-				}
-			}
-		}
-
-		//Remove all successors that make a 2x2box
-		successors.RemoveAll(suc => suc.makesBox(inUse, suc.x - this.x + 2, suc.y - this.y + 2));
-
-		//Remove all successors that are diagonal to a room
-		//if ()
-
-		//Debug.Log(String.Format("Curr: {0}, Valid successors: {1}", this.ToString(), string.Join(", ", successors)));
+		successors.RemoveAll(x => x.makesBox(tiles, this, prev));
 		return successors;
 	}
 
-	private bool makesBox(bool[,] inUse, int x_pos, int y_pos) {
-		bool e = inUse[x_pos + 1, y_pos];
-		bool ne = inUse[x_pos + 1, y_pos + 1];
-		bool n = inUse[x_pos, y_pos + 1];
-		bool nw = inUse[x_pos - 1, y_pos + 1];
-		bool w = inUse[x_pos - 1, y_pos];
-		bool sw = inUse[x_pos - 1, y_pos - 1];
-		bool s = inUse[x_pos, y_pos - 1];
-		bool se = inUse[x_pos + 1, y_pos - 1];
+	private static bool isValid(Floor.TileType[] t) {
+		if (t[1] == Floor.TileType.Room ||
+			t[3] == Floor.TileType.Room ||
+			(t[0] == Floor.TileType.Path && t[1] == Floor.TileType.Path && t[2] == Floor.TileType.Path) ||
+			(t[2] == Floor.TileType.Path && t[3] == Floor.TileType.Path && t[4] == Floor.TileType.Path)) {
+			return false;
+		}
+		return true;
+	}
 
-		if ((e && ne && n) ||
-			(n && nw && w) ||
-			(w && sw && s) ||
-			(s && s && se)) {
-			//Debug.Log(String.Format("Taken: x_pos: {0}, y_pos:{1}", x_pos, y_pos));
+	//The whole point of this is to avoid 2x2 path boxes, which look ugly
+	//To avoid a 2x2 box you need to make sure that:
+	//	you dont put a tile in a corner
+	//	you dont put two tiles alongside another path
+	//This includes the current tile, as that would be a tile in this situation
+	//So just don't make a corner (including the current tile)
+	private bool makesBox(Floor.TileType[,] tiles, Coordinate p, Coordinate gp) {
+		//Get surroundings
+		List<Coordinate> adjs = new List<Coordinate> {
+			new Coordinate(x + 1, y),
+			new Coordinate(x + 1, y + 1),
+			new Coordinate(x, y + 1),
+			new Coordinate(x - 1, y + 1),
+			new Coordinate(x - 1, y),
+			new Coordinate(x - 1, y - 1),
+			new Coordinate(x, y - 1),
+			new Coordinate(x + 1, y - 1),
+		};
+
+		//Check if each surrounding tile is available
+		bool[] taken = new bool[8];
+		for (int i = 0; i < 8; i++) {
+			taken[i] = (
+				!adjs[i].IsInBounds() ||
+				tiles[adjs[i].x, adjs[i].y] != Floor.TileType.Wall ||
+				adjs[i].Equals(p) ||
+				(gp != null && adjs[i].Equals(gp)));
+		}
+
+		//If we are in a corner, return true
+		if (taken[0] && taken[1] && taken[2] ||
+			taken[2] && taken[3] && taken[4] ||
+			taken[4] && taken[5] && taken[6] ||
+			taken[6] && taken[7] && taken[0]) {
+			// Debug.Log(string.Format("{0} with parents {1}, {2} makes box.", this, p, gp));
 			return true;
 		}
+
+		// for (int i = 1; i < 8; i += 2) {
+		// 	taken[i] = (!adjs[i].IsInBounds() ||
+		// 		tiles[adjs[i].x, adjs[i].y] == Floor.TileType.Room);
+		// }
+
+		// if (taken[1] ^ taken[3] ||
+		// 	taken[3] ^ taken[5] ||
+		// 	taken[5] ^ taken[7] ||
+		// 	taken[7] ^ taken[1]) {
+		// 	return true;
+		// }
+
 		return false;
 	}
+
 
 	public Coordinate Clone() {
 		return new Coordinate(x, y);
@@ -120,15 +147,15 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 		);
 	}
 
-	public bool IsNextToPath(Floor.TileType[,] tiles) {
-		List<Coordinate> successors = this.getSuccessors(tiles);
-		foreach (Coordinate suc in successors) {
-			if (tiles[suc.x, suc.y] == Floor.TileType.Path) {
-				return true;
-			}
-		}
-		return false;
-	}
+	// public bool IsNextToPath(Floor.TileType[,] tiles) {
+	// 	List<Coordinate> successors = this.getSuccessors(tiles);
+	// 	foreach (Coordinate suc in successors) {
+	// 		if (tiles[suc.x, suc.y] == Floor.TileType.Path) {
+	// 			return true;
+	// 		}
+	// 	}
+	// 	return false;
+	// }
 
 	public static int heuristic(Coordinate a, Coordinate b) {
 		return Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y);

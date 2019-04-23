@@ -7,24 +7,27 @@ public class Hall {
 	public HashSet<Coordinate> pathCoords;
 	public HashSet<Room> connectedRooms;
 
-	public Hall(Room startRoom, Room endRoom, Floor.TileType[, ] tilegrid) {
+	public Hall(Room startRoom, Room endRoom, Floor.TileType[,] tilegrid) {
 		connectedRooms = new HashSet<Room> { startRoom, endRoom };
 		pathCoords = ShortestPath(startRoom, endRoom, tilegrid);
 	}
 
 	//So we want to path from one random room to another
 	//Avoid other rooms as obstacles to cause more interesting behavior
-	private static HashSet<Coordinate> ShortestPath(Room startRoom, Room endRoom, Floor.TileType[, ] tilegrid) {
+	private static HashSet<Coordinate> ShortestPath(Room startRoom, Room endRoom, Floor.TileType[,] tilegrid) {
 		//Get random endpoints outside of given rooms
 		//This way all rooms are obstacles
 		Coordinate startPos = startRoom.GetRandEntrance();
 		Coordinate endPos = endRoom.GetRandEntrance();
+		string debugStr = "";
+		debugStr += $"Start: {startPos}; End: {endPos}\n";
+		//Debug.Log(debugStr);
 
 		Dictionary<Coordinate, Coordinate> parents = new Dictionary<Coordinate, Coordinate>();
 		Dictionary<Coordinate, int> costs = new Dictionary<Coordinate, int>();
 
 		//Coordinates being considered to find the closest path
-		MinHeap<PathNode> open = new MinHeap<PathNode>(100);
+		MinHeap<PathNode> open = new MinHeap<PathNode>(300);
 		//Coordinates that have already been considered and do not have to be considered again
 		HashSet<Coordinate> closed = new HashSet<Coordinate>();
 
@@ -34,6 +37,7 @@ public class Hall {
 		costs[startPos] = 0;
 		Coordinate currPos = null; //tile to analyze
 		while (!open.IsEmpty()) {
+			//Debug.Log(open);
 			currPos = open.Pop().pos;
 			closed.Add(currPos); //Switch square from open to closed list
 
@@ -43,14 +47,29 @@ public class Hall {
 			}
 
 			//Get valid successors. To be valid must not form a 2x2 box with anything.
-			List<Coordinate> successors = currPos.getSuccessors(tilegrid);
+			List<Coordinate> successors = currPos.getSuccessors(tilegrid, parents[currPos]);
+			// string strsuc = "";
+			// foreach (Coordinate suc in successors) {
+			// 	strsuc += suc;
+			// }
+			debugStr += $"Curr: {currPos}\n";
+			//Debug.Log(debugStr);
 			foreach (Coordinate suc in successors) {
 				if (closed.Contains(suc)) {
 					continue;
 				}
 
-				//Get G value, adjust to reuse paths
-				int newCost = costs[currPos] + ((tilegrid[suc.x, suc.y] != Floor.TileType.Path) ? 7 : 1);
+				//Get G value, adjust to reuse paths and to continue in same direction
+				int newCost = costs[currPos] + 2;
+				if (tilegrid[suc.x, suc.y] != Floor.TileType.Path) {
+					newCost += 7;
+				}
+				if (parents[currPos] != null) {
+					if (parents[currPos].x == currPos.x && currPos.x != suc.x ||
+						 parents[currPos].y == currPos.y && currPos.y != suc.y) {
+						newCost++;
+					}
+				}
 
 				//Only edit dictionaries if node is new or better
 				if (!costs.ContainsKey(suc) || newCost < costs[suc]) {
@@ -62,6 +81,9 @@ public class Hall {
 			}
 		}
 
+		if (!currPos.Equals(endPos)) {
+			Debug.Log(debugStr);
+		}
 		//Now start at end and work backward through parents
 		HashSet<Coordinate> pathCoords = new HashSet<Coordinate>();
 		while (currPos != null) {
@@ -78,7 +100,7 @@ public class Hall {
 		coordsUnion.UnionWith(other.pathCoords);
 		roomsUnion.UnionWith(other.connectedRooms);
 
-		//If different count in result, at least one room shared, so paths intersect
+		//If different count in result, at least one room/tile shared, so paths intersect
 		if (coordsUnion.Count != this.pathCoords.Count + other.pathCoords.Count ||
 			roomsUnion.Count != this.connectedRooms.Count + other.connectedRooms.Count) {
 			this.pathCoords = coordsUnion;
@@ -87,46 +109,6 @@ public class Hall {
 		}
 		return false;
 	}
-
-	public bool Intersects(Hall other) {
-		// HashSet<Coordinate> temp = new HashSet<Coordinate>(this.pathCoords);
-		// temp.IntersectWith(other.pathCoords);
-		// if (temp.Count > 0) {
-		// 	return true;
-		// }
-		foreach (Coordinate c in pathCoords) {
-			if (other.pathCoords.Contains(c)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public void Absorb(Hall other) {
-		//Coalesce coordinates into one list
-		foreach (Coordinate c in other.pathCoords) {
-			if (!pathCoords.Contains(c)) {
-				pathCoords.Add(c);
-			}
-		}
-
-		//Coalesce connected rooms (termini) into one list
-		foreach (Room r in other.connectedRooms) {
-			if (!connectedRooms.Contains(r)) {
-				connectedRooms.Add(r);
-			}
-		}
-	}
-
-	public bool ShareEndpoint(Hall other) {
-		foreach (Room r in connectedRooms) {
-			if (other.connectedRooms.Contains(r)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	internal class PathNode : IComparable<PathNode> {
 		public Coordinate pos { get; }
 		public int heuristic { get; }
@@ -139,8 +121,7 @@ public class Hall {
 		public int CompareTo(PathNode other) {
 			if (this.heuristic != other.heuristic) {
 				return this.heuristic.CompareTo(other.heuristic);
-			}
-			else {
+			} else {
 				return this.pos.CompareTo(other.pos);
 			}
 		}

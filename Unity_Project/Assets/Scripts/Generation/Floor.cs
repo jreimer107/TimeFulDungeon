@@ -84,18 +84,9 @@ public class Floor {
 			}
 
 			//Each path depends on other paths so add it immediately
-			//Idea: combine path objects if they intersect.
-			List<Hall> absorbed = new List<Hall>(); //Build list of paths to be absorbed
-			foreach (Hall other in path_list) {
-				if (newPath.Intersects(other) || newPath.ShareEndpoint(other)) { //If they intersect
-					absorbed.Add(other);
-				}
-			}
-			//Absorb and remove each path found
-			foreach (Hall other in absorbed) {
-				newPath.Absorb(other);
-				path_list.Remove(other);
-			}
+			//Combine path objects if they intersect.
+			path_list.RemoveAll(other => newPath.IntersectAndAbsorb(other));
+
 			path_list.Add(newPath);
 
 			numPaths++;
@@ -121,12 +112,12 @@ public class Floor {
 		}
 
 		//Place entrance and exit
-		do {
-			entrance = room_list[rng.Next(room_list.Count)].GetRandCoordinate();
-		} while (entrance.IsNextToPath(tiles));
+		//do {
+		entrance = room_list[rng.Next(room_list.Count)].GetRandCoordinate();
+		//} while (entrance.IsNextToPath(tiles));
 		do {
 			exit = room_list[rng.Next(room_list.Count)].GetRandCoordinate();
-		} while (exit.IsNextToPath(tiles) || entrance.Equals(exit));
+		} while (entrance.Equals(exit));
 		tiles[entrance.x, entrance.y] = TileType.Entrance;
 		tiles[exit.x, exit.y] = TileType.Exit;
 	}

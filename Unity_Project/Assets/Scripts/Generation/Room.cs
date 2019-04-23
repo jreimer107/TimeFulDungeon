@@ -54,9 +54,9 @@ public class Room {
 		if (side == 0) { //Left side
 			return new Coordinate(this.x_pos - 1, this.GetRandYPos());
 		} else if (side == 1) { //Top
-			return new Coordinate(this.GetRandXPos(), this.y_pos + this.height + 1);
+			return new Coordinate(this.GetRandXPos(), this.y_pos + this.height);
 		} else if (side == 2) { //Right
-			return new Coordinate(this.x_pos + this.width + 1, this.GetRandYPos());
+			return new Coordinate(this.x_pos + this.width, this.GetRandYPos());
 		} else { //Bottom
 			return new Coordinate(this.GetRandXPos(), this.y_pos - 1);
 		}
