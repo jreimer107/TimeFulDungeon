@@ -803,7 +803,7 @@ MonoBehaviour:
   RoomSizeMean: 12
   RoomSizeDeviation: 2.7
   RoomGap: 3
-  MaxPaths: 1
+  MaxPaths: 10
 --- !u!1001 &8424532016187830121
 PrefabInstance:
   m_ObjectHideFlags: 0

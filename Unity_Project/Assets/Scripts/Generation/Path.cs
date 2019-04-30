@@ -17,6 +17,7 @@ public class Hall {
 	private static HashSet<Coordinate> ShortestPath(Room startRoom, Room endRoom, Floor.TileType[,] tilegrid) {
 		//Get random endpoints outside of given rooms
 		//This way all rooms are obstacles
+		Room[] endpoints = {startRoom, endRoom};
 		Coordinate startPos = startRoom.GetRandEntrance();
 		Coordinate endPos = endRoom.GetRandEntrance();
 		string debugStr = "";
@@ -47,15 +48,14 @@ public class Hall {
 			}
 
 			//Get valid successors. To be valid must not form a 2x2 box with anything.
-			List<Coordinate> successors = currPos.getSuccessors(tilegrid, parents[currPos]);
 			// string strsuc = "";
 			// foreach (Coordinate suc in successors) {
 			// 	strsuc += suc;
 			// }
 			debugStr += $"Curr: {currPos}\n";
 			//Debug.Log(debugStr);
-			foreach (Coordinate suc in successors) {
-				if (closed.Contains(suc)) {
+			foreach (Coordinate suc in currPos.getSuccessors()) {
+				if (closed.Contains(suc) || !suc.ValidSuccessor(tilegrid, currPos, parents[currPos], endpoints)) {
 					continue;
 				}
 
