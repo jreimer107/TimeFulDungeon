@@ -146,7 +146,6 @@ public class Floor {
 			room_list.Add(newRoom);
 			return true;
 		}
-
 		return false;
 	}
 

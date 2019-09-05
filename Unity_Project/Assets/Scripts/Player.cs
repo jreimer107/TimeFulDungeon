@@ -15,12 +15,12 @@ public class Player : MonoBehaviour {
 	private bool FacingRight = true;
 
 	// Use this for initialization
-	void Start () {
-		
+	void Start() {
+
 	}
-	
+
 	// Update is called once per frame
-	void Update () {
+	void Update() {
 		//Get input from player
 		horizontalMove = Input.GetAxisRaw("Horizontal") * speed;
 		verticalMove = Input.GetAxisRaw("Vertical") * speed;
@@ -40,14 +40,13 @@ public class Player : MonoBehaviour {
 		//If input is moving the player right and player is facing left
 		if (horizontal > 0 && !FacingRight) {
 			Flip();
-		}
-		else if (horizontal < 0 && FacingRight) {
+		} else if (horizontal < 0 && FacingRight) {
 			Flip();
 		}
 	}
 
 	private void Flip() {
-		FacingRight = ! FacingRight;
+		FacingRight = !FacingRight;
 		transform.Rotate(0f, 180f, 0f);
 	}
 }
