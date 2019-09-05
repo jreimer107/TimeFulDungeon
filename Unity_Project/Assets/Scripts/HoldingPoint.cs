@@ -5,7 +5,7 @@ using UnityEngine;
 public class HoldingPoint : MonoBehaviour {
 	[SerializeField] private Player player;
 	private Transform player_pos;
-	[Range(1, 5)] [SerializeField] private float radius = 1;
+	[Range(0, 5)] [SerializeField] private float radius = 1;
 
 	private bool attacking = false;
 	private float angle = 0.0f;
