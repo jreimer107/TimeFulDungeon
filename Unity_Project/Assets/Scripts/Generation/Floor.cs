@@ -25,7 +25,7 @@ public class Floor {
 	}
 
 	private List<Room> room_list;
-	private List<Hall> path_list;
+	private List<Path> path_list;
 	public TileType[,] tiles;
 	private Random rng;
 	public Coordinate entrance;
@@ -41,7 +41,7 @@ public class Floor {
 
 		//Create room list
 		room_list = new List<Room>();
-		path_list = new List<Hall>();
+		path_list = new List<Path>();
 		rng = new Random();
 
 		//Create tile grid
@@ -74,7 +74,7 @@ public class Floor {
 			do {
 				end = room_list[rng.Next(room_list.Count)];
 			} while (ReferenceEquals(start, end));
-			Hall newPath = new Hall(start, end, tiles);
+			Path newPath = new Path(start, end, tiles);
 
 			//Set tiles to be paths unless they are already something else
 			foreach (Coordinate coord in newPath.pathCoords) {

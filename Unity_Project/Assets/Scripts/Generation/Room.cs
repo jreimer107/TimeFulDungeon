@@ -8,7 +8,7 @@ public class Room {
 	public int y_pos;
 	public int width;
 	public int height;
-	public List<Hall> connectedPaths;
+	public List<Path> connectedPaths;
 	private Random rng;
 
 	//Bounds are tiles taken up by the room
@@ -44,7 +44,7 @@ public class Room {
 		y_pos = y;
 		width = w;
 		height = h;
-		connectedPaths = new List<Hall>();
+		connectedPaths = new List<Path>();
 		rng = new Random();
 	}
 
@@ -77,7 +77,7 @@ public class Room {
 
 	//Coalesce the connectedRooms lists of each path connected to this room
 	public void CoalesceConnections(Room other) {
-		foreach (Hall p in connectedPaths) {
+		foreach (Path p in connectedPaths) {
 			other.connectedPaths.Add(p);
 		}
 		connectedPaths = other.connectedPaths;

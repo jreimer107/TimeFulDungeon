@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Hall {
+public class Path {
 	public HashSet<Coordinate> pathCoords;
 	public HashSet<Room> connectedRooms;
 
-	public Hall(Room startRoom, Room endRoom, Floor.TileType[,] tilegrid) {
+	public Path(Room startRoom, Room endRoom, Floor.TileType[,] tilegrid) {
 		connectedRooms = new HashSet<Room> { startRoom, endRoom };
 		pathCoords = ShortestPath(startRoom, endRoom, tilegrid);
 	}
@@ -17,9 +17,9 @@ public class Hall {
 	private static HashSet<Coordinate> ShortestPath(Room startRoom, Room endRoom, Floor.TileType[,] tilegrid) {
 		//Get random endpoints outside of given rooms
 		//This way all rooms are obstacles
-		Room[] endpoints = {startRoom, endRoom};
-		Coordinate startPos = startRoom.GetRandEntrance();
-		Coordinate endPos = endRoom.GetRandEntrance();
+		Room[] endpoints = { startRoom, endRoom };
+		Coordinate startPos = startRoom.GetRandCoordinate();
+		Coordinate endPos = endRoom.GetRandCoordinate();
 		string debugStr = "";
 		debugStr += $"Start: {startPos}; End: {endPos}\n";
 		//Debug.Log(debugStr);
@@ -93,7 +93,7 @@ public class Hall {
 		return pathCoords;
 	}
 
-	public bool IntersectAndAbsorb(Hall other) {
+	public bool IntersectAndAbsorb(Path other) {
 		//Create hashset union of both connected rooms
 		HashSet<Coordinate> coordsUnion = new HashSet<Coordinate>(this.pathCoords);
 		HashSet<Room> roomsUnion = new HashSet<Room>(this.connectedRooms);
