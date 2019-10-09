@@ -28,7 +28,7 @@ public class HoldingPoint : MonoBehaviour {
 			RotateToMouse();
 		} else {
 			angle -= 2;
-			if (angle <= startSwingAngle - 30.0f) {
+			if (angle <= startSwingAngle - 45.0f) {
 				angle = startSwingAngle;
 				attacking = false;
 			}
