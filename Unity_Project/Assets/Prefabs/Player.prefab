@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 61384762267509882}
   - component: {fileID: 114452477805542484}
   - component: {fileID: 1366395371}
+  - component: {fileID: 1366395376}
+  - component: {fileID: 1366395377}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -94,7 +96,7 @@ SpriteRenderer:
   m_SortingLayerID: 562810233
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 7ebcd7bb7bae7a24c9b7ad1ee2ac04d7, type: 3}
+  m_Sprite: {fileID: 21300008, guid: c7f3171e3d84d3c4a97faadb5ecedb37, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -118,18 +120,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.02, y: -0.2616654}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.65625, y: 0.96875}
     newSize: {x: 0.32, y: 0.32}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.6, y: 0.6}
+  m_Size: {x: 0.6, y: 0.4323671}
   m_EdgeRadius: 0
 --- !u!114 &114452477805542484
 MonoBehaviour:
@@ -168,3 +170,35 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1366395376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1127876373250036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0a6af400099ce441896561f3fc3c4f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inventoryUI: {fileID: 0}
+  bagUI: {fileID: 0}
+  slotUI: {fileID: 6225314407833846768, guid: b6c75c43a3d89c7488e4116de23ade11, type: 3}
+  maxSlots: 40
+--- !u!58 &1366395377
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1127876373250036}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 1

@@ -7,7 +7,6 @@ public class Player : MonoBehaviour {
     [Range(0, .3f)] [SerializeField] private float MovementSmoothing = .05f; //How much to smooth movement
     [SerializeField] private LayerMask CollisionLayers; //Mask determining what the player runs into
     [SerializeField] private Rigidbody2D rbody;
-    [SerializeField] private float pickup_radius;
 
     private Vector3 velocity = Vector3.zero;
     private float horizontalMove = 0f;
@@ -25,21 +24,22 @@ public class Player : MonoBehaviour {
         //Get input from player
         horizontalMove = Input.GetAxisRaw("Horizontal") * speed;
         verticalMove = Input.GetAxisRaw("Vertical") * speed;
+
+        //Check for pickups
+        // Collider2D[] collisions = Physics2D.OverlapCircleAll(transform.position, pickup_radius);
+        // foreach (Collider2D collision in collisions) {
+        //     // Debug.Log("Player collided with things.");
+        //     if (collision.gameObject.CompareTag("Pickup")) {
+        //         collision.GetComponent<Pickup>().pickup();
+        //         Debug.Log("Player picked up object!");
+        //     }
+
+        // }
     }
 
     private void FixedUpdate() {
         //Move character
         Move(horizontalMove * Time.fixedDeltaTime, verticalMove * Time.fixedDeltaTime);
-        //Check for pickups
-        // Collider2D[] collisions = Physics2D.OverlapCircleAll(transform.position, pickup_radius);
-        // foreach (Collider2D collision in collisions) {
-        //     GameObject collided_object = collision.gameObject;
-        //     if (collided_object.CompareTag("Pickup")) {
-        //         collided_object.gameObject.GetComponent<Pickup>().;
-
-        //     }
-
-        // }
     }
 
     public void Move(float horizontal, float vertical) {
