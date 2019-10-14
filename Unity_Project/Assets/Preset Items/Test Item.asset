@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd9ea7bef58d772428186d230850cb73, type: 3}
+  m_Name: Test Item
+  m_EditorClassIdentifier: 
+  name: Test Item
+  ID: 0
+  description: An Item to Test with.
+  sprite: {fileID: 21300000, guid: f3276b2f6f1ca2f4183d16ed155ff398, type: 3}
+  stackable: 1
+  count: 1
