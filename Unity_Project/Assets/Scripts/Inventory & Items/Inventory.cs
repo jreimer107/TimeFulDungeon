@@ -2,13 +2,8 @@
 using UnityEngine;
 
 public class Inventory : MonoBehaviour {
-	public GameObject inventoryUI;
-	public GameObject bagUI;
-	public GameObject slotUI;
 	public int maxSlots;
-
-	private bool enable;
-	private int enabledSlots;
+	public int enabledSlots;
 
 	public List<Item> Bag;
 	public Equippable EquippedMelee;
@@ -31,18 +26,6 @@ public class Inventory : MonoBehaviour {
 
 	void Start() {
 		Bag = new List<Item>();
-		enabledSlots = 40;
-		for (int i = 0; i < enabledSlots; i++) {
-			GameObject newSlot = Instantiate(slotUI, new Vector3(0, 0, 0), Quaternion.identity);
-			newSlot.transform.SetParent(bagUI.transform, false);
-		}
-	}
-
-	void Update() {
-		if (Input.GetKeyDown(KeyCode.I))
-			enable = !enable;
-
-		inventoryUI.SetActive(enable);
 	}
 
 	public bool CanAdd(Item newItem) {
@@ -74,9 +57,9 @@ public class Inventory : MonoBehaviour {
 		//If we have space, add item in new slot
 		if (Bag.Count < enabledSlots) {
 			Bag.Add(newItem);
+			Debug.Log("Added new item to inventory.");
 			if (onItemChangedCallback != null)
 				onItemChangedCallback.Invoke();
-			Debug.Log("Added new item to inventory.");
 			return true;
 		}
 

@@ -1232,7 +1232,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1373929589
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1253,7 +1253,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -163.3, y: 393.8}
+  m_AnchoredPosition: {x: -163.30078, y: 393.8}
   m_SizeDelta: {x: 326.6, y: 787.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1373929590
@@ -1570,43 +1570,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 212350261414658562, guid: e93ab3209c971734a96555e1daafe6da,
-        type: 3}
-      propertyPath: m_Size.x
-      value: 0.21
-      objectReference: {fileID: 0}
-    - target: {fileID: 212350261414658562, guid: e93ab3209c971734a96555e1daafe6da,
-        type: 3}
-      propertyPath: m_Size.y
-      value: 0.31
-      objectReference: {fileID: 0}
-    - target: {fileID: 212350261414658562, guid: e93ab3209c971734a96555e1daafe6da,
-        type: 3}
-      propertyPath: m_WasSpriteAssigned
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 61384762267509882, guid: e93ab3209c971734a96555e1daafe6da,
-        type: 3}
-      propertyPath: m_SpriteTilingProperty.newSize.x
-      value: 0.21
-      objectReference: {fileID: 0}
-    - target: {fileID: 61384762267509882, guid: e93ab3209c971734a96555e1daafe6da,
-        type: 3}
-      propertyPath: m_SpriteTilingProperty.newSize.y
-      value: 0.31
-      objectReference: {fileID: 0}
-    - target: {fileID: 1366395376, guid: e93ab3209c971734a96555e1daafe6da, type: 3}
-      propertyPath: inventoryUI
-      value: 
-      objectReference: {fileID: 1373929588}
-    - target: {fileID: 1366395376, guid: e93ab3209c971734a96555e1daafe6da, type: 3}
-      propertyPath: bagUI
-      value: 
-      objectReference: {fileID: 2016906766}
-    - target: {fileID: 1366395377, guid: e93ab3209c971734a96555e1daafe6da, type: 3}
-      propertyPath: m_Radius
-      value: 2
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e93ab3209c971734a96555e1daafe6da, type: 3}
 --- !u!1 &1992490085
@@ -1888,7 +1851,7 @@ GameObject:
   - component: {fileID: 2016906768}
   - component: {fileID: 2016906771}
   m_Layer: 5
-  m_Name: Bag
+  m_Name: BagUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1910,8 +1873,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000030517578, y: -161.85146}
-  m_SizeDelta: {x: 1.7999878, y: 365.40002}
+  m_AnchoredPosition: {x: -0.000030517578, y: -184.5}
+  m_SizeDelta: {x: 1.8, y: 369.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2016906768
 MonoBehaviour:
@@ -2098,6 +2061,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7545a68bc6e0278449d677a3f7e61ef8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inventoryUI: {fileID: 1373929588}
+  BagUI: {fileID: 2016906767}
+  slotUI: {fileID: 6225314407833846768, guid: b6c75c43a3d89c7488e4116de23ade11, type: 3}
 --- !u!1 &2056896112
 GameObject:
   m_ObjectHideFlags: 0

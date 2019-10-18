@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MeleeAttack : MonoBehaviour {
 	public float AttackDelay;
@@ -12,24 +11,23 @@ public class MeleeAttack : MonoBehaviour {
 	public int damage;
 
 	// Use this for initialization
-	void Start () {
-		
+	void Start() {
+
 	}
-	
+
 	// Update is called once per frame
-	void Update () {
+	void Update() {
 		if (AttackTime <= 0) {
-			if (Input.GetAxisRaw("Fire2") > 0f) {
+			//Dont attack if using UI
+			if (Input.GetAxisRaw("Fire2") > 0f && !EventSystem.current.IsPointerOverGameObject()) {
 				AttackTime = AttackDelay;
 				Collider2D[] enemiesHit = Physics2D.OverlapCircleAll(attackPos.position, attackRange, enemyLayer);
 				for (int i = 0; i < enemiesHit.Length; i++) {
 					enemiesHit[i].GetComponent<Enemy>().TakeDamage(damage);
 				}
-				//Physics2D.OverlapBoxAll()
 			}
-		}
-		else {
-			AttackTime -= Time.fixedDeltaTime;
+		} else {
+			AttackTime -= Time.deltaTime;
 		}
 	}
 

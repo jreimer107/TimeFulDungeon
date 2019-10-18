@@ -101,7 +101,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.65625, y: 0.96875}
+  m_Size: {x: 0.21, y: 0.31}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -125,7 +125,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 0.65625, y: 0.96875}
-    newSize: {x: 0.65625, y: 0.96875}
+    newSize: {x: 0.21, y: 0.31}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -150,7 +150,6 @@ MonoBehaviour:
   CollisionLayers:
     serializedVersion: 2
     m_Bits: 0
-  rbody: {fileID: 50221540651525296}
 --- !u!95 &1366395371
 Animator:
   serializedVersion: 3
@@ -182,10 +181,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0a6af400099ce441896561f3fc3c4f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventoryUI: {fileID: 0}
-  bagUI: {fileID: 0}
-  slotUI: {fileID: 6225314407833846768, guid: b6c75c43a3d89c7488e4116de23ade11, type: 3}
   maxSlots: 40
+  enabledSlots: 20
+  Bag: []
+  EquippedMelee: {fileID: 0}
+  EquippedRanged: {fileID: 0}
+  EquippedShield: {fileID: 0}
 --- !u!58 &1366395377
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -201,4 +202,4 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 1
+  m_Radius: 2
