@@ -6,9 +6,6 @@ public class Inventory : MonoBehaviour {
 	public int enabledSlots;
 
 	public List<Item> Bag;
-	public Equippable EquippedMelee;
-	public Equippable EquippedRanged;
-	public Equippable EquippedShield;
 
 	#region Singleton
 	public static Inventory instance;
