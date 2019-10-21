@@ -31,9 +31,9 @@ public class InventoryUI : MonoBehaviour {
 	private void UpdateUI() {
 		for (int i = 0; i < slots.Length; i++) {
 			if (i < inventory.Bag.Count) {
-				slots[i].AddItem(inventory.Bag[i]);
+				slots[i].SetItem(inventory.Bag[i]);
 			} else {
-				slots[i].RemoveItem();
+				slots[i].UnsetItem();
 			}
 		}
 	}
