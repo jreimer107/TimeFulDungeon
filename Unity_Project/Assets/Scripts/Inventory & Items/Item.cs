@@ -1,7 +1,8 @@
 using UnityEngine;
+using System;
 
 [CreateAssetMenu(fileName = "New Item", menuName = "Interactables/Item")]
-public class Item : ScriptableObject {
+public class Item : ScriptableObject, IEquatable<Item> {
 	new public string name;
 	public int ID;
 	public string description;
@@ -23,8 +24,7 @@ public class Item : ScriptableObject {
 		Debug.Log("Using item " + name);
 	}
 
-	public void RemoveFromInventory() {
-		Inventory.instance.Remove(this);
-	}
+	public void RemoveFromInventory() => Inventory.instance.Remove(this);
 
+	public bool Equals(Item other) => this.ID == other.ID;
 }

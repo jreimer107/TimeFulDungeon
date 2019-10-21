@@ -69,4 +69,17 @@ public class Inventory : MonoBehaviour {
 		if (onItemChangedCallback != null)
 			onItemChangedCallback.Invoke();
 	}
+
+	public void Swap(int to, int from) {
+		if (to >= Bag.Count)
+			to = Bag.Count - 1;
+		if (from >= Bag.Count)
+			from = Bag.Count - 1;
+
+		Item temp = Bag[to];
+		Bag[to] = Bag[from];
+		Bag[from] = temp;
+		if (onItemChangedCallback != null)
+			onItemChangedCallback.Invoke();
+	}
 }

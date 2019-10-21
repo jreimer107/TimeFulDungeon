@@ -18,6 +18,7 @@ public class InventoryUI : MonoBehaviour {
 			GameObject newSlot = Instantiate(slotUI, new Vector3(0, 0, 0), Quaternion.identity);
 			newSlot.transform.SetParent(BagUI, false);
 			slots[i] = newSlot.GetComponent<InventorySlot>();
+			slots[i].slotNumber = i;
 		}
 		inventoryUI.SetActive(false);
 	}

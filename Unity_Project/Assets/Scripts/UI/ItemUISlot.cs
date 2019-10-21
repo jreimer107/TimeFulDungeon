@@ -8,12 +8,24 @@ public class ItemUISlot : MonoBehaviour, IPointerClickHandler, IDragHandler, IBe
 	[SerializeField] private Image icon = null;
 	private Button button;
 
+	//To write changes back to inventory list
+	public int slotNumber;
+	private Inventory inventory;
+
 	void Awake() {
 		button = GetComponent<Button>();
 	}
 
+	void Start() {
+		inventory = Inventory.instance;
+	}
+
 	public virtual void SetItem(Item newItem) {
 		item = newItem;
+		if (item == null) {
+			UnsetItem();
+			return;
+		}
 
 		//Set up slot to render sprite
 		icon.sprite = item.sprite;
@@ -25,13 +37,14 @@ public class ItemUISlot : MonoBehaviour, IPointerClickHandler, IDragHandler, IBe
 	}
 
 	public virtual void UnsetItem() {
+		item = null;
 		icon.enabled = false;
 		button.interactable = false;
 	}
 
 	public bool isEmpty {
 		get {
-			return !button.interactable;
+			return item == null;
 		}
 	}
 
@@ -40,28 +53,15 @@ public class ItemUISlot : MonoBehaviour, IPointerClickHandler, IDragHandler, IBe
 	}
 
 	public virtual void DropOn(ItemUISlot otherSlot) {
-		Item other = otherSlot.item;
-		if (isEmpty) {
-			SetItem(other);
-			otherSlot.UnsetItem();
-		} else if (otherSlot.isEmpty) {
-			otherSlot.SetItem(item);
-			UnsetItem();
-		} else {
-			if (item.ID == other.ID && item.stackable) {
-				other.count += item.count;
-				UnsetItem();
-			} else {
-				otherSlot.SetItem(item);
-				SetItem(other);
-			}
-		}
+		inventory.Swap(slotNumber, otherSlot.slotNumber);
 	}
 
 
 	public void OnBeginDrag(PointerEventData eventData) {
 		if (!isEmpty && eventData.button == PointerEventData.InputButton.Left) {
 			Debug.Log("Left Click drag.");
+			if (ClickAndDrag.instance == null)
+				Debug.Log("heck");
 			ClickAndDrag.instance.SetHeldItem(item);
 			// icon.enabled = false;
 			icon.color = Color.gray;
@@ -74,18 +74,16 @@ public class ItemUISlot : MonoBehaviour, IPointerClickHandler, IDragHandler, IBe
 
 	public void OnEndDrag(PointerEventData eventData) {
 		if (!isEmpty && eventData.button == PointerEventData.InputButton.Left) {
-			Debug.Log("Dropped item.");
-
 			GameObject droppedLocation = eventData.pointerCurrentRaycast.gameObject;
 			if (droppedLocation != null) {
 				ItemUISlot droppedSlot = droppedLocation.GetComponent<ItemUISlot>();
 				if (droppedSlot != null) {
-					Debug.Log("Dropped on UI slot.");
 					DropOn(droppedSlot);
-				} else
-					Debug.Log("Gameobject was not ItemUISlot.");
-			} else
-				Debug.Log("Dropped location was null.");
+				}
+				//Else drop item in UI area, player prolly missed. do nothin.
+			} else {
+				//Drop item
+			}
 
 			ClickAndDrag.instance.UnsetHeldItem();
 			// icon.enabled = true;
