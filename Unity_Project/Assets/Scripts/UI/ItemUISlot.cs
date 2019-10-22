@@ -13,6 +13,8 @@ public class ItemUISlot : MonoBehaviour, IPointerClickHandler, IDragHandler, IBe
 		button = GetComponent<Button>();
 	}
 
+	//This method should ONLY be called by a UI manager script.
+	//If you want to edit the contents of this slot, go through a UI manager.
 	public virtual void SetItem(Item newItem) {
 		item = newItem;
 		if (item == null) {
@@ -29,6 +31,8 @@ public class ItemUISlot : MonoBehaviour, IPointerClickHandler, IDragHandler, IBe
 		button.interactable = true;
 	}
 
+	//This method should ONLY be called by a UI manager script.
+	//If you want to edit the contents of this slot, go through a UI manager.
 	public virtual void UnsetItem() {
 		item = null;
 		icon.enabled = false;
@@ -41,11 +45,15 @@ public class ItemUISlot : MonoBehaviour, IPointerClickHandler, IDragHandler, IBe
 		}
 	}
 
-	public virtual void Use() {
+	protected virtual void Use() {
 		item.Use();
 	}
 
-	public virtual void DropOn(ItemUISlot otherSlot) { }
+	protected virtual void DiscardItem() {
+		PickupManager.instance.DiscardItem(item);
+	}
+
+	protected virtual void DropOn(ItemUISlot otherSlot) { }
 
 	public void OnBeginDrag(PointerEventData eventData) {
 		if (!isEmpty && eventData.button == PointerEventData.InputButton.Left) {
@@ -76,7 +84,8 @@ public class ItemUISlot : MonoBehaviour, IPointerClickHandler, IDragHandler, IBe
 				//Else drop item in UI area, player prolly missed. do nothin.
 			} else {
 				Debug.Log("Dropped item to discard.");
-				//Drop item
+				//Discard item
+				DiscardItem();
 			}
 
 			ClickAndDrag.instance.UnsetHeldItem();

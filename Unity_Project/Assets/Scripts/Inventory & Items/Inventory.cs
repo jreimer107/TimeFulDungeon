@@ -25,19 +25,21 @@ public class Inventory : MonoBehaviour {
 		Bag = new List<Item>();
 	}
 
+	//Checks if 
 	public bool CanAdd(Item newItem) {
-		if (newItem.stackable) {
+		if (HasSpace)
+			return true;
+		else if (newItem.stackable) {
 			foreach (Item item in Bag) {
 				if (item.ID == newItem.ID) {
 					return true;
 				}
 			}
 		}
-		if (Bag.Count < enabledSlots)
-			return true;
 		return false;
 	}
 
+	//Adds an item to the inventory, if possible.
 	public bool Add(Item newItem) {
 		//If item is stackable, check if we already have some
 		if (newItem.stackable) {
@@ -52,7 +54,7 @@ public class Inventory : MonoBehaviour {
 		}
 
 		//If we have space, add item in new slot
-		if (Bag.Count < enabledSlots) {
+		if (HasSpace) {
 			Bag.Add(newItem);
 			Debug.Log("Added new item to inventory.");
 			if (onItemChangedCallback != null)
@@ -70,6 +72,7 @@ public class Inventory : MonoBehaviour {
 			onItemChangedCallback.Invoke();
 	}
 
+	//Swaps the position of two items within the inventory.
 	public void Swap(int to, int from) {
 		if (to >= Bag.Count)
 			to = Bag.Count - 1;
@@ -79,6 +82,13 @@ public class Inventory : MonoBehaviour {
 		Item temp = Bag[to];
 		Bag[to] = Bag[from];
 		Bag[from] = temp;
+		if (onItemChangedCallback != null)
+			onItemChangedCallback.Invoke();
+	}
+
+	//Swaps an item inside the inventory for one outside.
+	public void SwapOut(Item newItem, Item oldItem) {
+		Bag[Bag.IndexOf(oldItem)] = newItem;
 		if (onItemChangedCallback != null)
 			onItemChangedCallback.Invoke();
 	}

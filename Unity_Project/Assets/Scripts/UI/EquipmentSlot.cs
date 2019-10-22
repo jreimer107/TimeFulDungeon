@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 public class EquipmentSlot : ItemUISlot {
 	private EquipmentManager equipmentManager;
-	private Inventory inventory;
 
 	//To know what type of item goes here.
 	public EquipType equipSlotType;
@@ -14,26 +13,15 @@ public class EquipmentSlot : ItemUISlot {
 
 	void Start() {
 		equipmentManager = EquipmentManager.instance;
-		inventory = Inventory.instance;
 	}
 
-	public void EquipItem(Equipment newEquip) {
-		if (newEquip == null)
-			return;
+	private void Unequip() => equipmentManager.Unequip((int)equipment.type);
 
-		base.SetItem(newEquip);
+	protected override void Use() {
+		Unequip();
 	}
 
-	public void UnequipItem() {
-		equipmentManager.Unequip((int)equipment.type);
-		base.UnsetItem();
-	}
-
-	public override void Use() {
-		UnequipItem();
-	}
-
-	public override void DropOn(ItemUISlot otherslot) {
+	protected override void DropOn(ItemUISlot otherslot) {
 		if (otherslot is InventorySlot) {
 			Debug.Log("Dropped equipment item on inventory slot.");
 			if (!otherslot.isEmpty) {
@@ -44,9 +32,14 @@ public class EquipmentSlot : ItemUISlot {
 					}
 				}
 			} else {
-				UnequipItem();
+				Unequip();
 			}
 		}
+	}
+
+	protected override void DiscardItem() {
+		equipmentManager.DeleteEquipped((int)equipment.type);
+		base.DiscardItem();
 	}
 
 }

@@ -28,10 +28,14 @@ public class EquipmentManager : MonoBehaviour {
 	//If there was already something equipped, puts that back in the inventory.
 	public void Equip(Equipment newEquip) {
 		int slotIndex = (int)newEquip.type;
+		Equipment currentEquip = currentEquipment[slotIndex];
 
 		//Add currently equipped item back into inventory
 		if (currentEquipment[slotIndex] != null) {
-			inventory.Add(currentEquipment[slotIndex]);
+			//The new equip came from inventory, so swap it out.
+			inventory.SwapOut(currentEquip, newEquip);
+		} else {
+			newEquip.RemoveFromInventory();
 		}
 
 		//Equip new item
@@ -43,11 +47,20 @@ public class EquipmentManager : MonoBehaviour {
 		}
 	}
 
+	//Unequips an item and deletes it.
+	public void DeleteEquipped(int slotIndex) {
+		currentEquipment[slotIndex] = null;
+		if (onEquipmentChangedCallback != null) {
+			onEquipmentChangedCallback.Invoke();
+		}
+	}
+
+	//Unequips an item and adds it back into the inventory.
 	public void Unequip(int slotIndex) {
 		Equipment unequipped = currentEquipment[slotIndex];
 		if (unequipped != null) {
 			if (inventory.Add(unequipped)) {
-				currentEquipment[slotIndex] = null;
+				DeleteEquipped(slotIndex);
 			}
 		}
 	}

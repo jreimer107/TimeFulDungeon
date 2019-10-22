@@ -29,7 +29,7 @@ public class InventorySlot : ItemUISlot {
 			countUI.enabled = false;
 	}
 
-	public override void DropOn(ItemUISlot otherSlot) {
+	protected override void DropOn(ItemUISlot otherSlot) {
 		if (otherSlot is InventorySlot) {
 			Debug.Log("Dropped inventory item on inventory slot.");
 			inventory.Swap(slotNumber, (otherSlot as InventorySlot).slotNumber);
@@ -39,10 +39,14 @@ public class InventorySlot : ItemUISlot {
 			if (item is Equipment) {
 				Equipment equipment = (item as Equipment);
 				if (equipment.type == otherEquipmentSlot.equipSlotType) {
-					equipment.RemoveFromInventory();
 					EquipmentManager.instance.Equip(equipment);
 				}
 			}
 		}
+	}
+
+	protected override void DiscardItem() {
+		item.RemoveFromInventory();
+		base.DiscardItem();
 	}
 }
