@@ -1,23 +1,16 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
 
 [RequireComponent(typeof(Button))]
 public class ItemUISlot : MonoBehaviour, IPointerClickHandler, IDragHandler, IBeginDragHandler, IEndDragHandler {
-	protected Item item;
+	public Item item;
 	[SerializeField] private Image icon = null;
 	private Button button;
 
-	//To write changes back to inventory list
-	public int slotNumber;
-	private Inventory inventory;
-
 	void Awake() {
 		button = GetComponent<Button>();
-	}
-
-	void Start() {
-		inventory = Inventory.instance;
 	}
 
 	public virtual void SetItem(Item newItem) {
@@ -52,10 +45,7 @@ public class ItemUISlot : MonoBehaviour, IPointerClickHandler, IDragHandler, IBe
 		item.Use();
 	}
 
-	public virtual void DropOn(ItemUISlot otherSlot) {
-		inventory.Swap(slotNumber, otherSlot.slotNumber);
-	}
-
+	public virtual void DropOn(ItemUISlot otherSlot) { }
 
 	public void OnBeginDrag(PointerEventData eventData) {
 		if (!isEmpty && eventData.button == PointerEventData.InputButton.Left) {
@@ -78,10 +68,14 @@ public class ItemUISlot : MonoBehaviour, IPointerClickHandler, IDragHandler, IBe
 			if (droppedLocation != null) {
 				ItemUISlot droppedSlot = droppedLocation.GetComponent<ItemUISlot>();
 				if (droppedSlot != null) {
+					Debug.Log("Dropped item on other slot.");
 					DropOn(droppedSlot);
+				} else {
+					Debug.Log("Dropped item in UI area.");
 				}
 				//Else drop item in UI area, player prolly missed. do nothin.
 			} else {
+				Debug.Log("Dropped item to discard.");
 				//Drop item
 			}
 

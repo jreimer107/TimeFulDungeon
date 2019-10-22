@@ -24,6 +24,8 @@ public class EquipmentManager : MonoBehaviour {
 		currentEquipment = new Equipment[numSlots];
 	}
 
+	// Assigns equipment item to correct slot.
+	//If there was already something equipped, puts that back in the inventory.
 	public void Equip(Equipment newEquip) {
 		int slotIndex = (int)newEquip.type;
 

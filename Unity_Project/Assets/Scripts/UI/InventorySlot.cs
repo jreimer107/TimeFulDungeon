@@ -4,6 +4,14 @@ using UnityEngine.UI;
 public class InventorySlot : ItemUISlot {
 	[SerializeField] private Text countUI = null;
 
+	//To write changes back to inventory list
+	public int slotNumber;
+	private Inventory inventory;
+
+	void Start() {
+		inventory = Inventory.instance;
+	}
+
 	public override void SetItem(Item newItem) {
 		base.SetItem(newItem);
 
@@ -19,5 +27,22 @@ public class InventorySlot : ItemUISlot {
 				countUI.text = count.ToString();
 		} else
 			countUI.enabled = false;
+	}
+
+	public override void DropOn(ItemUISlot otherSlot) {
+		if (otherSlot is InventorySlot) {
+			Debug.Log("Dropped inventory item on inventory slot.");
+			inventory.Swap(slotNumber, (otherSlot as InventorySlot).slotNumber);
+		} else if (otherSlot is EquipmentSlot) {
+			Debug.Log("Dropped inventory item on equipment slot.");
+			EquipmentSlot otherEquipmentSlot = (otherSlot as EquipmentSlot);
+			if (item is Equipment) {
+				Equipment equipment = (item as Equipment);
+				if (equipment.type == otherEquipmentSlot.equipSlotType) {
+					equipment.RemoveFromInventory();
+					EquipmentManager.instance.Equip(equipment);
+				}
+			}
+		}
 	}
 }

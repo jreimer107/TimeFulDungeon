@@ -82,4 +82,10 @@ public class Inventory : MonoBehaviour {
 		if (onItemChangedCallback != null)
 			onItemChangedCallback.Invoke();
 	}
+
+	public bool HasSpace {
+		get {
+			return Bag.Count < enabledSlots;
+		}
+	}
 }
