@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Test Melee
   m_EditorClassIdentifier: Assembly-CSharp::Melee
   name: Test Melee
-  ID: 1
+  ID: 0
   description: 
   sprite: {fileID: 21300012, guid: f3276b2f6f1ca2f4183d16ed155ff398, type: 3}
   stackable: 0

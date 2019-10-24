@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 public class PickupManager : MonoBehaviour {
-	[SerializeField] GameObject pickupPrefab;
+	[SerializeField] GameObject pickupPrefab = null;
 	private Player player;
 	private Inventory inventory;
 
@@ -22,5 +22,11 @@ public class PickupManager : MonoBehaviour {
 
 	public void DiscardItem(Item item) {
 		Debug.Log("Item discarded.");
+		GameObject discardedObject = Instantiate(pickupPrefab);
+		discardedObject.transform.position = player.transform.position;
+		discardedObject.transform.SetParent(null);
+		Pickup discardedPickup = discardedObject.GetComponent<Pickup>();
+		discardedPickup.SetItem(item);
+		discardedPickup.Discard();
 	}
 }

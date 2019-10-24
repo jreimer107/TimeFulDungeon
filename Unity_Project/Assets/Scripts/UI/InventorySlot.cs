@@ -29,6 +29,11 @@ public class InventorySlot : ItemUISlot {
 			countUI.enabled = false;
 	}
 
+	public override void UnsetItem() {
+		base.UnsetItem();
+		countUI.enabled = false;
+	}
+
 	protected override void DropOn(ItemUISlot otherSlot) {
 		if (otherSlot is InventorySlot) {
 			Debug.Log("Dropped inventory item on inventory slot.");
@@ -46,7 +51,7 @@ public class InventorySlot : ItemUISlot {
 	}
 
 	protected override void DiscardItem() {
-		item.RemoveFromInventory();
 		base.DiscardItem();
+		item.RemoveFromInventory();
 	}
 }

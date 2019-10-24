@@ -96,19 +96,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c312009ad4ac33547ab397e1b95f04fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item:
-    name: 
-    ID: 0
-    description: 
-    sprite: {fileID: 0}
-    stackable: 0
-    count: 0
+  item: {fileID: 0}
   smoothTime: 0.05
   maxSpeed: 7
   pickupDistance: 0.75
   shrinkDistance: 2
   minShrinkScale: 0.5
   mergeRadius: 0.1
+  triggerCollider: {fileID: 7737970181939494568}
+  collisionCollider: {fileID: -5375482303025562730}
+  spriteRenderer: {fileID: 8079311984827461447}
+  discardVelocityScaler: 5
+  discardMinVelocity: 10
+  discardMaxVelocity: 30
 --- !u!58 &-5375482303025562730
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -118,7 +118,7 @@ CircleCollider2D:
   m_GameObject: {fileID: 8079311984827461445}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: eda3f017159b1bd4696ecbd0ccc0fc1d, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -136,12 +136,12 @@ Rigidbody2D:
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
+  m_UseAutoMass: 1
   m_Mass: 2.5
   m_LinearDrag: 5
   m_AngularDrag: 2
   m_GravityScale: 0
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: eda3f017159b1bd4696ecbd0ccc0fc1d, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
