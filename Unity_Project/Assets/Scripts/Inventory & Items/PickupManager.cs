@@ -20,13 +20,15 @@ public class PickupManager : MonoBehaviour {
 		inventory = Inventory.instance;
 	}
 
+	public Pickup SpawnPickup(Item item, Vector2 position) {
+		Pickup pickup = Instantiate(pickupPrefab, position, Quaternion.identity).GetComponent<Pickup>();
+		pickup.SetItem(item);
+		Debug.Log("Item set by manager");
+		return pickup;
+	}
+
 	public void DiscardItem(Item item) {
 		Debug.Log("Item discarded.");
-		GameObject discardedObject = Instantiate(pickupPrefab);
-		discardedObject.transform.position = player.transform.position;
-		discardedObject.transform.SetParent(null);
-		Pickup discardedPickup = discardedObject.GetComponent<Pickup>();
-		discardedPickup.SetItem(item);
-		discardedPickup.Discard();
+		SpawnPickup(item, player.transform.position).Discard();
 	}
 }

@@ -9,6 +9,7 @@ using UnityEngine.AI;
 public class Pickup : MonoBehaviour {
 	public Item item;
 	private GameObject player;
+	private BoxCollider2D playerCollider;
 
 	[SerializeField] private float smoothTime = 0.05f;
 	[SerializeField] private float maxSpeed = 7;
@@ -18,33 +19,53 @@ public class Pickup : MonoBehaviour {
 	[SerializeField] private float mergeRadius = 0.1f;
 
 	private GameObject target = null;
-	private float distanceToTarget = float.MaxValue;
 	private Vector2 velocity = Vector2.zero;
+	private float distanceToTarget = float.MaxValue;
+
+	private bool itemSet = false;
 	private bool beingPickedUp = false;
-	private bool markedForDestruction = false;
 	private bool beingDropped = false;
+	private bool markedForDestruction = false;
 
 	//Need these references as GetComponent is too slow.
 	[SerializeField] private CircleCollider2D triggerCollider = null;
-	[SerializeField] private CircleCollider2D collisionCollider = null;
 	[SerializeField] private SpriteRenderer spriteRenderer = null;
+	private PolygonCollider2D collisionCollider;
 
 	//Discard velocity parameters, presets feel nice
 	[SerializeField] private float discardVelocityScaler = 5;
 	[SerializeField] private float discardMinVelocity = 10f;
 	[SerializeField] private float discardMaxVelocity = 30f;
 
+	//Called before first frame update
+	// Spawning script should call SetItem() before this happens
 	void Start() {
+		Debug.Log("start called.");
 		player = Player.instance.gameObject;
-		if (item) {
-			spriteRenderer.sprite = item.sprite;
+		playerCollider = player.GetComponent<BoxCollider2D>();
+
+		//If exists in scene (not spawned) need to call SetItem to get sprite
+		//If spawned, spawning script needs to call SetItem.
+		if (!itemSet)
+			SetItem(item);
+
+		//Dropped items need to delay collider creation until free of player
+		if (!beingDropped) {
+			collisionCollider = gameObject.AddComponent<PolygonCollider2D>();
+			collisionCollider.sharedMaterial = (PhysicsMaterial2D)Resources.Load("Materials/PickupMaterial");
 		}
 	}
 
+	//This should only be run once when the item is spawned (before Start)
 	public void SetItem(Item item) {
-		this.item = item;
-		spriteRenderer.sprite = item.sprite;
-		// GetComponent<SpriteRenderer>().sprite = item.sprite;
+		Debug.Log("set item called.");
+		if (item != null) {
+			this.item = item;
+			spriteRenderer.sprite = item.sprite;
+			Debug.Log("Item set.");
+			itemSet = true;
+		} else
+			Debug.Log("Item not set.");
 	}
 
 	// Update is called once per frame
@@ -61,7 +82,10 @@ public class Pickup : MonoBehaviour {
 		}
 	}
 
+	//This should be called between SetItem and Start.
+	//This sets beingdropped, which prevents Start from creating the collider at the wrong time
 	public void Discard() {
+		Debug.Log("Discard called.");
 		//Disable picking up for a few seconds.
 		//Don't care if stacking is also disabled.
 		StartCoroutine(DisableforSeconds());
@@ -71,10 +95,8 @@ public class Pickup : MonoBehaviour {
 		//Shouldn't need this, but cached value is null here for some reason
 		Player player = Player.instance;
 
-		//Disable collisions with player and picking up
+		//Disable picking up
 		beingDropped = true;
-		triggerCollider.enabled = false;
-		Physics2D.IgnoreCollision(player.GetComponent<BoxCollider2D>(), collisionCollider);
 
 		//Shoot pickup towards mouse location, not too slow or fast
 		//Convert mouse position to be relative to player position
@@ -82,9 +104,8 @@ public class Pickup : MonoBehaviour {
 		mousePos.z = player.transform.position.z - Camera.main.transform.position.z;
 		mousePos = Camera.main.ScreenToWorldPoint(mousePos) - player.transform.position;
 
-		//First scale the vector up
+		//First scale the vector up. If too large clamp it, if too small set it to a minimum
 		Vector2 push = mousePos * discardVelocityScaler;
-		//If too large clamp it, if too small set it to a minimum
 		if (push.magnitude > discardMaxVelocity) {
 			push = Vector2.ClampMagnitude(push, discardMaxVelocity);
 		} else if (push.magnitude < discardMinVelocity) {
@@ -92,13 +113,13 @@ public class Pickup : MonoBehaviour {
 		}
 		GetComponent<Rigidbody2D>().velocity = push;
 
-		//Reenable player collisions after short time so that pickup gets free of player
+		//Create collider after pickup is free of player to enable player collisions
 		yield return new WaitForSeconds(0.75f);
-		Physics2D.IgnoreCollision(player.GetComponent<BoxCollider2D>(), collisionCollider, false);
+		collisionCollider = gameObject.AddComponent<PolygonCollider2D>();
+		collisionCollider.sharedMaterial = (PhysicsMaterial2D)Resources.Load("Materials/PickupMaterial");
 
 		//Reenable picking up after longer period so that player can leave
 		yield return new WaitForSeconds(3);
-		triggerCollider.enabled = true;
 		beingDropped = false;
 	}
 
