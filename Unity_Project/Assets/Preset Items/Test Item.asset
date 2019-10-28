@@ -17,4 +17,4 @@ MonoBehaviour:
   description: An Item to Test with.
   sprite: {fileID: 21300000, guid: f3276b2f6f1ca2f4183d16ed155ff398, type: 3}
   stackable: 1
-  count: 30000
+  count: -1073741824

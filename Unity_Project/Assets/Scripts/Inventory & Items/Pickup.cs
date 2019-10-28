@@ -8,7 +8,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(SpriteRenderer), typeof(CircleCollider2D), typeof(Rigidbody2D))]
 public class Pickup : MonoBehaviour {
 	public Item item;
-	private GameObject player;
+	private Player player;
 	private BoxCollider2D playerCollider;
 
 	[SerializeField] private float smoothTime = 0.05f;
@@ -28,9 +28,9 @@ public class Pickup : MonoBehaviour {
 	private bool markedForDestruction = false;
 
 	//Need these references as GetComponent is too slow.
-	[SerializeField] private CircleCollider2D triggerCollider = null;
 	[SerializeField] private SpriteRenderer spriteRenderer = null;
 	private PolygonCollider2D collisionCollider;
+	private CircleCollider2D triggerCollider;
 
 	//Discard velocity parameters, presets feel nice
 	[SerializeField] private float discardVelocityScaler = 5;
@@ -41,8 +41,6 @@ public class Pickup : MonoBehaviour {
 	// Spawning script should call SetItem() before this happens
 	void Start() {
 		Debug.Log("start called.");
-		player = Player.instance.gameObject;
-		playerCollider = player.GetComponent<BoxCollider2D>();
 
 		//If exists in scene (not spawned) need to call SetItem to get sprite
 		//If spawned, spawning script needs to call SetItem.
@@ -51,9 +49,12 @@ public class Pickup : MonoBehaviour {
 
 		//Dropped items need to delay collider creation until free of player
 		if (!beingDropped) {
+			player = Player.instance;
+			playerCollider = player.hitbox;
 			collisionCollider = gameObject.AddComponent<PolygonCollider2D>();
 			collisionCollider.sharedMaterial = (PhysicsMaterial2D)Resources.Load("Materials/PickupMaterial");
 		}
+		triggerCollider = GetComponent<CircleCollider2D>();
 	}
 
 	//This should only be run once when the item is spawned (before Start)
@@ -92,11 +93,18 @@ public class Pickup : MonoBehaviour {
 	}
 
 	private IEnumerator DisableforSeconds() {
-		//Shouldn't need this, but cached value is null here for some reason
-		Player player = Player.instance;
-
 		//Disable picking up
 		beingDropped = true;
+
+		//Fetch player information, start is too slow
+		player = Player.instance;
+		playerCollider = player.hitbox;
+
+
+		// Create collision collider and prevent it from interacting with player
+		collisionCollider = gameObject.AddComponent<PolygonCollider2D>();
+		Physics2D.IgnoreCollision(playerCollider, collisionCollider);
+		collisionCollider.sharedMaterial = (PhysicsMaterial2D)Resources.Load("Materials/PickupMaterial");
 
 		//Shoot pickup towards mouse location, not too slow or fast
 		//Convert mouse position to be relative to player position
@@ -115,16 +123,16 @@ public class Pickup : MonoBehaviour {
 
 		//Create collider after pickup is free of player to enable player collisions
 		yield return new WaitForSeconds(0.75f);
-		collisionCollider = gameObject.AddComponent<PolygonCollider2D>();
-		collisionCollider.sharedMaterial = (PhysicsMaterial2D)Resources.Load("Materials/PickupMaterial");
+		Physics2D.IgnoreCollision(playerCollider, collisionCollider, false);
 
 		//Reenable picking up after longer period so that player can leave
 		yield return new WaitForSeconds(3);
 		beingDropped = false;
+		Debug.Log("Picking up reenabled.");
 	}
 
 	void FixedUpdate() {
-		if (beingPickedUp || target) {
+		if (target) {
 			//MoveTowards for linar movement, smoothdamp for smoothed movement.
 			// transform.position = Vector2.MoveTowards(transform.position, player.transform.position, maxSpeed * Time.fixedDeltaTime);
 			transform.position = Vector2.SmoothDamp(transform.position, target.transform.position, ref velocity, smoothTime, maxSpeed, Time.fixedDeltaTime);
@@ -133,11 +141,13 @@ public class Pickup : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
-		if (!beingPickedUp && !beingDropped && (other.gameObject == player || other.gameObject.CompareTag("Player"))) {
+		Physics2D.IgnoreCollision(collisionCollider, other);
+		Debug.Log("ingoring collision: " + collisionCollider, other);
+		if (!beingPickedUp && !beingDropped && (other.gameObject == player.gameObject || other.gameObject.CompareTag("Player"))) {
 			if (Inventory.instance.CanAdd(item)) {
 				Debug.Log("Item picked up by player");
 				beingPickedUp = true;
-				target = player;
+				target = player.gameObject;
 				//Disable the collider so that it looks like its going into the player.
 				collisionCollider.enabled = false;
 			}
@@ -151,8 +161,10 @@ public class Pickup : MonoBehaviour {
 				if (gameObject.GetInstanceID() > target.GetInstanceID()) {
 					markedForDestruction = true;
 					collisionCollider.enabled = false;
+					triggerCollider.enabled = false;
 				} else {
 					item.count += other_pickup.item.count;
+					Debug.Log("Incrementing item count to " + item.count);
 				}
 			}
 		}
@@ -170,9 +182,8 @@ public class Pickup : MonoBehaviour {
 		return false;
 	}
 
-	//Assumes that target is the player.
 	private void pickup() {
-		if (target != player) {
+		if (target != player.gameObject) {
 			return;
 		}
 
