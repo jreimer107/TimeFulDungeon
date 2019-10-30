@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(CircleCollider2D), typeof(BoxCollider2D))]
+[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
 public class Player : MonoBehaviour {
 	[SerializeField] private float speed = 20f;
 	[Range(0, .3f)] [SerializeField] private float MovementSmoothing = .05f; //How much to smooth movement
@@ -29,7 +29,7 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
 	void Start() {
 		rbody = GetComponent<Rigidbody2D>();
-		pickupTrigger = GetComponent<CircleCollider2D>();
+		pickupTrigger = GetComponentInChildren<CircleCollider2D>();
 		collisionCollider = GetComponent<BoxCollider2D>();
 	}
 

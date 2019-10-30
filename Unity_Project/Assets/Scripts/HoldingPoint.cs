@@ -44,12 +44,7 @@ public class HoldingPoint : MonoBehaviour {
 	}
 
 	private float RotateToMouse() {
-		Vector3 mousePos = Input.mousePosition;
-
-		// Convert mouse position to be relative to player position
-		mousePos.z = player.transform.position.z - Camera.main.transform.position.z;
-		mousePos = Camera.main.ScreenToWorldPoint(mousePos);
-		mousePos = mousePos - player.transform.position;
+		Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition) - player.transform.position;
 
 		//Determine angle of mouse
 		angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
