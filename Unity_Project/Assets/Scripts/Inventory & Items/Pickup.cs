@@ -51,6 +51,15 @@ public class Pickup : MonoBehaviour {
 			player = Player.instance;
 		}
 		triggerCollider = GetComponentInChildren<CircleCollider2D>();
+		triggerCollider.enabled = false;
+		StartCoroutine(WaitCreateTrigger());
+	}
+
+	private IEnumerator WaitCreateTrigger() {
+		Debug.Log("Waiting for collision collider.");
+		yield return new WaitUntil(() => collisionCollider != null);
+		triggerCollider.enabled = true;
+		Debug.Log("Trigger collider enabled.");
 	}
 
 	//This should only be run once when the item is spawned (before Start)
@@ -63,8 +72,12 @@ public class Pickup : MonoBehaviour {
 			itemSet = true;
 
 			//Now that we have a sprite, create the collision collider
-			collisionCollider = gameObject.AddComponent<PolygonCollider2D>();
-			collisionCollider.sharedMaterial = (PhysicsMaterial2D)Resources.Load("Materials/PickupMaterial");
+			collisionCollider = GetComponent<PolygonCollider2D>();
+			if (collisionCollider == null) {
+				collisionCollider = gameObject.AddComponent<PolygonCollider2D>();
+				collisionCollider.sharedMaterial = (PhysicsMaterial2D)Resources.Load("Materials/PickupMaterial");
+			}
+			Debug.Log("Created collision collider.");
 		} else
 			Debug.Log("Item not set.");
 	}
@@ -112,7 +125,7 @@ public class Pickup : MonoBehaviour {
 
 		//Create collider after pickup is free of player to enable player collisions
 		yield return new WaitForSeconds(0.75f);
-		gameObject.layer = 0;
+		gameObject.layer = 10; //Pickup layer
 
 		//Reenable picking up after longer period so that player can leave
 		yield return new WaitForSeconds(3);
@@ -145,15 +158,16 @@ public class Pickup : MonoBehaviour {
 			}
 		} else if (item.stackable && other.CompareTag("Pickup")) {
 			//Merge nearby items of same type
-			Pickup other_pickup = other.GetComponent<Pickup>();
+			Pickup other_pickup = other.GetComponentInParent<Pickup>();
 			if (item.ID == other_pickup.item.ID) {
 				target = other.gameObject;
 				Debug.Log("Target position set to " + target.transform.position);
 				//Item with greater ID gets destroyed to avoid race conditions
+				triggerCollider.enabled = false;
 				if (gameObject.GetInstanceID() > target.GetInstanceID()) {
 					markedForDestruction = true;
 					collisionCollider.enabled = false;
-					triggerCollider.enabled = false;
+					gameObject.layer = 11; //Pickup vacuum
 				} else {
 					item.count += other_pickup.item.count;
 					Debug.Log("Incrementing item count to " + item.count);
@@ -172,6 +186,8 @@ public class Pickup : MonoBehaviour {
 		if (distanceToTarget <= mergeRadius) {
 			if (markedForDestruction) {
 				Destroy(gameObject);
+			} else {
+				triggerCollider.enabled = true;
 			}
 			target = null;
 			distanceToTarget = float.MaxValue;

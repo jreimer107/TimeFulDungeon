@@ -27,4 +27,15 @@ public class Item : ScriptableObject, IEquatable<Item> {
 	public void RemoveFromInventory() => Inventory.instance.Remove(this);
 
 	public bool Equals(Item other) => this.ID == other.ID;
+
+	protected Item(Item copy) {
+		this.name = copy.name;
+		this.ID = copy.ID;
+		this.description = copy.description;
+		this.sprite = copy.sprite;
+		this.stackable = copy.stackable;
+		this.count = copy.count;
+	}
+
+	public virtual Item Clone() => new Item(this);
 }

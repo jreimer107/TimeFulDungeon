@@ -15,6 +15,12 @@ public class Equipment : Item {
 		base.Use();
 		EquipmentManager.instance.Equip(this);
 	}
+
+	protected Equipment(Equipment copy) : base(copy) {
+		this.type = copy.type;
+	}
+
+	public override Item Clone() => new Equipment(this);
 }
 
 [CreateAssetMenu(fileName = "New Melee", menuName = "Interactables/Melee")]
@@ -31,6 +37,14 @@ public class Melee : Equipment {
 		this.range = range;
 		this.speed = speed;
 		this.cooldown = cooldown;
+	}
+
+	protected Melee(Melee copy) : base(copy) {
+		this.damage = copy.damage;
+		this.arc = copy.arc;
+		this.range = copy.range;
+		this.speed = copy.speed;
+		this.cooldown = copy.cooldown;
 	}
 }
 
