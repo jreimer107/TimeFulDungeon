@@ -11,26 +11,41 @@ public class HoldingPoint : MonoBehaviour {
 	private float angle = 0.0f;
 	private float startSwingAngle;
 
-	void Start() {
+	private Equipment equipped;
+	private SpriteRenderer spriteRenderer;
+
+	#region Singleton
+	public static HoldingPoint instance;
+	private void Awake() {
+		if (instance != null) {
+			Debug.LogWarning("More than one instance of holding point detected.");
+		}
+		instance = this;
+	}
+	#endregion
+
+	private void Start() {
 		player = Player.instance;
+		spriteRenderer = GetComponentsInChildren<SpriteRenderer>()[1];
+	}
+
+	private void Update() {
+		if (equipped != null && !attacking && Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject()) {
+			attacking = true;
+			startSwingAngle = angle;
+			angle += (equipped as Melee).arc / 2;
+		}
 	}
 
 	// Update is called once per frame
-	void FixedUpdate() {
-		//Get mousebuttondown
-		if (Input.GetMouseButtonDown(0) && !attacking && !EventSystem.current.IsPointerOverGameObject()) {
-			attacking = true;
-			startSwingAngle = angle;
-			angle += 30.0f;
-		}
-
+	private void FixedUpdate() {
 		if (!attacking) {
 			RotateToMouse();
 		} else {
-			angle -= 2;
-			if (angle <= startSwingAngle - 45.0f) {
-				angle = startSwingAngle;
+			angle -= (equipped as Melee).speed;
+			if (angle <= startSwingAngle - (equipped as Melee).arc / 2) {
 				attacking = false;
+				RotateToMouse();
 			}
 		}
 
@@ -40,7 +55,7 @@ public class HoldingPoint : MonoBehaviour {
 		// Use the angle to determine the position of the held object
 		float xpos = Mathf.Cos(Mathf.Deg2Rad * angle) * radius;
 		float ypos = Mathf.Sin(Mathf.Deg2Rad * angle) * radius;
-		transform.localPosition = new Vector3(player.transform.position.x + xpos, player.transform.position.y + ypos, 0);
+		transform.localPosition = new Vector3(xpos, ypos, 0);
 	}
 
 	private float RotateToMouse() {
@@ -48,9 +63,7 @@ public class HoldingPoint : MonoBehaviour {
 
 		//Determine angle of mouse
 		angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
-		if (angle < 0.0f) {
-			angle += 360.0f;
-		}
+		angle = angle < 0 ? angle + 360 : angle;
 		return angle;
 	}
 }

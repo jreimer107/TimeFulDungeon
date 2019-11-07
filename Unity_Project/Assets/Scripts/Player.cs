@@ -15,6 +15,7 @@ public class Player : MonoBehaviour {
 	private Rigidbody2D rbody;
 	private CircleCollider2D pickupTrigger;
 	private BoxCollider2D collisionCollider;
+	private SpriteRenderer spriteRenderer;
 
 	#region Singleton
 	public static Player instance;
@@ -31,6 +32,7 @@ public class Player : MonoBehaviour {
 		rbody = GetComponent<Rigidbody2D>();
 		pickupTrigger = GetComponentInChildren<CircleCollider2D>();
 		collisionCollider = GetComponent<BoxCollider2D>();
+		spriteRenderer = GetComponent<SpriteRenderer>();
 	}
 
 	// Update is called once per frame
@@ -61,7 +63,7 @@ public class Player : MonoBehaviour {
 
 	private void Flip() {
 		FacingRight = !FacingRight;
-		transform.Rotate(0f, 180f, 0f);
+		spriteRenderer.flipX = !spriteRenderer.flipX;
 	}
 
 	public CircleCollider2D pickupTriggerCollider { get => pickupTrigger; }
