@@ -27,16 +27,16 @@ public class Room {
 
 	//Spaces are the areas where another room cannot be (too close to this one)
 	public int UpperSpace {
-		get { return UpperBound + GameObject.Find("Tilemap").GetComponent<GenConfig>().RoomGap; }
+		get { return UpperBound + BoardHolder.instance.genConfig.RoomGap; }
 	}
 	public int LowerSpace {
-		get { return LowerBound - GameObject.Find("Tilemap").GetComponent<GenConfig>().RoomGap; }
+		get { return LowerBound - BoardHolder.instance.genConfig.RoomGap; }
 	}
 	public int LeftSpace {
-		get { return LeftBound - GameObject.Find("Tilemap").GetComponent<GenConfig>().RoomGap; }
+		get { return LeftBound - BoardHolder.instance.genConfig.RoomGap; }
 	}
 	public int RightSpace {
-		get { return RightBound + GameObject.Find("Tilemap").GetComponent<GenConfig>().RoomGap; }
+		get { return RightBound + BoardHolder.instance.genConfig.RoomGap; }
 	}
 
 	public Room(int x, int y, int w, int h) {

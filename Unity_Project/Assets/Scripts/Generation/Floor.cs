@@ -37,7 +37,7 @@ public class Floor {
 	//Level generation!
 	public Floor() {
 		//Set up variables
-		gencfg = GameObject.Find("Tilemap").GetComponent<GenConfig>();
+		gencfg = BoardHolder.instance.genConfig;
 
 		//Create room list
 		room_list = new List<Room>();

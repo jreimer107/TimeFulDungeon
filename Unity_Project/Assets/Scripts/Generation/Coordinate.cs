@@ -56,14 +56,14 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 		// successors.RemoveAll(x => !x.ValidSuccessor(tiles, this, prev, endpoints));
 		return successors;
 	}
-	
+
 	//The whole point of this is to avoid 2x2 path boxes, which look ugly
 	//To avoid a 2x2 box you need to make sure that:
 	//	you dont put a tile in a corner
 	//	you dont put two tiles alongside another path
 	//This includes the current tile, as that would be a tile in this situation
 	//So just don't make a corner (including the current tile)
-	public bool ValidSuccessor(Floor.TileType[, ] tiles, Coordinate p, Coordinate gp, Room[] endpoints) {
+	public bool ValidSuccessor(Floor.TileType[,] tiles, Coordinate p, Coordinate gp, Room[] endpoints) {
 		//Check if in endpoint room (don't check for rules anymore)
 		if (this.InRooms(endpoints)) {
 			return true;
@@ -129,7 +129,7 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 	}
 
 	public bool IsInBounds() {
-		GenConfig gencfg = GameObject.Find("Tilemap").GetComponent<GenConfig>();
+		GenConfig gencfg = BoardHolder.instance.genConfig;
 		return !(
 			x < 0 ||
 			x >= gencfg.FloorWidth ||
@@ -139,7 +139,7 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 	}
 
 	public static bool IsInBounds(int x, int y) {
-		GenConfig gencfg = GameObject.Find("Tilemap").GetComponent<GenConfig>();
+		GenConfig gencfg = BoardHolder.instance.genConfig;
 		return !(
 			x < 0 ||
 			x >= gencfg.FloorWidth ||
