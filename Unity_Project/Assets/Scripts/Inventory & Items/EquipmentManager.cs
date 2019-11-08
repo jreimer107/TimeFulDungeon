@@ -3,7 +3,6 @@
 public class EquipmentManager : MonoBehaviour {
 	private Inventory inventory;
 	public Equipment[] currentEquipment;
-
 	public delegate void OnEquipmentChanged();
 	public OnEquipmentChanged onEquipmentChangedCallback;
 
@@ -24,8 +23,11 @@ public class EquipmentManager : MonoBehaviour {
 		currentEquipment = new Equipment[numSlots];
 	}
 
-	// Assigns equipment item to correct slot.
-	//If there was already something equipped, puts that back in the inventory.
+	/// <summary>
+	/// Assigns equipment item to correct slot. If there was already something
+	/// equipped, puts that back in the inventory.
+	/// </summary>
+	/// <param name="newEquip">The new item to equip.</param>
 	public void Equip(Equipment newEquip) {
 		int slotIndex = (int)newEquip.type;
 		Equipment currentEquip = currentEquipment[slotIndex];
@@ -47,7 +49,10 @@ public class EquipmentManager : MonoBehaviour {
 		}
 	}
 
-	//Unequips an item and deletes it.
+	/// <summary>
+	/// Unequips an item and deletes it.
+	/// </summary>
+	/// <param name="slotIndex">EquipType index of item to delete.</param>
 	public void DeleteEquipped(int slotIndex) {
 		currentEquipment[slotIndex] = null;
 		if (onEquipmentChangedCallback != null) {
@@ -55,7 +60,10 @@ public class EquipmentManager : MonoBehaviour {
 		}
 	}
 
-	//Unequips an item and adds it back into the inventory.
+	/// <summary>
+	/// Unequips an item and adds it back into the inventory.
+	/// </summary>
+	/// <param name="slotIndex">EquipType index of item to unequip.</param>
 	public void Unequip(int slotIndex) {
 		Equipment unequipped = currentEquipment[slotIndex];
 		if (unequipped != null) {

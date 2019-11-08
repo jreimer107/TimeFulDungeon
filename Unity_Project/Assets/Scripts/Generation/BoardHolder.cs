@@ -5,14 +5,14 @@ using UnityEngine.Tilemaps;
 
 public class BoardHolder : MonoBehaviour {
 
-	[SerializeField] private Tile roomTile;
-	[SerializeField] private Tile borderTile;
-	[SerializeField] private Tile pathTile;
-	[SerializeField] private Tile entranceTile;
-	[SerializeField] private Tile exitTile;
-	[SerializeField] private RuleTile wallTile;
+	[SerializeField] private Tile roomTile = null;
+	[SerializeField] private Tile borderTile = null;
+	[SerializeField] private Tile pathTile = null;
+	[SerializeField] private Tile entranceTile = null;
+	[SerializeField] private Tile exitTile = null;
+	[SerializeField] private RuleTile wallTile = null;
 
-	[SerializeField] private Tilemap groundTilemap, wallTilemap;
+	[SerializeField] private Tilemap groundTilemap = null, wallTilemap = null;
 	private Floor floor;
 
 	public GenConfig genConfig;
