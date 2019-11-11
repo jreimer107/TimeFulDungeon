@@ -18,9 +18,11 @@ MonoBehaviour:
   sprite: {fileID: 21300004, guid: f3276b2f6f1ca2f4183d16ed155ff398, type: 3}
   stackable: 0
   count: 0
+  idleClip: {fileID: 0}
+  actionClip: {fileID: 0}
   type: 0
-  arc: 0
+  arc: 360
   damage: 0
   range: 0
-  speed: 0
+  speed: 5
   cooldown: 0

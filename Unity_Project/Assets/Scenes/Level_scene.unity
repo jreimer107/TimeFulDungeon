@@ -1226,7 +1226,7 @@ GameObject:
   - component: {fileID: 937391308}
   - component: {fileID: 937391309}
   m_Layer: 13
-  m_Name: HeldItem
+  m_Name: HandSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1283,16 +1283,16 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 562810233
   m_SortingLayer: 3
-  m_SortingOrder: 1
-  m_Sprite: {fileID: 0}
+  m_SortingOrder: 2
+  m_Sprite: {fileID: 21300000, guid: 27e9b9f891c079e478cd91f9917e6e0a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.21875, y: 0.21875}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1001 &937628748
@@ -1305,7 +1305,7 @@ PrefabInstance:
     - target: {fileID: 8079311984827461445, guid: 397a3396a0ec57248930da365a84cfde,
         type: 3}
       propertyPath: m_Name
-      value: Test Melee Pickup (1)
+      value: Slappy Pickup
       objectReference: {fileID: 0}
     - target: {fileID: 8079311984827461440, guid: 397a3396a0ec57248930da365a84cfde,
         type: 3}
@@ -1366,7 +1366,7 @@ PrefabInstance:
         type: 3}
       propertyPath: item
       value: 
-      objectReference: {fileID: 11400000, guid: 495e5b7c1d6f84846a59c95cc018fa2b,
+      objectReference: {fileID: 11400000, guid: 31bb7c865af2ff24f80ce2f8dfd2959f,
         type: 2}
     - target: {fileID: 9022681019382425449, guid: 397a3396a0ec57248930da365a84cfde,
         type: 3}
@@ -3193,6 +3193,26 @@ PrefabInstance:
       propertyPath: radius
       value: 0.75
       objectReference: {fileID: 0}
+    - target: {fileID: 704915049115429106, guid: 80660aa9d9fe86440a39d8636dff52fb,
+        type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 704915049115429106, guid: 80660aa9d9fe86440a39d8636dff52fb,
+        type: 3}
+      propertyPath: testClip
+      value: 
+      objectReference: {fileID: 7400000, guid: 43a94df92163b5c4d9af8b466fd38293, type: 2}
+    - target: {fileID: 704915049115429106, guid: 80660aa9d9fe86440a39d8636dff52fb,
+        type: 3}
+      propertyPath: testIdleClip
+      value: 
+      objectReference: {fileID: 7400000, guid: 9b136b77d79c84540a3caa85dfeb706d, type: 2}
+    - target: {fileID: 704915049115429106, guid: 80660aa9d9fe86440a39d8636dff52fb,
+        type: 3}
+      propertyPath: testAttackClip
+      value: 
+      objectReference: {fileID: 7400000, guid: 43a94df92163b5c4d9af8b466fd38293, type: 2}
     - target: {fileID: 704915049115429109, guid: 80660aa9d9fe86440a39d8636dff52fb,
         type: 3}
       propertyPath: m_SortingLayerID
@@ -3207,12 +3227,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 27e9b9f891c079e478cd91f9917e6e0a,
-        type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 704915049115429109, guid: 80660aa9d9fe86440a39d8636dff52fb,
         type: 3}
       propertyPath: m_WasSpriteAssigned
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 704915049115429109, guid: 80660aa9d9fe86440a39d8636dff52fb,
         type: 3}
@@ -3227,7 +3246,7 @@ PrefabInstance:
     - target: {fileID: 704915049115429109, guid: 80660aa9d9fe86440a39d8636dff52fb,
         type: 3}
       propertyPath: m_SortingOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 80660aa9d9fe86440a39d8636dff52fb, type: 3}
@@ -3245,11 +3264,11 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8424532016187830122}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 74c7c83153ccc4e45ab2df22edb2a8ae, type: 2}
+  m_Controller: {fileID: 9100000, guid: 197bd3e458437714987051f274f2f933, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 1
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
@@ -3262,3 +3281,21 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 8424532016187830121}
   m_PrefabAsset: {fileID: 0}
+--- !u!68 &8424532016187830127
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8424532016187830122}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: 0.0025425851, y: -0.0013330039}
+  - {x: 0.0010532439, y: -0.0007605925}

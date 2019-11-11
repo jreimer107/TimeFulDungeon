@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: Test Melee
+  m_Name: Slappy
   m_EditorClassIdentifier: Assembly-CSharp::Melee
-  name: Test Melee
-  ID: 0
+  name: 
+  ID: 1
   description: 
-  sprite: {fileID: 21300012, guid: f3276b2f6f1ca2f4183d16ed155ff398, type: 3}
+  sprite: {fileID: 7417140616732155178, guid: d5e7c31c509b3b14d945fe95aebbf94c, type: 3}
   stackable: 0
-  count: 1
-  idleClip: {fileID: 0}
-  actionClip: {fileID: 0}
+  count: 0
+  idleClip: {fileID: 7400000, guid: 9b136b77d79c84540a3caa85dfeb706d, type: 2}
+  actionClip: {fileID: 7400000, guid: 43a94df92163b5c4d9af8b466fd38293, type: 2}
   type: 0
-  arc: 180
+  arc: 360
   damage: 0
-  range: 0
-  speed: 5
+  range: 2
+  speed: 7
   cooldown: 0

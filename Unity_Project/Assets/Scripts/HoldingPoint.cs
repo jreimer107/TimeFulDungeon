@@ -20,7 +20,10 @@ public class HoldingPoint : MonoBehaviour {
 	private bool shielding;
 	private GameObject child;
 	private SpriteRenderer spriteRenderer;
-	private PolygonCollider2D hitbox;
+	private EdgeCollider2D hitbox;
+	public Animator animator;
+	public AnimatorOverrideController animatorOverrideController;
+	public AnimationClip testIdleClip, testAttackClip;
 
 	#region Singleton
 	public static HoldingPoint instance;
@@ -36,8 +39,14 @@ public class HoldingPoint : MonoBehaviour {
 		player = Player.instance;
 		equipmentManager = EquipmentManager.instance;
 		equipmentManager.onEquipmentChangedCallback += UpdateRendered;
-		child = transform.GetChild(0).gameObject;
-		spriteRenderer = GetComponentsInChildren<SpriteRenderer>()[1];
+		spriteRenderer = GetComponent<SpriteRenderer>();
+		hitbox = GetComponent<EdgeCollider2D>();
+		hitbox.enabled = false;
+
+		// Setup runtime clip changes
+		animator = GetComponent<Animator>();
+		animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
+		animator.runtimeAnimatorController = animatorOverrideController;
 	}
 
 	private void Update() {
@@ -59,6 +68,8 @@ public class HoldingPoint : MonoBehaviour {
 		// Check for attacking
 		if (inHand != null && !attacking && Input.GetButton("Fire1") && !EventSystem.current.IsPointerOverGameObject()) {
 			attacking = true;
+			hitbox.enabled = true;
+			animator.SetBool("action", true);
 			startSwingAngle = angle;
 			angle += (inHand as Melee).arc / 2;
 		}
@@ -72,7 +83,10 @@ public class HoldingPoint : MonoBehaviour {
 		} else {
 			angle -= (inHand as Melee).speed;
 			if (angle <= startSwingAngle - (inHand as Melee).arc / 2) {
+				Debug.Log("Attack ending");
 				attacking = false;
+				hitbox.enabled = false;
+				animator.SetBool("action", false);
 				RotateToMouse();
 			}
 		}
@@ -126,13 +140,19 @@ public class HoldingPoint : MonoBehaviour {
 	/// Swaps the currently rendered item to the in hand item.
 	/// </summary>
 	private void SwapRendered() {
-		if (hitbox != null) {
-			Destroy(hitbox);
-		}
 		if (inHand != null) {
 			spriteRenderer.sprite = inHand.sprite;
-			hitbox = child.AddComponent<PolygonCollider2D>();
-			hitbox.enabled = false;
+			hitbox.points = new Vector2[] { new Vector2(0, 0), new Vector2((inHand as Melee).range, 0) };
+			animatorOverrideController["idle"] = inHand.idleClip;
+			animatorOverrideController["action"] = inHand.actionClip;
+
+			//Set animation speed
+			float animationTime = inHand.actionClip.length;
+			float numUpdates = (inHand as Melee).arc / (inHand as Melee).speed;
+			float moveTime = numUpdates * Time.fixedDeltaTime;
+			float speedMultiplier = animationTime / moveTime;
+			Debug.Log("Setting speed to " + speedMultiplier);
+			animator.SetFloat("speed", speedMultiplier);
 		}
 	}
 

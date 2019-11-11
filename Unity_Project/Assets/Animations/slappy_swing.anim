@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: slappy_arm
+  m_Name: slappy_swing
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -20,46 +20,34 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 7417140616732155178, guid: d5e7c31c509b3b14d945fe95aebbf94c,
-        type: 3}
-    - time: 0.083333336
-      value: {fileID: -5423952870984375481, guid: d5e7c31c509b3b14d945fe95aebbf94c,
-        type: 3}
-    - time: 0.16666667
-      value: {fileID: 1017737239604594179, guid: d5e7c31c509b3b14d945fe95aebbf94c,
-        type: 3}
-    - time: 0.25
-      value: {fileID: 8081327373677228898, guid: d5e7c31c509b3b14d945fe95aebbf94c,
-        type: 3}
-    - time: 0.33333334
       value: {fileID: 6605577917195954177, guid: d5e7c31c509b3b14d945fe95aebbf94c,
         type: 3}
-    - time: 0.41666666
+    - time: 0.0625
       value: {fileID: -1444651072897593620, guid: d5e7c31c509b3b14d945fe95aebbf94c,
         type: 3}
-    - time: 0.5
+    - time: 0.125
       value: {fileID: 1445579359106361881, guid: d5e7c31c509b3b14d945fe95aebbf94c,
         type: 3}
-    - time: 0.8333333
+    - time: 0.1875
       value: {fileID: 4858959370165934580, guid: d5e7c31c509b3b14d945fe95aebbf94c,
         type: 3}
-    - time: 0.9166667
+    - time: 0.25
       value: {fileID: -7838861829655431469, guid: d5e7c31c509b3b14d945fe95aebbf94c,
         type: 3}
-    - time: 1
+    - time: 0.3125
       value: {fileID: 4466864372759405375, guid: d5e7c31c509b3b14d945fe95aebbf94c,
         type: 3}
-    - time: 1.0833334
+    - time: 0.375
       value: {fileID: -8648848354640722824, guid: d5e7c31c509b3b14d945fe95aebbf94c,
         type: 3}
-    - time: 1.1666666
+    - time: 0.4375
       value: {fileID: -4909612258474767043, guid: d5e7c31c509b3b14d945fe95aebbf94c,
         type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
     script: {fileID: 0}
-  m_SampleRate: 12
+  m_SampleRate: 16
   m_WrapMode: 0
   m_Bounds:
     m_Center: {x: 0, y: 0, z: 0}
@@ -74,10 +62,6 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 7417140616732155178, guid: d5e7c31c509b3b14d945fe95aebbf94c, type: 3}
-    - {fileID: -5423952870984375481, guid: d5e7c31c509b3b14d945fe95aebbf94c, type: 3}
-    - {fileID: 1017737239604594179, guid: d5e7c31c509b3b14d945fe95aebbf94c, type: 3}
-    - {fileID: 8081327373677228898, guid: d5e7c31c509b3b14d945fe95aebbf94c, type: 3}
     - {fileID: 6605577917195954177, guid: d5e7c31c509b3b14d945fe95aebbf94c, type: 3}
     - {fileID: -1444651072897593620, guid: d5e7c31c509b3b14d945fe95aebbf94c, type: 3}
     - {fileID: 1445579359106361881, guid: d5e7c31c509b3b14d945fe95aebbf94c, type: 3}
@@ -91,12 +75,12 @@ AnimationClip:
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 1.25
+    m_StopTime: 0.5
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
     m_HasAdditiveReferencePose: 0
-    m_LoopTime: 1
+    m_LoopTime: 0
     m_LoopBlend: 0
     m_LoopBlendOrientation: 0
     m_LoopBlendPositionY: 0

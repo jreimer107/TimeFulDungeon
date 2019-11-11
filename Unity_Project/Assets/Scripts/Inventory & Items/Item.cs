@@ -9,6 +9,8 @@ public class Item : ScriptableObject, IEquatable<Item> {
 	public Sprite sprite;
 	public bool stackable;
 	public int count;
+	public AnimationClip idleClip;
+	public AnimationClip actionClip;
 
 	public Item(string name, int ID, string description, Sprite sprite, bool stackable, int count) {
 		this.name = name;
