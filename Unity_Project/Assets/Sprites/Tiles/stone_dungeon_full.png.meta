@@ -1,142 +1,112 @@
 fileFormatVersion: 2
-guid: 985617c4f63157f4183852197cc6450c
+guid: 94122116d81bd99449127cc48fc63463
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5192268262392575554
-    second: wall_sets_varied_0
+      213: -6460623491584916632
+    second: stone_dungeon_full_0
   - first:
-      213: 5279517396668000053
-    second: wall_sets_varied_1
+      213: -3297870479424522291
+    second: stone_dungeon_full_1
   - first:
-      213: -630272539940401033
-    second: wall_sets_varied_2
+      213: 6162187644996894310
+    second: stone_dungeon_full_2
   - first:
-      213: 6915016313948594445
-    second: wall_sets_varied_3
+      213: -874219349650334655
+    second: stone_dungeon_full_3
   - first:
-      213: -4650894858779395586
-    second: wall_sets_varied_4
+      213: 3066942880379377781
+    second: stone_dungeon_full_4
   - first:
-      213: -1838512998271719169
-    second: wall_sets_varied_5
+      213: -5076610828994909715
+    second: stone_dungeon_full_5
   - first:
-      213: 4151980267902432990
-    second: wall_sets_varied_6
+      213: -3731700642983960829
+    second: stone_dungeon_full_6
   - first:
-      213: 3042660089219566850
-    second: wall_sets_varied_7
+      213: 6195592594987902368
+    second: stone_dungeon_full_7
   - first:
-      213: -886724554653380192
-    second: wall_sets_varied_8
+      213: -2188543636677382482
+    second: stone_dungeon_full_8
   - first:
-      213: 1620558430791462672
-    second: wall_sets_varied_9
+      213: -83768638449426214
+    second: stone_dungeon_full_9
   - first:
-      213: 375850503410114987
-    second: wall_sets_varied_10
+      213: -4195928506039220912
+    second: stone_dungeon_full_10
   - first:
-      213: -3063916210297329218
-    second: wall_sets_varied_11
+      213: -8108406020570241377
+    second: stone_dungeon_full_11
   - first:
-      213: -1345452326844719037
-    second: wall_sets_varied_12
+      213: 1187069253959970995
+    second: stone_dungeon_full_12
   - first:
-      213: -4393294368421309763
-    second: wall_sets_varied_13
+      213: -1233576279533814853
+    second: stone_dungeon_full_13
   - first:
-      213: -1579348755396746654
-    second: wall_sets_varied_14
+      213: 7840931379372409267
+    second: stone_dungeon_full_14
   - first:
-      213: 2019497525576014838
-    second: wall_sets_varied_15
+      213: -4265956107412912447
+    second: stone_dungeon_full_15
   - first:
-      213: -5688578958491729657
-    second: wall_sets_varied_16
+      213: 713465468781016641
+    second: stone_dungeon_full_16
   - first:
-      213: 6663581674052849866
-    second: wall_sets_varied_17
+      213: -5611496697426109549
+    second: stone_dungeon_full_17
   - first:
-      213: 6419817356806884432
-    second: wall_sets_varied_18
+      213: -1287074271850763819
+    second: stone_dungeon_full_18
   - first:
-      213: -306659182897307468
-    second: wall_sets_varied_19
+      213: -1297428236948549795
+    second: stone_dungeon_full_19
   - first:
-      213: -3797234170462923970
-    second: wall_sets_varied_20
+      213: 1587475969270119567
+    second: stone_dungeon_full_20
   - first:
-      213: 3136354133251892376
-    second: wall_sets_varied_21
+      213: -1375402386149064047
+    second: stone_dungeon_full_21
   - first:
-      213: -6988908928017138491
-    second: wall_sets_varied_22
+      213: 6664097740773054631
+    second: stone_dungeon_full_22
   - first:
-      213: 5438808877387191771
-    second: wall_sets_varied_23
+      213: 6311782378257178611
+    second: stone_dungeon_full_23
   - first:
-      213: -2912918687410215946
-    second: wall_sets_varied_24
+      213: -7634929252060741762
+    second: stone_dungeon_full_24
   - first:
-      213: 110510484886305986
-    second: wall_sets_varied_25
+      213: -1023072187425661412
+    second: stone_dungeon_full_25
   - first:
-      213: -5014608476406868133
-    second: wall_sets_varied_26
+      213: -4171398088223020450
+    second: stone_dungeon_full_26
   - first:
-      213: -8859974373609083056
-    second: wall_sets_varied_27
+      213: -3544077523480716992
+    second: stone_dungeon_full_27
   - first:
-      213: -5342985320868017344
-    second: wall_sets_varied_28
+      213: -5593753357073739542
+    second: stone_dungeon_full_28
   - first:
-      213: 3573560513161448537
-    second: wall_sets_varied_29
+      213: -2806256323481576842
+    second: stone_dungeon_full_29
   - first:
-      213: -2905751727931919003
-    second: wall_sets_varied_30
+      213: 2241288924759453177
+    second: stone_dungeon_full_30
   - first:
-      213: -6196338382311517100
-    second: wall_sets_varied_31
+      213: -5133219843101490980
+    second: stone_dungeon_full_31
   - first:
-      213: -4852611055534177192
-    second: wall_sets_varied_32
+      213: -815177251657709423
+    second: stone_dungeon_full_32
   - first:
-      213: 2098383473621648445
-    second: wall_sets_varied_33
+      213: -2658678458342731681
+    second: stone_dungeon_full_33
   - first:
-      213: 38698918379452580
-    second: wall_sets_varied_34
-  - first:
-      213: 8382700689427310108
-    second: wall_sets_varied_35
-  - first:
-      213: 686279804862073588
-    second: wall_sets_varied_36
-  - first:
-      213: -5640320591694681080
-    second: wall_sets_varied_37
-  - first:
-      213: 6203797015134149072
-    second: wall_sets_varied_38
-  - first:
-      213: 2337587452540039526
-    second: wall_sets_varied_39
-  - first:
-      213: -299395240540532250
-    second: wall_sets_varied_40
-  - first:
-      213: -2962939585301931404
-    second: wall_sets_varied_41
-  - first:
-      213: -8452033838089667088
-    second: wall_sets_varied_42
-  - first:
-      213: -6218338996164384697
-    second: wall_sets_varied_43
-  - first:
-      213: 1322456665209842756
-    second: wall_sets_varied_44
+      213: -3011389105750689503
+    second: stone_dungeon_full_34
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -221,11 +191,11 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: wall_sets_varied_0
+      name: stone_dungeon_full_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 256
+        y: 160
         width: 32
         height: 32
       alignment: 0
@@ -235,18 +205,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c7219d2ea24ff5d4486035334f1fa25d
-      internalID: -5192268262392575554
+      spriteID: a39a9672cb7f1464e82f6a22f75562ec
+      internalID: -6460623491584916632
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_1
+      name: stone_dungeon_full_1
       rect:
         serializedVersion: 2
         x: 32
-        y: 256
+        y: 160
         width: 32
         height: 32
       alignment: 0
@@ -256,39 +226,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 245eb15c5812b6441887272af9524b65
-      internalID: 5279517396668000053
+      spriteID: ea0e3609a720b244cb471aa68c203793
+      internalID: -3297870479424522291
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_2
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 256
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 68d5aac73830a304fae0e7fc9f4dd6d0
-      internalID: -630272539940401033
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_3
+      name: stone_dungeon_full_2
       rect:
         serializedVersion: 2
         x: 96
-        y: 256
+        y: 160
         width: 32
         height: 32
       alignment: 0
@@ -298,18 +247,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: de40e0af44e1914448b1d466c1fa3d97
-      internalID: 6915016313948594445
+      spriteID: a9c0979cdc6122040a5875e3349e47d9
+      internalID: 6162187644996894310
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_4
+      name: stone_dungeon_full_3
       rect:
         serializedVersion: 2
         x: 128
-        y: 256
+        y: 160
         width: 32
         height: 32
       alignment: 0
@@ -319,18 +268,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 293e8775223af174ab7ea7a141d1d887
-      internalID: -4650894858779395586
+      spriteID: 538c77b10cb04b54ca59713d43d54ccc
+      internalID: -874219349650334655
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_5
+      name: stone_dungeon_full_4
       rect:
         serializedVersion: 2
         x: 160
-        y: 256
+        y: 160
         width: 32
         height: 32
       alignment: 0
@@ -340,18 +289,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: db73173136a07a942ad90a83d894edfd
-      internalID: -1838512998271719169
+      spriteID: 789a64dfe3cfbb545a71140b385b0c76
+      internalID: 3066942880379377781
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_6
+      name: stone_dungeon_full_5
       rect:
         serializedVersion: 2
         x: 0
-        y: 224
+        y: 128
         width: 32
         height: 32
       alignment: 0
@@ -361,18 +310,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9665bb633b4b7d445848a61b4ed1f46e
-      internalID: 4151980267902432990
+      spriteID: 4f2a5343d370f164590a1d09496e03c4
+      internalID: -5076610828994909715
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_7
+      name: stone_dungeon_full_6
       rect:
         serializedVersion: 2
         x: 32
-        y: 224
+        y: 128
         width: 32
         height: 32
       alignment: 0
@@ -382,18 +331,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 17f8116bc5bea38408f57ff88c08b26b
-      internalID: 3042660089219566850
+      spriteID: b86a0e4b115b9664c8be628aa1e89311
+      internalID: -3731700642983960829
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_8
+      name: stone_dungeon_full_7
       rect:
         serializedVersion: 2
         x: 64
-        y: 224
+        y: 128
         width: 32
         height: 32
       alignment: 0
@@ -403,18 +352,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f09c0b61f82772648823aa1dcf91aa07
-      internalID: -886724554653380192
+      spriteID: 66b6dd88c9508b2429f71eee3f9e6b96
+      internalID: 6195592594987902368
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_9
+      name: stone_dungeon_full_8
       rect:
         serializedVersion: 2
         x: 96
-        y: 224
+        y: 128
         width: 32
         height: 32
       alignment: 0
@@ -424,18 +373,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bc20e30d94b78bc42a24290b0f01c78b
-      internalID: 1620558430791462672
+      spriteID: be3c6c0562e695c44b222230463a6445
+      internalID: -2188543636677382482
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_10
+      name: stone_dungeon_full_9
       rect:
         serializedVersion: 2
         x: 128
-        y: 224
+        y: 128
         width: 32
         height: 32
       alignment: 0
@@ -445,18 +394,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 984f5cde534aca74c9ff73dee062ce4d
-      internalID: 375850503410114987
+      spriteID: 66442315af681524d9e61bdbfdecd25a
+      internalID: -83768638449426214
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_11
+      name: stone_dungeon_full_10
       rect:
         serializedVersion: 2
         x: 160
-        y: 224
+        y: 128
         width: 32
         height: 32
       alignment: 0
@@ -466,18 +415,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6fe35830b71632f4db4fe15c9ec803bd
-      internalID: -3063916210297329218
+      spriteID: 3a19e6c6cd76c1e4fabe9322d7222e78
+      internalID: -4195928506039220912
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_12
+      name: stone_dungeon_full_11
       rect:
         serializedVersion: 2
         x: 0
-        y: 192
+        y: 96
         width: 32
         height: 32
       alignment: 0
@@ -487,18 +436,81 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 86dcf376ff4da124eb3ea32bcfe7ec48
-      internalID: -1345452326844719037
+      spriteID: 29c2c9257066a9546b5bdea800f61802
+      internalID: -8108406020570241377
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_13
+      name: stone_dungeon_full_12
       rect:
         serializedVersion: 2
         x: 32
-        y: 192
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4a592a53baa7db04da22b923db15a37a
+      internalID: 1187069253959970995
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stone_dungeon_full_13
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8376cd33ddb71354dbd2dde03bd7a4e6
+      internalID: -1233576279533814853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stone_dungeon_full_14
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0750db7e3b8d0584f8f3339a9765ff61
+      internalID: 7840931379372409267
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stone_dungeon_full_15
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 96
         width: 32
         height: 32
       alignment: 0
@@ -512,455 +524,14 @@ TextureImporter:
         - {x: 16, y: -3}
       tessellationDetail: 0
       bones: []
-      spriteID: 12bee0d9870d8ad4da0fb0a0eb8f3d39
-      internalID: -4393294368421309763
+      spriteID: 0c2b35762e83d7749af404f6ee46b025
+      internalID: -4265956107412912447
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_14
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 192
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bb4fdda28084c8648bad37606e3570cc
-      internalID: -1579348755396746654
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_15
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 192
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b3babfb6c850b8041befd7d19388af38
-      internalID: 2019497525576014838
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_16
-      rect:
-        serializedVersion: 2
-        x: 128
-        y: 192
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d089b5095bf6f8245b96201692db7a61
-      internalID: -5688578958491729657
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_17
-      rect:
-        serializedVersion: 2
-        x: 160
-        y: 192
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f1a7d95c25ef8544e89f476f4b7311e8
-      internalID: 6663581674052849866
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_18
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 160
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a718161908a434e4db9819b471aa933e
-      internalID: 6419817356806884432
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_19
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 160
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ded615a92ad89754ab4e855e3f134779
-      internalID: -306659182897307468
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_20
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 160
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b4e2df40c8c6285489010a2cca13cae2
-      internalID: -3797234170462923970
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_21
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 160
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: fa9cea55bc4aeb4498e44e2d396d2073
-      internalID: 3136354133251892376
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_22
-      rect:
-        serializedVersion: 2
-        x: 128
-        y: 160
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8aaa6bd7caf4f4949a471d978d62bfc3
-      internalID: -6988908928017138491
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_23
-      rect:
-        serializedVersion: 2
-        x: 160
-        y: 160
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8e34cd728393f214c8107f4e0a86eada
-      internalID: 5438808877387191771
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_24
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 128
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a2b7e9038b4d3804cad1622f1c1c7880
-      internalID: -2912918687410215946
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_25
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 128
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: db8dcfb1569f35444b0a119c8a75283a
-      internalID: 110510484886305986
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_26
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 128
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: fe964965389933648b6c6a54a6572aea
-      internalID: -5014608476406868133
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_27
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 128
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0f0d6d8568e26034ead6c7961b9a4ef7
-      internalID: -8859974373609083056
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_28
-      rect:
-        serializedVersion: 2
-        x: 128
-        y: 128
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3e880972de50c5f46a91bd68a81ce6d3
-      internalID: -5342985320868017344
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_29
-      rect:
-        serializedVersion: 2
-        x: 160
-        y: 128
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 1fb8beaee9067a242b13aef7ab12b1fd
-      internalID: 3573560513161448537
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_30
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 96
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f7efc9be7bbd3164aa839748d0580fe5
-      internalID: -2905751727931919003
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_31
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 96
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6035ebdfec198994c82c5835e044b614
-      internalID: -6196338382311517100
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_32
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 96
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d3edbdbba4d60104d9a81ec9ad88c0e6
-      internalID: -4852611055534177192
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_33
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 96
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4ef473457a3b77a4bb9233ff9dcc6c3e
-      internalID: 2098383473621648445
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_34
-      rect:
-        serializedVersion: 2
-        x: 128
-        y: 96
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 77f9212821718b14aa19060dd4d010d8
-      internalID: 38698918379452580
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wall_sets_varied_35
+      name: stone_dungeon_full_16
       rect:
         serializedVersion: 2
         x: 160
@@ -974,14 +545,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4608793c770448b4984fa11036a82845
-      internalID: 8382700689427310108
+      spriteID: a928f3313cc4ba24ba5dac6707cb755e
+      internalID: 713465468781016641
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_36
+      name: stone_dungeon_full_17
       rect:
         serializedVersion: 2
         x: 0
@@ -995,14 +566,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7b6e2d378bdea9d46bc507dd8bb1d9cd
-      internalID: 686279804862073588
+      spriteID: 8c9effbe50b3b484e94747ca4d58a966
+      internalID: -5611496697426109549
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_37
+      name: stone_dungeon_full_18
       rect:
         serializedVersion: 2
         x: 32
@@ -1016,14 +587,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b06d193020127b343a48441f5fe33bca
-      internalID: -5640320591694681080
+      spriteID: cf2b53dc600a4044591587665a44659d
+      internalID: -1287074271850763819
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_38
+      name: stone_dungeon_full_19
       rect:
         serializedVersion: 2
         x: 64
@@ -1037,14 +608,77 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dc7c87e8a00d9214fbb7c01566ee07b8
-      internalID: 6203797015134149072
+      spriteID: 2a6690a407f3dbe439ea095a27b12674
+      internalID: -1297428236948549795
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_39
+      name: stone_dungeon_full_20
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ed0827ae911d1a54a91e4bbdba3667f8
+      internalID: 1587475969270119567
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stone_dungeon_full_21
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a48c051b6d97235409547b9bb81a1a35
+      internalID: -1375402386149064047
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stone_dungeon_full_22
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0e697c04de33a554391f7b335e054d07
+      internalID: 6664097740773054631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stone_dungeon_full_23
       rect:
         serializedVersion: 2
         x: 0
@@ -1058,14 +692,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f91797fbd4410454f8531bed633b460f
-      internalID: 2337587452540039526
+      spriteID: 2d4a1b1c4cbe15c4693494ab5f545d4c
+      internalID: 6311782378257178611
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_40
+      name: stone_dungeon_full_24
       rect:
         serializedVersion: 2
         x: 32
@@ -1079,14 +713,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3b1b2edd7237f344e93c051f3d154e73
-      internalID: -299395240540532250
+      spriteID: 4feeeed22a460ab40b8a4b28630571a9
+      internalID: -7634929252060741762
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_41
+      name: stone_dungeon_full_25
       rect:
         serializedVersion: 2
         x: 64
@@ -1100,14 +734,77 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a5b0557696648d2478d68330caac0320
-      internalID: -2962939585301931404
+      spriteID: 1379575fca674e243a7a3f97a49bb1bb
+      internalID: -1023072187425661412
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_42
+      name: stone_dungeon_full_26
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0d633af7ebc291c41a6d11e9101b4c07
+      internalID: -4171398088223020450
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stone_dungeon_full_27
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fe4a8b45b5c06d24fabdb35bb6ec1067
+      internalID: -3544077523480716992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stone_dungeon_full_28
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4b677c79ff8b4794a8047aecf6ea658a
+      internalID: -5593753357073739542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stone_dungeon_full_29
       rect:
         serializedVersion: 2
         x: 0
@@ -1121,14 +818,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 37cea7f39bce444468d8ea73143d4386
-      internalID: -8452033838089667088
+      spriteID: d241cb1b1f1919143b78dd07ffb7fd9b
+      internalID: -2806256323481576842
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_43
+      name: stone_dungeon_full_30
       rect:
         serializedVersion: 2
         x: 32
@@ -1142,14 +839,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 75883cc3e876d524bb4e661fa7834c2f
-      internalID: -6218338996164384697
+      spriteID: 4535686ecbf5b21488db79dbd8d3f0ca
+      internalID: 2241288924759453177
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall_sets_varied_44
+      name: stone_dungeon_full_31
       rect:
         serializedVersion: 2
         x: 64
@@ -1163,8 +860,71 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ccc4b99420f192c43854696b85917854
-      internalID: 1322456665209842756
+      spriteID: e739cab1616a34749852f85740dfea43
+      internalID: -5133219843101490980
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stone_dungeon_full_32
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c7f7ed64b48638244bef892a8f8d7717
+      internalID: -815177251657709423
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stone_dungeon_full_33
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3971ee57c02017a45b0ad17463dcc48a
+      internalID: -2658678458342731681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stone_dungeon_full_34
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c43e4984f0faacf4ca7b348fb084537b
+      internalID: -3011389105750689503
       vertices: []
       indices: 
       edges: []
