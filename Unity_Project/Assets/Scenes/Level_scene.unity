@@ -992,7 +992,7 @@ MonoBehaviour:
   m_AssetsPPU: 32
   m_RefResolutionX: 640
   m_RefResolutionY: 360
-  m_UpscaleRT: 1
+  m_UpscaleRT: 0
   m_PixelSnapping: 0
   m_CropFrameX: 0
   m_CropFrameY: 0
@@ -2083,7 +2083,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -163.30078, y: 393.8}
+  m_AnchoredPosition: {x: -163.30469, y: 393.8}
   m_SizeDelta: {x: 326.6, y: 787.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1373929590
