@@ -2025,7 +2025,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adc687441dac5db4aa4d5ab7ee1f4616, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damagePopupPrefab: {fileID: 8115330360009621882, guid: f9eed1ec96efdc345a12622cc6b9c53a,
+  damagePopupPrefab: {fileID: 6554737481564694930, guid: f9eed1ec96efdc345a12622cc6b9c53a,
     type: 3}
 --- !u!114 &1366395370 stripped
 MonoBehaviour:
@@ -3098,7 +3098,7 @@ GameObject:
   - component: {fileID: 2041954256}
   - component: {fileID: 2041954260}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: Main UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

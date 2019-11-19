@@ -1,31 +1,34 @@
 ﻿using UnityEngine;
 using TMPro;
 
-[RequireComponent(typeof(Animator), typeof(TextMeshProUGUI))]
 public class DamagePopup : MonoBehaviour {
 	private Animator animator;
 	private TextMeshProUGUI textMeshPro;
-	private Vector2 worldPointPosition = new Vector2(0, 0);
 	private RectTransform rectTransform;
 
+	[SerializeField] private float yOffset = 0.75f;
+	[SerializeField] [Range(0, 1)] private float randomXRange = 0;
+	[SerializeField] [Range(0, 1)] private float randomYRange = 0;
+
 	private void Awake() {
-		animator = GetComponent<Animator>();
-		textMeshPro = GetComponent<TextMeshProUGUI>();
+		animator = GetComponentInChildren<Animator>();
+		textMeshPro = GetComponentInChildren<TextMeshProUGUI>();
 		rectTransform = GetComponent<RectTransform>();
 
-		//Destroy(gameObject, animator.GetCurrentAnimatorStateInfo(0).length);
+		Destroy(gameObject, animator.GetCurrentAnimatorStateInfo(0).length);
 	}
 
-	private void Update() {
-		rectTransform.anchoredPosition = Camera.main.WorldToScreenPoint(worldPointPosition);
-		Debug.Log(worldPointPosition);
-		Debug.Log(transform.position);
-	}
-
-
-
-	public void SetUp(string text, Vector2 worldPointPosition) {
+	/// <summary>
+	/// Sets up the parameters for this damage popup.
+	/// </summary>
+	/// <param name="text">The text to display.</param>
+	/// <param name="worldPointPosition">The position to display the text.</param>
+	/// <param name="color">The color of text to display.</param>
+	public void SetUp(string text, Vector2 worldPointPosition, Color color) {
 		textMeshPro.SetText(text);
-		this.worldPointPosition = worldPointPosition;
+		textMeshPro.faceColor = color;
+		rectTransform.anchoredPosition = new Vector2(
+			worldPointPosition.x + Random.Range(-randomXRange, randomXRange),
+			worldPointPosition.y + yOffset + Random.Range(-randomYRange, randomYRange));
 	}
 }
