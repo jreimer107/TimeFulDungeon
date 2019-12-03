@@ -1,171 +1,158 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
-using System.Linq;
-using System;
 
-public class ConversationEditor : EditorWindow {
-
-	int selected = 0;
-	List<ConversationPage> sections = new List<ConversationPage>();
-	string ID;
-
-	[MenuItem("Window/ConversationEditor")]
-	public static void ShowWindow() {
-		GetWindow<ConversationEditor>("ConversationEditor");
-	}
-
-	private void OnGUI() {
-		EditorStyles.textField.wordWrap = true;
-
-		ID = EditorGUILayout.TextField("Conversation ID", "");
-
-		EditorGUILayout.BeginHorizontal();
-
-		// All sections
-		EditorGUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(100));
-		
-		// Add section button
-		EditorGUILayout.LabelField("All Sections", GUILayout.Width(100));
-		if (GUILayout.Button("Add New Section", GUILayout.Width(105))) {
-			sections.Add(new ConversationPage("", null));
-		}
-		
-		// Section Radios and remove buttons
-		EditorGUILayout.BeginHorizontal();
-
-		// Section Radios
-		EditorGUILayout.BeginVertical(GUILayout.Width(30));
-		selected = GUILayout.SelectionGrid(
-			selected, 
-			Array.ConvertAll(Enumerable.Range(1, sections.Count).ToArray(), x => x.ToString()), 
-			1);
-		EditorGUILayout.EndVertical();
-		
-		// Remove buttons
-		EditorGUILayout.BeginVertical(GUILayout.Width(70));
-		for (int i = 0; i < sections.Count; i++) {
-			if (GUILayout.Button("Remove")) {
-				sections.RemoveAt(i);
-				if (selected >= i) {
-					selected = selected == 0 ? 0 : selected - 1;
-				}
-				break;
-			}
-		}
-		EditorGUILayout.EndVertical();
-
-		EditorGUILayout.EndHorizontal();
-
-		EditorGUILayout.EndVertical();
-
-		// Section content
-		EditorGUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(300));
-
-		EditorGUILayout.LabelField("Selected Section", GUILayout.Width(100));
-		if (sections.Count != 0) {
-			EditorGUILayout.BeginHorizontal();
-			EditorGUILayout.LabelField("Speaker", GUILayout.Width(100));
-			sections[selected].speaker = (NPC)EditorGUILayout.ObjectField(sections[selected].speaker, typeof(NPC), true);
-			EditorGUILayout.EndHorizontal();
-
-			EditorGUILayout.BeginHorizontal();
-			EditorGUILayout.LabelField("Content", GUILayout.Width(100));
-			sections[selected].content = EditorGUILayout.TextArea(sections[selected].content, GUILayout.Width(200));
-			EditorGUILayout.EndHorizontal();
-
-			if (sections[selected].content.Length > 366) {
-				EditorGUILayout.HelpBox("Content over character limit.", MessageType.Warning);
-			}
-
-		}
-		
-		EditorGUILayout.EndVertical();
-		
-		EditorGUILayout.EndHorizontal();
-		
-
-	}
-}
-
+/// <summary>
+/// Conversation class. Contains list of ConversationPage sections and NPC speakers.
+/// </summary>
 [CreateAssetMenu(fileName = "New Conversation", menuName = "Conversation")]
-public class Conversation : ScriptableObject {
-	public string ID;
-	public List<ConversationPage> sections;
+public class Conversation : ScriptableObject, IList<ConversationPage> {
+	private List<ConversationPage> sections;
+	private List<NPC> speakers;
+
+	public int Count => sections.Count;
+	public int SpeakerCount => speakers.Count;
+
+	public bool IsReadOnly => false;
+
+	public ConversationPage this [int index] {
+		get => sections[index];
+		set => sections[index] = value;
+	}
 
 	public Conversation() {
-		ID = "";
 		sections = new List<ConversationPage>();
+		speakers = new List<NPC>();
+	}
+
+	public void AddSpeaker(NPC speaker) {
+		speakers.Add(speaker);
+	}
+
+	public bool HasSpeaker(NPC speaker) {
+		return speakers.Contains(speaker);
+	}
+
+	public NPC GetSpeaker(int index) {
+		if (index < 0 || index >= SpeakerCount) {
+			return null;
+		}
+		return speakers[index];
+	}
+
+	public NPC GetSpeaker(ConversationPage section) {
+		return GetSpeaker(section.speakerIndex);
+	}
+
+	public void RemoveSpeaker(int index) {
+		for (int i = 0; i < Count; i++) {
+			if (sections[i].speakerIndex == index) {
+				sections[i].speakerIndex = -1;
+			}
+		}
+		speakers.RemoveAt(index);
+	}
+
+	public string[] GetSpeakerNames() {
+		string[] ret = new string[speakers.Count];
+		for (int i = 0; i < speakers.Count; i++) {
+			ret[i] = speakers[i].name;
+		}
+		return ret;
+	}
+
+	public void AddEmptySection() {
+		sections.Add(new ConversationPage());
+	}
+
+	public void Move(int toIndex, int fromIndex) {
+		ConversationPage temp = this [fromIndex];
+		RemoveAt(fromIndex);
+		Insert(toIndex, temp);
+	}
+
+	public void Swap(int toIndex, int fromIndex) {
+		ConversationPage temp = sections[toIndex];
+		sections[toIndex] = sections[fromIndex];
+		sections[fromIndex] = temp;
+	}
+
+	public IEnumerator<ConversationPage> GetEnumerator() {
+		foreach (ConversationPage section in sections) {
+			yield return section;
+		}
+	}
+
+	IEnumerator IEnumerable.GetEnumerator() {
+		return (IEnumerator) GetEnumerator();
+	}
+
+	public int IndexOf(ConversationPage item) {
+		return sections.IndexOf(item);
+	}
+
+	public void Insert(int index, ConversationPage item) {
+		sections.Insert(index, item);
+	}
+
+	public void RemoveAt(int index) {
+		sections.RemoveAt(index);
+	}
+
+	public void Add(ConversationPage item) {
+		sections.Add(item);
+	}
+
+	public void Clear() {
+		sections.Clear();
+		speakers.Clear();
+	}
+
+	public bool Contains(ConversationPage item) {
+		return sections.Contains(item);
+	}
+
+	public void CopyTo(ConversationPage[] array, int arrayIndex) {
+		sections.CopyTo(array, arrayIndex);
+	}
+
+	public bool Remove(ConversationPage item) {
+		return sections.Remove(item);
 	}
 
 }
 
-[System.Serializable]
+/// <summary>
+/// Section in a Conversation object.
+/// Contains a content string and a speaker NPC.
+/// </summary>
+[System.Serializable] //Needs to exist so custom editor doesn't reset objects
 public class ConversationPage {
 	public string content;
-	public NPC speaker;
+	public int speakerIndex;
 
-	public ConversationPage(string content, NPC speaker) {
+	/// <summary>
+	/// Whether the inspector shows this page's foldout content.
+	/// </summary>
+	public bool shownInInspector;
+
+	/// <summary>
+	/// Creates a new conversation page given some content and a speaker.
+	/// </summary>
+	/// <param name="content">A content string.</param>
+	/// <param name="speaker">A NPC object.</param>
+	public ConversationPage(string content, int speakerIndex) {
 		this.content = content;
-		this.speaker = speaker;
+		this.speakerIndex = speakerIndex;
+		this.shownInInspector = true;
 	}
 
-	//public override void OnInspectorGUI() {
-	//	base.OnInspectorGUI();
-	//	showContent = EditorGUILayout.Foldout(
-	//		showContent,
-	//		string.Format("{0}: {1}", speaker.name, content)
-	//	);
-	//	if (showContent) {
-	//		content = EditorGUILayout.TextArea(content);
-	//		speaker = (NPC)EditorGUILayout.ObjectField(speaker, typeof(NPC), true);
-	//	}
-		
-	//}
-
-}
-
-public class NPC : MonoBehaviour {
-	public Sprite portrait;
-	new public string name;
-
-}
-
-[CustomEditor(typeof(Conversation))]
-public class ConversationInspector : Editor {
-	enum displayFieldType { DisplayAsAutomaticFields, DisplayAsCustomizableGUIFields }
-	displayFieldType DisplayFieldType;
-
-	Conversation t;
-	SerializedObject GetTarget;
-	SerializedProperty ThisList;
-	int ListSize;
-
-	private void OnEnable() {
-		t = (Conversation)target;
-		GetTarget = new SerializedObject(t);
-		ThisList = GetTarget.FindProperty("sections");
-	}
-
-	public override void OnInspectorGUI() {
-		//Update list
-		GetTarget.Update();
-
-		//Add new item to list with button
-		if (GUILayout.Button("Add New")) {
-			t.sections.Add(new ConversationPage("", null));
-		}
-
-		// Display ou list to inspector window
-		for (int i = 0; i < ThisList.arraySize; i++) {
-			SerializedProperty SectionRef = ThisList.GetArrayElementAtIndex(i);
-			SerializedProperty sectionContent = SectionRef.FindPropertyRelative("content");
-			SerializedProperty sectionSpeaker = SectionRef.FindPropertyRelative("speaker");
-
-			EditorGUILayout.PropertyField(sectionContent);
-			EditorGUILayout.PropertyField(sectionSpeaker);
-		}
-
+	/// <summary>
+	/// Creates an empty conversation page.
+	/// </summary>
+	public ConversationPage() {
+		this.content = null;
+		this.speakerIndex = -1;
+		this.shownInInspector = true;
 	}
 }
