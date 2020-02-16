@@ -32,7 +32,7 @@ public class ConversationManager : MonoBehaviour {
 	private IEnumerator PlayConversation() {
 		conversationPanel.SetActive(true);
 		yield return new WaitUntil(() => conversationTyper.done);
-		foreach (ConversationPage section in currentConversation) {
+		foreach (Conversation.Page section in currentConversation) {
 			conversationTyper.PrintMessage(section.content);
 			yield return new WaitUntil(() => conversationTyper.done);
 		}
