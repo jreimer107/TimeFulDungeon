@@ -1,21 +1,17 @@
 ﻿using UnityEngine;
+using System;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
 public class Player : MonoBehaviour {
-	[SerializeField] private float speed = 20f;
-	[Range(0, .3f)] [SerializeField] private float MovementSmoothing = .05f; //How much to smooth movement
-	[SerializeField] private LayerMask CollisionLayers; //Mask determining what the player runs into
-
-	private Vector3 velocity = Vector3.zero;
-	private float horizontalMove = 0f;
-	private float verticalMove = 0f;
-
-	private bool FacingRight = true;
-
-	private Rigidbody2D rbody;
 	private CircleCollider2D pickupTrigger;
 	private BoxCollider2D collisionCollider;
-	private SpriteRenderer spriteRenderer;
+
+	public int health;
+	public int maxHealth;
+	public delegate void OnHealthChanged();
+	public OnHealthChanged onHealthChangedCallback;
+
+	private MovementController controller;
 
 	#region Singleton
 	public static Player instance;
@@ -28,45 +24,47 @@ public class Player : MonoBehaviour {
 	#endregion
 
 	// Use this for initialization
-	void Start() {
-		rbody = GetComponent<Rigidbody2D>();
+	private void Start() {
 		pickupTrigger = GetComponentInChildren<CircleCollider2D>();
 		collisionCollider = GetComponent<BoxCollider2D>();
-		spriteRenderer = GetComponent<SpriteRenderer>();
+		controller = GetComponent<MovementController>();
+		health = 10;
+		maxHealth = 10;
 	}
 
 	// Update is called once per frame
-	void Update() {
+	private void Update() {
 		//Get input from player
-		horizontalMove = Input.GetAxisRaw("Horizontal") * speed;
-		verticalMove = Input.GetAxisRaw("Vertical") * speed;
-	}
+		controller.SetMoveDirection(
+			Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")
+		);
 
-	private void FixedUpdate() {
-		//Move character
-		Move(horizontalMove * Time.fixedDeltaTime, verticalMove * Time.fixedDeltaTime);
-	}
-
-	public void Move(float horizontal, float vertical) {
-		//Move player by finding target velocity
-		Vector3 targetVelocity = new Vector2(horizontal * 10f, vertical * 10f);
-		//And then smoothing it out and applying it to the character
-		rbody.velocity = Vector3.SmoothDamp(rbody.velocity, targetVelocity, ref velocity, MovementSmoothing);
-
-		//If input is moving the player right and player is facing left
-		if (horizontal > 0 && !FacingRight) {
-			Flip();
-		} else if (horizontal < 0 && FacingRight) {
-			Flip();
+		if (Input.GetKeyDown(KeyCode.T)) {
+			Damage(1);
 		}
+		if (Input.GetKeyDown(KeyCode.G)) {
+			Heal(1);
+		}
+
 	}
 
-	private void Flip() {
-		FacingRight = !FacingRight;
-		spriteRenderer.flipX = !spriteRenderer.flipX;
+	public void Damage(int damage) {
+		health = Math.Max(0, health - damage);
+		onHealthChangedCallback.Invoke();
+		if (health == 0)
+			Die();
 	}
+
+	public void Heal(int heal) {
+		health = Math.Min(maxHealth, health + heal);
+		onHealthChangedCallback.Invoke();
+	}
+
+	private void Die() {
+		Debug.Log("Dead");
+	}
+
 
 	public CircleCollider2D pickupTriggerCollider { get => pickupTrigger; }
 	public BoxCollider2D hitbox { get => collisionCollider; }
-
 }

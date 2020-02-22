@@ -1,5 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using System;
 
 /// <summary>
 /// Custom inspector for the conversation scriptable object.
