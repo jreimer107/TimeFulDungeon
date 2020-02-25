@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Shield
+  m_EditorClassIdentifier: Assembly-CSharp::Shield
+  name: Shield
+  ID: 4
+  description: A test shield.
+  sprite: {fileID: 21300000, guid: c14e9e9ad59f7434282f9d5f35a38a61, type: 3}
+  stackable: 0
+  count: 0
+  idleClip: {fileID: 0}
+  actionClip: {fileID: 0}
+  type: 2
+  staminaUse: 5
+  arc: 90

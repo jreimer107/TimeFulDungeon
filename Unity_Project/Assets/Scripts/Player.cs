@@ -11,6 +11,9 @@ public class Player : MonoBehaviour {
 	public delegate void OnHealthChanged();
 	public OnHealthChanged onHealthChangedCallback;
 
+	public int stamina;
+	public int maxStamina;
+
 	private MovementController controller;
 
 	#region Singleton

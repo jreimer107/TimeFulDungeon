@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 public class HoldingPoint : MonoBehaviour {
 	private Player player;
 	private EquipmentManager equipmentManager;
-	[Range(0, 5)] [SerializeField] private float radius = 1;
+	[Range(0, 5)][SerializeField] private float radius = 1;
 
 	private bool attacking = false;
 	private float angle = 0.0f;
@@ -117,8 +117,8 @@ public class HoldingPoint : MonoBehaviour {
 	/// Swaps the currently used weapon in the player's hand.
 	/// </summary>
 	private void SwapInHand() {
-		int meleeIndex = (int)EquipType.Melee;
-		int rangedIndex = (int)EquipType.Ranged;
+		int meleeIndex = (int) EquipType.Melee;
+		int rangedIndex = (int) EquipType.Ranged;
 		inHandIndex = inHandIndex == meleeIndex ? rangedIndex : meleeIndex;
 		inHand = equipmentManager.currentEquipment[inHandIndex];
 		SwapRendered();
@@ -129,7 +129,7 @@ public class HoldingPoint : MonoBehaviour {
 	/// </summary>
 	/// <param name="onOff">Whether to equip or unequip the shield.</param>
 	private void SwapShield() {
-		int shieldIndex = (int)EquipType.Shield;
+		int shieldIndex = (int) EquipType.Shield;
 		shielding = !shielding;
 		inHand = shielding ? equipmentManager.currentEquipment[shieldIndex] :
 			equipmentManager.currentEquipment[inHandIndex];
@@ -147,17 +147,30 @@ public class HoldingPoint : MonoBehaviour {
 			animatorOverrideController["action"] = inHand.actionClip;
 
 			//Set animation speed
-			float animationTime = inHand.actionClip.length;
-			float numUpdates = (inHand as Melee).arc / (inHand as Melee).speed;
-			float moveTime = numUpdates * Time.fixedDeltaTime;
-			float speedMultiplier = animationTime / moveTime;
-			Debug.Log("Setting speed to " + speedMultiplier);
-			animator.SetFloat("speed", speedMultiplier);
+			switch (inHand.type) {
+				case EquipType.Melee:
+					float animationTime = inHand.actionClip.length;
+					float numUpdates = (inHand as Melee).arc / (inHand as Melee).speed;
+					float moveTime = numUpdates * Time.fixedDeltaTime;
+					float speedMultiplier = animationTime / moveTime;
+					Debug.Log("Setting speed to " + speedMultiplier);
+					animator.SetFloat("speed", speedMultiplier);
+					break;
+				case EquipType.Ranged:
+					Debug.Log("Swap rendered to ranged.");
+					break;
+				case EquipType.Shield:
+					Debug.Log("Swap rendered to shield.");
+					break;
+				default:
+					Debug.Log("Wtf have you given me.");
+					break;
+			}
 		}
 	}
 
 	private void UpdateRendered() {
-		int shieldIndex = (int)EquipType.Shield;
+		int shieldIndex = (int) EquipType.Shield;
 		inHand = shielding ? equipmentManager.currentEquipment[shieldIndex] :
 			equipmentManager.currentEquipment[inHandIndex];
 		SwapRendered();
