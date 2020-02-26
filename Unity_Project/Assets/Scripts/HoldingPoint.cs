@@ -9,16 +9,17 @@ using UnityEngine.EventSystems;
 public class HoldingPoint : MonoBehaviour {
 	private Player player;
 	private EquipmentManager equipmentManager;
-	[Range(0, 5)][SerializeField] private float radius = 1;
+	[Range(0, 5)] [SerializeField] private float radius = 1;
 
 	private bool attacking = false;
 	private float angle = 0.0f;
 	private float startSwingAngle;
 
-	private Equipment inHand;
-	private int inHandIndex;
-	private bool shielding;
-	private GameObject child;
+	private Equipment inHand = null;
+	private EquipType currentWeapon = EquipType.Melee;
+	private bool shielding = false;
+	private bool shieldToggleBuffer = false;
+
 	private SpriteRenderer spriteRenderer;
 	private EdgeCollider2D hitbox;
 	public Animator animator;
@@ -53,20 +54,18 @@ public class HoldingPoint : MonoBehaviour {
 		// Check for weapon swapping
 		if (Input.GetButtonDown("Swap Weapon")) {
 			Debug.Log("Swap inhand");
-			SwapInHand();
+			ToggleWeapon();
 		}
 
-		// Check for shielding
-		if (Input.GetButtonDown("Shield")) {
-			Debug.Log("Shield");
-			SwapShield();
-		} else if (Input.GetButtonUp("Shield")) {
-			Debug.Log("Unshield");
-			SwapShield();
+		// If not attacking and shield is buffered, shield and consume the buffer
+		shieldToggleBuffer = Input.GetButtonDown("Shield") || Input.GetButtonUp("Shield");
+		if (shieldToggleBuffer && !attacking) {
+			ToggleShield();
+			shieldToggleBuffer = false;
 		}
 
 		// Check for attacking
-		if (inHand != null && !attacking && Input.GetButton("Fire1") && !EventSystem.current.IsPointerOverGameObject()) {
+		if (inHand != null && inHand.type == EquipType.Melee && !attacking && Input.GetButton("Fire1") && !EventSystem.current.IsPointerOverGameObject()) {
 			attacking = true;
 			hitbox.enabled = true;
 			animator.SetBool("action", true);
@@ -81,6 +80,9 @@ public class HoldingPoint : MonoBehaviour {
 		if (!attacking) {
 			RotateToMouse();
 		} else {
+			if (inHand.type != EquipType.Melee) {
+				return;
+			}
 			angle -= (inHand as Melee).speed;
 			if (angle <= startSwingAngle - (inHand as Melee).arc / 2) {
 				Debug.Log("Attack ending");
@@ -91,6 +93,10 @@ public class HoldingPoint : MonoBehaviour {
 			}
 		}
 
+		SetPosition();
+	}
+
+	private void SetPosition() {
 		//Assign the angle as the rotation of the held object
 		transform.localEulerAngles = new Vector3(0, 0, angle);
 
@@ -104,36 +110,38 @@ public class HoldingPoint : MonoBehaviour {
 	/// Rotates the hand object to be between the player and the mouse pointer.
 	/// </summary>
 	/// <returns></returns>
-	private float RotateToMouse() {
+	private void RotateToMouse() {
 		Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition) - player.transform.position;
 
 		//Determine angle of mouse
 		angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
 		angle = angle < 0 ? angle + 360 : angle;
-		return angle;
 	}
 
 	/// <summary>
 	/// Swaps the currently used weapon in the player's hand.
+	/// Unlike shielding, can be done while shielding.
 	/// </summary>
-	private void SwapInHand() {
-		int meleeIndex = (int) EquipType.Melee;
-		int rangedIndex = (int) EquipType.Ranged;
-		inHandIndex = inHandIndex == meleeIndex ? rangedIndex : meleeIndex;
-		inHand = equipmentManager.currentEquipment[inHandIndex];
-		SwapRendered();
+	private void ToggleWeapon() {
+		currentWeapon = currentWeapon == EquipType.Melee ? EquipType.Ranged : EquipType.Melee;
+		if (!shielding) {
+			inHand = equipmentManager.GetEquipment(currentWeapon);
+			SwapRendered();
+		}
 	}
 
 	/// <summary>
 	/// Swaps the currently used item to the equipped shield.
 	/// </summary>
-	/// <param name="onOff">Whether to equip or unequip the shield.</param>
-	private void SwapShield() {
-		int shieldIndex = (int) EquipType.Shield;
-		shielding = !shielding;
-		inHand = shielding ? equipmentManager.currentEquipment[shieldIndex] :
-			equipmentManager.currentEquipment[inHandIndex];
-		SwapRendered();
+	private void ToggleShield() {
+		Equipment shield = equipmentManager.Shield;
+		if (shield) {
+			shielding = !shielding;
+			inHand = shielding ? shield : equipmentManager.GetEquipment(currentWeapon);
+			SwapRendered();
+		} else {
+			Debug.Log("No shield equipped!");
+		}
 	}
 
 	/// <summary>
@@ -142,13 +150,13 @@ public class HoldingPoint : MonoBehaviour {
 	private void SwapRendered() {
 		if (inHand != null) {
 			spriteRenderer.sprite = inHand.sprite;
-			hitbox.points = new Vector2[] { new Vector2(0, 0), new Vector2((inHand as Melee).range, 0) };
 			animatorOverrideController["idle"] = inHand.idleClip;
 			animatorOverrideController["action"] = inHand.actionClip;
 
 			//Set animation speed
 			switch (inHand.type) {
 				case EquipType.Melee:
+					hitbox.points = new Vector2[] { new Vector2(0, 0), new Vector2((inHand as Melee).range, 0) };
 					float animationTime = inHand.actionClip.length;
 					float numUpdates = (inHand as Melee).arc / (inHand as Melee).speed;
 					float moveTime = numUpdates * Time.fixedDeltaTime;
@@ -166,13 +174,16 @@ public class HoldingPoint : MonoBehaviour {
 					Debug.Log("Wtf have you given me.");
 					break;
 			}
+		} else {
+			spriteRenderer.sprite = null;
 		}
 	}
 
 	private void UpdateRendered() {
-		int shieldIndex = (int) EquipType.Shield;
-		inHand = shielding ? equipmentManager.currentEquipment[shieldIndex] :
-			equipmentManager.currentEquipment[inHandIndex];
+		if (inHand != null)
+			inHand = equipmentManager.GetEquipment(inHand.type);
+		else
+			inHand = equipmentManager.GetEquipment(currentWeapon);
 		SwapRendered();
 	}
 }

@@ -18,7 +18,7 @@ public class EquipmentUI : MonoBehaviour {
 	// Update is called once per frame
 	private void UpdateUI() {
 		for (int i = 0; i < slots.Length; i++) {
-			Equipment equipment = equipmentManager.currentEquipment[i];
+			Equipment equipment = equipmentManager.GetEquipment(i);
 			if (equipment)
 				slots[i].SetItem(equipment);
 			else

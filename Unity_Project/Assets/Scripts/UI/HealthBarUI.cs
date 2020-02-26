@@ -21,7 +21,7 @@ public class HealthBarUI : MonoBehaviour {
 	private void ChangeSlider() {
 		slider.value = player.health;
 		slider.maxValue = player.maxHealth;
-		fill.color = gradient.Evaluate(slider.normalizedValue);
+		fill.color = gradient.Evaluate(slider.normalizedValue); 
 	}
 
 
