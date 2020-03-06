@@ -186,4 +186,6 @@ public class HoldingPoint : MonoBehaviour {
 			inHand = equipmentManager.GetEquipment(currentWeapon);
 		SwapRendered();
 	}
+
+	public bool IsShielding() => shielding;
 }

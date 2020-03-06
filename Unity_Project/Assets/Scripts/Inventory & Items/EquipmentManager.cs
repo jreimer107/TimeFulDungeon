@@ -3,7 +3,7 @@
 public class EquipmentManager : MonoBehaviour {
 	private Inventory inventory;
 	private Equipment[] currentEquipment;
-	
+
 	public delegate void OnEquipmentChanged();
 	public OnEquipmentChanged onEquipmentChangedCallback;
 
@@ -77,8 +77,8 @@ public class EquipmentManager : MonoBehaviour {
 	public Equipment GetEquipment(int index) => currentEquipment[index];
 	public Equipment GetEquipment(EquipType type) => currentEquipment[(int)type];
 
-	public Equipment Melee => currentEquipment[(int)EquipType.Melee];
-	public Equipment Ranged => currentEquipment[(int)EquipType.Ranged];
-	public Equipment Shield => currentEquipment[(int)EquipType.Shield];
+	public Melee Melee => currentEquipment[(int)EquipType.Melee] as Melee;
+	public Ranged Ranged => currentEquipment[(int)EquipType.Ranged] as Ranged;
+	public Shield Shield => currentEquipment[(int)EquipType.Shield] as Shield;
 
 }
