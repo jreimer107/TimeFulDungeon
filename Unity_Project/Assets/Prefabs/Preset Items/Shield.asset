@@ -21,5 +21,5 @@ MonoBehaviour:
   idleClip: {fileID: 0}
   actionClip: {fileID: 0}
   type: 2
-  staminaUse: 5
+  staminaUse: 20
   arc: 90

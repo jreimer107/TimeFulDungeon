@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 
 /// <summary>
 /// The point which in-hand items will be attached to.
+/// This is a controls object that changes the values in the player object.
 /// </summary>
 public class HoldingPoint : MonoBehaviour {
 	private Player player;
@@ -16,8 +17,7 @@ public class HoldingPoint : MonoBehaviour {
 	private float startSwingAngle;
 
 	private Equipment inHand = null;
-	private EquipType currentWeapon = EquipType.Melee;
-	private bool shielding = false;
+	private EquipType currentWeaponType = EquipType.Melee;
 	private bool shieldToggleBuffer = false;
 
 	private SpriteRenderer spriteRenderer;
@@ -48,6 +48,8 @@ public class HoldingPoint : MonoBehaviour {
 		animator = GetComponent<Animator>();
 		animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
 		animator.runtimeAnimatorController = animatorOverrideController;
+
+		player.onStaminaEmptyCallback += ExhaustedUnshield;
 	}
 
 	private void Update() {
@@ -58,10 +60,9 @@ public class HoldingPoint : MonoBehaviour {
 		}
 
 		// If not attacking and shield is buffered, shield and consume the buffer
-		shieldToggleBuffer = Input.GetButtonDown("Shield") || Input.GetButtonUp("Shield");
+		shieldToggleBuffer = !player.exhausted && (Input.GetButtonDown("Shield") || Input.GetButtonUp("Shield"));
 		if (shieldToggleBuffer && !attacking) {
 			ToggleShield();
-			shieldToggleBuffer = false;
 		}
 
 		// Check for attacking
@@ -123,9 +124,9 @@ public class HoldingPoint : MonoBehaviour {
 	/// Unlike shielding, can be done while shielding.
 	/// </summary>
 	private void ToggleWeapon() {
-		currentWeapon = currentWeapon == EquipType.Melee ? EquipType.Ranged : EquipType.Melee;
-		if (!shielding) {
-			inHand = equipmentManager.GetEquipment(currentWeapon);
+		currentWeaponType = currentWeaponType == EquipType.Melee ? EquipType.Ranged : EquipType.Melee;
+		if (!player.Shielding) {
+			inHand = equipmentManager.GetEquipment(currentWeaponType);
 			SwapRendered();
 		}
 	}
@@ -134,13 +135,28 @@ public class HoldingPoint : MonoBehaviour {
 	/// Swaps the currently used item to the equipped shield.
 	/// </summary>
 	private void ToggleShield() {
+		// TODO: Needs to be passed an input. Exhaustion has a bug otherwise.
+		shieldToggleBuffer = false;
+		if (player.exhausted) {
+			Debug.Log("Player is exhausted!");
+			return;
+		}
+
 		Equipment shield = equipmentManager.Shield;
 		if (shield) {
-			shielding = !shielding;
-			inHand = shielding ? shield : equipmentManager.GetEquipment(currentWeapon);
+			player.ToggleShielding();
+			inHand = player.Shielding ? shield : equipmentManager.GetEquipment(currentWeaponType);
 			SwapRendered();
 		} else {
 			Debug.Log("No shield equipped!");
+		}
+	}
+
+	private void ExhaustedUnshield() {
+		Debug.Log("Force unshield");
+		if (player.Shielding) {
+			ToggleShield();
+
 		}
 	}
 
@@ -183,9 +199,7 @@ public class HoldingPoint : MonoBehaviour {
 		if (inHand != null)
 			inHand = equipmentManager.GetEquipment(inHand.type);
 		else
-			inHand = equipmentManager.GetEquipment(currentWeapon);
+			inHand = equipmentManager.GetEquipment(currentWeaponType);
 		SwapRendered();
 	}
-
-	public bool IsShielding() => shielding;
 }

@@ -11,11 +11,18 @@ public class Player : MonoBehaviour {
 	public delegate void OnHealthChanged();
 	public OnHealthChanged onHealthChangedCallback;
 
+	private bool shielding = false;
 	public float stamina;
 	public float maxStamina;
 	public float staminaRegen;
+	public bool exhausted = false;
+	public delegate void OnMaxStaminaChanged();
+	public OnMaxStaminaChanged onMaxStaminaChangedCallback;
+	public delegate void OnStaminaEmpty();
+	public OnStaminaEmpty onStaminaEmptyCallback;
 
 	private MovementController controller;
+	private EquipmentManager equipmentManager;
 
 	#region Singleton
 	public static Player instance;
@@ -32,8 +39,7 @@ public class Player : MonoBehaviour {
 		pickupTrigger = GetComponentInChildren<CircleCollider2D>();
 		collisionCollider = GetComponent<BoxCollider2D>();
 		controller = GetComponent<MovementController>();
-		health = 10;
-		maxHealth = 10;
+		equipmentManager = EquipmentManager.instance;
 	}
 
 	// Update is called once per frame
@@ -50,6 +56,31 @@ public class Player : MonoBehaviour {
 			Heal(1);
 		}
 
+
+		// Adjust stamina based on shielding or regenning
+		if (shielding) {
+			stamina = Mathf.Max(
+				0,
+				stamina - equipmentManager.Shield.staminaUse * Time.deltaTime
+			);
+		} else if (stamina < maxStamina) {
+			stamina = Mathf.Min(
+				maxStamina,
+				stamina + staminaRegen * Time.deltaTime
+			);
+		}
+
+		// If stamina runs out, set exhausted so they can't shield until refill
+		if (stamina == 0) {
+			if (onStaminaEmptyCallback != null) {
+				Debug.Log("Invoking empty callback");
+				onStaminaEmptyCallback.Invoke();
+			}
+			exhausted = true;
+		}
+		if (exhausted && stamina == maxStamina) {
+			exhausted = false;
+		}
 	}
 
 	public void Damage(int damage) {
@@ -67,6 +98,12 @@ public class Player : MonoBehaviour {
 	private void Die() {
 		Debug.Log("Dead");
 	}
+
+	public bool ToggleShielding() {
+		shielding = !shielding;
+		return shielding;
+	}
+	public bool Shielding { get => shielding; }
 
 
 	public CircleCollider2D pickupTriggerCollider { get => pickupTrigger; }
