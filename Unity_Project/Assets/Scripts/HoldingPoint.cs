@@ -16,7 +16,7 @@ public class HoldingPoint : MonoBehaviour {
 	private float angle = 0.0f;
 	private float startSwingAngle;
 
-	private Equipment inHand = null;
+	public Equipment inHand = null;
 	private EquipType currentWeaponType = EquipType.Melee;
 	private bool shieldToggleBuffer = false;
 

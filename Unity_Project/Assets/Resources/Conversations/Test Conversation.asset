@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Test Conversation
   m_EditorClassIdentifier: 
   sections:
-  - content: fffffffff
-    speakerIndex: 0
-    speaker: {fileID: 1722275035831108145, guid: a0b90a966b110db4da5218d587cabd28,
-      type: 3}
-    shownInInspector: 1
-  - content: some stupid garbage
+  - content: 'Welcome to Timeful Dungeon!
+
+      Click LMB to attack, and don''t
+      get hit!
+
+      Press E to dismiss.'
     speakerIndex: 0
     speaker: {fileID: 1722275035831108145, guid: a0b90a966b110db4da5218d587cabd28,
       type: 3}

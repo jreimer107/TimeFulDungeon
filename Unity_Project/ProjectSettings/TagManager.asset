@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Tile
   - Pickup
+  - PlayerAttack
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -22,7 +24,7 @@ TagManager:
   - Uninteractable
   - Hand
   - Damageable
-  - 
+  - Obstacle
   - 
   - 
   - 

@@ -48,7 +48,7 @@ public class BoardHolder : MonoBehaviour {
 					groundTilemap.SetTile(position, entranceTile);
 				} else if (grid[x, y] == Floor.TileType.Exit) {
 					groundTilemap.SetTile(position, exitTile);
-				} else {
+				} else if (grid[x, y] == Floor.TileType.Wall){
 					wallTilemap.SetTile(position, wallTile);
 				}
 			}

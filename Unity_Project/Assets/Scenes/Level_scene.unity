@@ -2073,7 +2073,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -101, y: 35.54}
+  m_AnchoredPosition: {x: -101, y: 35.539062}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &793652270
@@ -3043,6 +3043,8 @@ GameObject:
   - component: {fileID: 1325840516}
   - component: {fileID: 1325840517}
   - component: {fileID: 1325840518}
+  - component: {fileID: 1325840519}
+  - component: {fileID: 1325840520}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -3062,6 +3064,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dae00c5530f2cdb47b2de117cb8e1757, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  testMelee: {fileID: 11400000, guid: 31bb7c865af2ff24f80ce2f8dfd2959f, type: 2}
 --- !u!114 &1325840514
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3103,7 +3106,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10b626afdd41a6349b6f9c312b4fccc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickupPrefab: {fileID: 0}
+  pickupPrefab: {fileID: 8079311984827461445, guid: 397a3396a0ec57248930da365a84cfde,
+    type: 3}
 --- !u!114 &1325840517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3132,6 +3136,75 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   conversationPanel: {fileID: 1597043614}
   testConversation: {fileID: 11400000, guid: 04f59a6ffe792034d8469c78b69225ef, type: 2}
+--- !u!114 &1325840519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1325840512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78396926cbbfc4ac3b48fc5fc34a87d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  data:
+    dataString: UEsDBBQAAAgIAACQn+vhedTxbgIAABQFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFlVMuSojAU/RUr69FCtAFnN0Pb9iz6Ue1M9YZNDBdJGRIqCa12l/8+NwGEcdwYzn2dc3Lhi3BpamBW6Y3m+ZPKgXyfEHcm3yZD8BFOdK/kln9Cn/POc1u6JOpz3qjlCvG5KzOqAqs5+yH3wiUHCDaSF0pX63wPqTLWIFxQYQBDWllXLRH6mpAT/k1XruSMpzB2p088rYLJBY8MpAU9pC7i2cr9orCrWCxbIFx2hdEsvEuWSRyvp0HkezSSCVrVkDtBQ6sk6lok7SiJUrsMJ4spIbjpeBJ7rr0PKa1NgyoxIecUdXty89kCgRL4vrROxbj8pSgM2M4WTc/3XKOBbV/yU7WuVtQcWmYfVDRu0iKMo8Tzats+/ZcxnftwoVX12E+eB26KLTk7vNEzo8aOjB/D9yPy3qIjFQe6E/BegnxWG60amWPQ6saVNgbC++HxKi4tgR0GvKV6Azb14Hl/z/0tOw0Xr/+UCl7tXGi2bIGtUN5zvxyg8XZ+IWG/OqZrgahj8cfAb7of71gXeODaWAx1KqWjt1ONdqlk7T1zahqbKi3Bwx3pGiQV9vyKbeztJd7ERmNvIg/UvU3d8C7WvyQ3JR4e8oPgJvSqjtfLMqU6PoEpXxoruISBtAs8o0+pkrLdsbEnfdm20QVlo7J9w/N/V4sku3mwS6JVvFiyqIiDKYQsmQewovHyju5WCfG7xyXqpOK1JdrZg7cmh+YS96z/yEw2mtZ+33NNjxv+WamR5VwWass0gHxpO1yJg8Yh+Gbm65yjQVuwlkt/3+QrI0KxA+TZtVHmla5PVtNs6JKRmn8o65CMpP6rkpELufwFUEsDBBQAAAgIAACQn+tY5REUbQAAAHgAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNEz0jM00lFQSi9KLMgoBooYgjilmSkgdrSSRZKhQZKFmaW5sUmyWZq5gW6qUbKFoUGqZaK5iWlikqWFUixQfUllQapfYm4qRE9AYklGWmZeSmZeup57UWaKO8hopdhaAFBLAQItABQAAAgIAACQn+vhedTxbgIAABQFAAALACQAAAAAAAAAAAAAAAAAAABncmFwaDAuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAACQn+tY5REUbQAAAHgAAAAJACQAAAAAAAAAAAAAALsCAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAIAAgC4AAAAcwMAAAAA
+    upgradeData: 
+    file_cachedStartup: {fileID: 0}
+    data_cachedStartup: 
+    cacheStartup: 0
+  showNavGraphs: 1
+  showUnwalkableNodes: 1
+  debugMode: 0
+  debugFloor: 0
+  debugRoof: 1
+  manualDebugFloorRoof: 0
+  showSearchTree: 0
+  unwalkableNodeDebugSize: 0.3
+  logPathResults: 1
+  maxNearestNodeDistance: 100
+  scanOnStartup: 1
+  fullGetNearestSearch: 0
+  prioritizeGraphs: 0
+  prioritizeGraphsLimit: 1
+  colorSettings:
+    _SolidColor: {r: 0.11764706, g: 0.4, b: 0.7882353, a: 0.9}
+    _UnwalkableNode: {r: 1, g: 0, b: 0, a: 0.5}
+    _BoundsHandles: {r: 0.29, g: 0.454, b: 0.741, a: 0.9}
+    _ConnectionLowLerp: {r: 0, g: 1, b: 0, a: 0.5}
+    _ConnectionHighLerp: {r: 1, g: 0, b: 0, a: 0.5}
+    _MeshEdgeColor: {r: 0, g: 0, b: 0, a: 0.5}
+    _AreaColors:
+    - {r: 0, g: 0, b: 0, a: 0}
+  tagNames: []
+  heuristic: 2
+  heuristicScale: 1
+  threadCount: 1
+  maxFrameTime: 10
+  batchGraphUpdates: 0
+  graphUpdateBatchingInterval: 0.2
+  euclideanEmbedding:
+    mode: 0
+    seed: 0
+    pivotPointRoot: {fileID: 0}
+    spreadOutCount: 1
+  showGraphs: 0
+--- !u!114 &1325840520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1325840512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 043b36469a9011b42afa4f59cffd80db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyPrefab: {fileID: 6518348834526014380, guid: 919447006cd75ed4a955468b341003e0,
+    type: 3}
 --- !u!1 &1335417486
 GameObject:
   m_ObjectHideFlags: 0
@@ -3556,7 +3629,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 192.7, y: -53.9}
+  m_AnchoredPosition: {x: 192.69922, y: -53.90039}
   m_SizeDelta: {x: 260.92, y: 34.77}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1579405687
@@ -4567,6 +4640,16 @@ PrefabInstance:
       propertyPath: staminaRegen
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 8424532016187830127, guid: e93ab3209c971734a96555e1daafe6da,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9016681147245168838, guid: e93ab3209c971734a96555e1daafe6da,
+        type: 3}
+      propertyPath: m_TagString
+      value: PlayerAttack
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e93ab3209c971734a96555e1daafe6da, type: 3}
 --- !u!1 &1992490085
@@ -4672,7 +4755,7 @@ GameObject:
   - component: {fileID: 2013943011}
   - component: {fileID: 2013943015}
   - component: {fileID: 2013943014}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}

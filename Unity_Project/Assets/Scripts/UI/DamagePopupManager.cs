@@ -25,8 +25,8 @@ public class DamagePopupManager : MonoBehaviour {
 	}
 
 	private void Update() {
-		if (Input.GetButtonDown("Fire1")) {
-			CreateDamagePopup("20", Player.instance.transform.position, Color.yellow);
-		}
+		//if (Input.GetButtonDown("Fire1")) {
+		//	CreateDamagePopup("20", Player.instance.transform.position, Color.yellow);
+		//}
 	}
 }

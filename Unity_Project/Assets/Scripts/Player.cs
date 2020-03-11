@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using UnityEditor;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
 public class Player : MonoBehaviour {
@@ -23,6 +24,7 @@ public class Player : MonoBehaviour {
 
 	private MovementController controller;
 	private EquipmentManager equipmentManager;
+	private DamagePopupManager damagePopupManager;
 
 	#region Singleton
 	public static Player instance;
@@ -40,6 +42,7 @@ public class Player : MonoBehaviour {
 		collisionCollider = GetComponent<BoxCollider2D>();
 		controller = GetComponent<MovementController>();
 		equipmentManager = EquipmentManager.instance;
+		damagePopupManager = DamagePopupManager.instance;
 	}
 
 	// Update is called once per frame
@@ -85,6 +88,7 @@ public class Player : MonoBehaviour {
 
 	public void Damage(int damage) {
 		health = Math.Max(0, health - damage);
+		damagePopupManager.CreateDamagePopup(damage.ToString(), transform.position, Color.red);
 		onHealthChangedCallback.Invoke();
 		if (health == 0)
 			Die();
@@ -96,6 +100,7 @@ public class Player : MonoBehaviour {
 	}
 
 	private void Die() {
+		EditorApplication.ExitPlaymode();
 		Debug.Log("Dead");
 	}
 
@@ -108,4 +113,10 @@ public class Player : MonoBehaviour {
 
 	public CircleCollider2D pickupTriggerCollider { get => pickupTrigger; }
 	public BoxCollider2D hitbox { get => collisionCollider; }
+
+	private void OnCollisionEnter2D(Collision2D collision) {
+		if (collision.collider.CompareTag("Enemy")) {
+			Damage(1);
+		}
+	}
 }

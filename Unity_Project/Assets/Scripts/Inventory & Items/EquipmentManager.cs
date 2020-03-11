@@ -7,6 +7,8 @@ public class EquipmentManager : MonoBehaviour {
 	public delegate void OnEquipmentChanged();
 	public OnEquipmentChanged onEquipmentChangedCallback;
 
+	public Melee testMelee;
+
 	#region Singleton
 	public static EquipmentManager instance;
 	void Awake() {
@@ -22,6 +24,10 @@ public class EquipmentManager : MonoBehaviour {
 
 		int numSlots = System.Enum.GetNames(typeof(EquipType)).Length;
 		currentEquipment = new Equipment[numSlots];
+
+		if (testMelee) {
+			Equip(testMelee);
+		}
 	}
 
 	/// <summary>
