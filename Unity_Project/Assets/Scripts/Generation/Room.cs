@@ -27,16 +27,16 @@ public class Room {
 
 	//Spaces are the areas where another room cannot be (too close to this one)
 	public int UpperSpace {
-		get { return UpperBound + BoardHolder.instance.genConfig.RoomGap; }
+		get { return UpperBound + Board.instance.genConfig.RoomGap; }
 	}
 	public int LowerSpace {
-		get { return LowerBound - BoardHolder.instance.genConfig.RoomGap; }
+		get { return LowerBound - Board.instance.genConfig.RoomGap; }
 	}
 	public int LeftSpace {
-		get { return LeftBound - BoardHolder.instance.genConfig.RoomGap; }
+		get { return LeftBound - Board.instance.genConfig.RoomGap; }
 	}
 	public int RightSpace {
-		get { return RightBound + BoardHolder.instance.genConfig.RoomGap; }
+		get { return RightBound + Board.instance.genConfig.RoomGap; }
 	}
 
 	public Room(int x, int y, int w, int h) {

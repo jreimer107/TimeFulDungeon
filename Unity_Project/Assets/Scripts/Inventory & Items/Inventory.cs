@@ -31,7 +31,7 @@ public class Inventory : MonoBehaviour {
 			return true;
 		else if (newItem.stackable) {
 			foreach (Item item in Bag) {
-				if (item.ID == newItem.ID) {
+				if (item == newItem) {
 					return true;
 				}
 			}

@@ -20,10 +20,6 @@ public class Floor {
 	private readonly int MaxPaths;
 
 
-	public enum TileType {
-		Void, Room, Path, Wall, Border, Entrance, Exit,
-	}
-
 	private List<Room> room_list;
 	private List<Path> path_list;
 	public TileType[,] tiles;
@@ -37,15 +33,20 @@ public class Floor {
 	//Level generation!
 	public Floor() {
 		//Set up variables
-		gencfg = BoardHolder.instance.genConfig;
+		gencfg = Board.instance.genConfig;
 
 		//Create room list
 		room_list = new List<Room>();
 		path_list = new List<Path>();
 		rng = new Random();
-
-		//Create tile grid
 		tiles = new TileType[gencfg.FloorWidth, gencfg.FloorHeight];
+	}
+
+	public void Generate() {
+		//Create tile grid
+		room_list.Clear();
+		path_list.Clear();
+
 		for (int row = 0; row < tiles.GetLength(0); row++) {
 			for (int col = 0; col < tiles.GetLength(1); col++) {
 				tiles[row, col] = TileType.Wall;
@@ -74,11 +75,11 @@ public class Floor {
 			do {
 				end = room_list[rng.Next(room_list.Count)];
 			} while (ReferenceEquals(start, end));
-			Path newPath = new Path(start, end, tiles);
+			Path newPath = new Path(start, end);
 
 			//Set tiles to be paths unless they are already something else
 			foreach (Coordinate coord in newPath.pathCoords) {
-				if (tiles[coord.x, coord.y] == TileType.Wall) {
+				if (IsTileOfType(coord, TileType.Wall)) {
 					tiles[coord.x, coord.y] = TileType.Path;
 				}
 			}
@@ -193,8 +194,6 @@ public class Floor {
 	}
 
 
-
-
 	//Generates random doubles based on the mean and deviation fed in.
 	//Also I have no idea how it works.
 	public double Gauss(double mean, double deviation) {
@@ -209,6 +208,110 @@ public class Floor {
 		return mean + deviation * x1 * w;
 	}
 
-	//Interaction with coordinate
+	public bool IsTileOfType(Coordinate pos, TileType type) {
+		return tiles[pos.x, pos.y] == type;
+	}
 
+	public bool IsTileTraversable(Coordinate pos) {
+		return IsTileOfType(pos, TileType.Path) || IsTileOfType(pos, TileType.Room);
+	}
+
+	/// <summary>
+	/// A* algorithm to find the shortest path between two Coordinates.
+	/// </summary>
+	/// <param name="start">The coordinate to start from.</param>
+	/// <param name="end">The coordinate we'd like to wind up at.</param>
+	/// <param name="GetSuccessorsFunction">Callback function to get possible successor coordinates.</param>
+	/// <param name="GetCostFunction">Callback function to get the G value.</param>
+	/// <param name="GetHeuristicFunction">Callback function to the the H value.</param>
+	/// <returns>Returns a HashSet of Coordinates to path between.</returns>
+	public HashSet<Coordinate> GetShortestPath(
+		Coordinate start,
+		Coordinate end,
+		Func<Coordinate, Coordinate, Coordinate[]> GetSuccessorsFunction,
+		Func<Coordinate, Coordinate, Coordinate, int, int> GetCostFunction,
+		Func<Coordinate, Coordinate, int> GetHeuristicFunction) {
+
+		Dictionary<Coordinate, Coordinate> parents = new Dictionary<Coordinate, Coordinate>();
+		Dictionary<Coordinate, int> costs = new Dictionary<Coordinate, int>();
+
+		//Coordinates being considered to find the closest path
+		MinHeap<PathNode> open = new MinHeap<PathNode>(300);
+		//Coordinates that have already been considered and do not have to be considered again
+		HashSet<Coordinate> closed = new HashSet<Coordinate>();
+
+		//Add starting position to closed list
+		open.Add(new PathNode(start, Coordinate.heuristic(start, end)));
+		parents[start] = null;
+		costs[start] = 0;
+		Coordinate currPos = null; //tile to analyze
+		while (!open.IsEmpty()) {
+			currPos = open.Pop().pos;
+
+			//We've added destination to the closed list, found a path
+			if (currPos.Equals(end)) {
+				break;
+			}
+			closed.Add(currPos); //Switch square from open to closed list
+
+			foreach (Coordinate suc in GetSuccessorsFunction(currPos, parents[currPos])) {
+				if (closed.Contains(suc)) {
+					continue;
+				}
+
+				int newCost = GetCostFunction(suc, currPos, parents[currPos], costs[currPos]);
+
+				//Only edit dictionaries if node is new or better
+				if (!costs.ContainsKey(suc) || newCost < costs[suc]) {
+					//Add node to open with F = G + H values as priority
+					open.Add(new PathNode(suc, newCost + GetHeuristicFunction(suc, end)));
+					costs[suc] = newCost;
+					parents[suc] = currPos;
+				}
+			}
+		}
+
+		//Now start at end and work backward through parents
+		HashSet<Coordinate> pathCoords = new HashSet<Coordinate>();
+		while (currPos != null) {
+			pathCoords.Add(currPos);
+			currPos = parents[currPos];
+		}
+		return pathCoords;
+	}
+
+	public override string ToString() {
+		string str = "";
+		for (int i = 0; i < tiles.GetLength(0); i++) {
+			for (int j = 0; j < tiles.GetLength(1); j++) {
+				switch (tiles[i, j]) {
+					case TileType.Border:
+						str += "B ";
+						break;
+					case TileType.Entrance:
+						str += "E ";
+						break;
+					case TileType.Exit:
+						str += "e ";
+						break;
+					case TileType.Path:
+						str += "P ";
+						break;
+					case TileType.Room:
+						str += "R ";
+						break;
+					case TileType.Void:
+						str += "_ ";
+						break;
+					case TileType.Wall:
+						str += "W ";
+						break;
+					default:
+						break;
+				}
+			}
+			str += "\n";
+		}
+		return str;
+	}
 }

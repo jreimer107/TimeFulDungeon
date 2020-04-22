@@ -6,8 +6,7 @@ using UnityEngine;
 /// Simple wrapper class for two integers that make up x and y of a coordinate pair.
 /// </summary>
 public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
-	public readonly int x,
-	y;
+	public readonly int x, y;
 
 	/// <summary>
 	/// Constructor for Coordinate.
@@ -27,12 +26,17 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 	}
 
 	public bool Equals(Coordinate other) {
-		return (this.x == other.x && this.y == other.y);
+		return !ReferenceEquals(other, null) && (this.x == other.x && this.y == other.y);
 	}
 
 	public bool Equals(int x, int y) {
 		return (this.x == x && this.y == y);
 	}
+
+	public override bool Equals(object obj) => obj is Coordinate coordinate && this.Equals(coordinate);
+
+	public static bool operator ==(Coordinate a, Coordinate b) => !ReferenceEquals(a, null) && a.Equals(b);
+	public static bool operator !=(Coordinate a, Coordinate b) => !ReferenceEquals(a, null) && !a.Equals(b);
 
 	public override int GetHashCode() {
 		int hash = 13;
@@ -41,20 +45,32 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 		return hash;
 	}
 
-	public override string ToString() {
-		return String.Format("({0},{1})", this.x, this.y);
-	}
+	public override string ToString() => $"({this.x}, {this.y})"; 
 
-	public List<Coordinate> getSuccessors() {
+	public Coordinate[] GetValidSuccessorsForPathfinding() {
 		List<Coordinate> successors = new List<Coordinate> {
 			new Coordinate(x + 1, y),
+			new Coordinate(x + 1, y + 1),
 			new Coordinate(x, y + 1),
+			new Coordinate(x - 1, y + 1),
 			new Coordinate(x - 1, y),
-			new Coordinate(x, y - 1)
-
+			new Coordinate(x - 1, y - 1),
+			new Coordinate(x, y - 1),
+			new Coordinate(x + 1, y - 1)
 		};
-		// successors.RemoveAll(x => !x.ValidSuccessor(tiles, this, prev, endpoints));
-		return successors;
+		successors.RemoveAll(x => !Board.instance.IsTileTraversable(x));
+		return successors.ToArray();
+	}
+
+	public static Coordinate[] GetValidSuccessorsForPathGen(Coordinate c, Coordinate p, Room[] endpoints) {
+		List<Coordinate> successors = new List<Coordinate> {
+			new Coordinate(c.x + 1, c.y),
+			new Coordinate(c.x, c.y + 1),
+			new Coordinate(c.x - 1, c.y),
+			new Coordinate(c.x, c.y - 1)
+		};
+		successors.RemoveAll(x => !x.ValidSuccessor(c, p, endpoints));
+		return successors.ToArray();
 	}
 
 	//The whole point of this is to avoid 2x2 path boxes, which look ugly
@@ -63,7 +79,7 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 	//	you dont put two tiles alongside another path
 	//This includes the current tile, as that would be a tile in this situation
 	//So just don't make a corner (including the current tile)
-	public bool ValidSuccessor(Floor.TileType[,] tiles, Coordinate p, Coordinate gp, Room[] endpoints) {
+	public bool ValidSuccessor(Coordinate p, Coordinate gp, Room[] endpoints) {
 		//Check if in endpoint room (don't check for rules anymore)
 		if (this.InRooms(endpoints)) {
 			return true;
@@ -83,7 +99,7 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 
 		//Check if next to non-endpoint room (cannot touch)
 		foreach (Coordinate a in adjs) {
-			if (!a.IsInBounds() || tiles[a.x, a.y] == Floor.TileType.Room && !a.InRooms(endpoints)) {
+			if (!a.IsInBounds() || Board.instance.IsTileOfType(a, TileType.Room) && !a.InRooms(endpoints)) {
 				return false;
 			}
 		}
@@ -92,7 +108,7 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 		bool[] taken = new bool[8];
 		for (int i = 0; i < 8; i++) {
 			taken[i] = (!adjs[i].IsInBounds() ||
-				tiles[adjs[i].x, adjs[i].y] != Floor.TileType.Wall ||
+				!Board.instance.IsTileOfType(adjs[i], TileType.Wall) ||
 				adjs[i].Equals(p) ||
 				(gp != null && adjs[i].Equals(gp)));
 		}
@@ -108,7 +124,7 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 		return true;
 	}
 
-	private bool InRooms(Room[] checkRooms) {
+	public bool InRooms(Room[] checkRooms) {
 		for (int i = 0; i < checkRooms.Length; i++) {
 			if (InRoom(checkRooms[i])) {
 				return true;
@@ -129,7 +145,7 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 	}
 
 	public bool IsInBounds() {
-		GenConfig gencfg = BoardHolder.instance.genConfig;
+		GenConfig gencfg = Board.instance.genConfig;
 		return !(
 			x < 0 ||
 			x >= gencfg.FloorWidth ||
@@ -139,7 +155,7 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 	}
 
 	public static bool IsInBounds(int x, int y) {
-		GenConfig gencfg = BoardHolder.instance.genConfig;
+		GenConfig gencfg = Board.instance.genConfig;
 		return !(
 			x < 0 ||
 			x >= gencfg.FloorWidth ||
@@ -148,10 +164,10 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 		);
 	}
 
-	// public bool IsNextToPath(Floor.TileType[,] tiles) {
+	// public bool IsNextToPath(TileType[,] tiles) {
 	// 	List<Coordinate> successors = this.getSuccessors(tiles);
 	// 	foreach (Coordinate suc in successors) {
-	// 		if (tiles[suc.x, suc.y] == Floor.TileType.Path) {
+	// 		if (tiles[suc.x, suc.y] == TileType.Path) {
 	// 			return true;
 	// 		}
 	// 	}

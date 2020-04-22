@@ -6,7 +6,7 @@ public class Equipment : Item {
 
 	public EquipType type;
 
-	public Equipment(string name, int ID, string description, Sprite sprite, EquipType type) : base(name, ID, description, sprite, false, 1) {
+	public Equipment(string name, int ID, string description, Sprite sprite, EquipType type) : base(name, ID, description, sprite, false, 1, false) {
 		this.type = type;
 	}
 

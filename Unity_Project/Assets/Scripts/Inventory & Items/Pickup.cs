@@ -159,7 +159,7 @@ public class Pickup : MonoBehaviour {
 		} else if (item.stackable && other.CompareTag("Pickup")) {
 			//Merge nearby items of same type
 			Pickup other_pickup = other.GetComponentInParent<Pickup>();
-			if (item.ID == other_pickup.item.ID) {
+			if (item == other_pickup.item) {
 				target = other.gameObject;
 				Debug.Log("Target position set to " + target.transform.position);
 				//Item with greater ID gets destroyed to avoid race conditions

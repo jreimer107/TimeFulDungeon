@@ -9,16 +9,18 @@ public class Item : ScriptableObject, IEquatable<Item> {
 	public Sprite sprite;
 	public bool stackable;
 	public int count;
+	public bool autoPickup;
 	public AnimationClip idleClip;
 	public AnimationClip actionClip;
 
-	public Item(string name, int ID, string description, Sprite sprite, bool stackable, int count) {
+	public Item(string name, int ID, string description, Sprite sprite, bool stackable, int count, bool autoPickup) {
 		this.name = name;
 		this.ID = ID;
 		this.description = description;
 		this.sprite = sprite;
 		this.stackable = stackable;
 		this.count = count;
+		this.autoPickup = autoPickup;
 	}
 
 	public virtual void Select() { } //Left mouse click

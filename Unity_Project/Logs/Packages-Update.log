@@ -76,3 +76,13 @@ Update Mode: updateDependencies
 The following packages were updated:
   com.unity.burst from version 1.1.2 to 1.2.0
   com.unity.test-framework from version 1.1.9 to 1.1.11
+
+=== Wed Apr 15 08:34:25 2020
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.2d.spriteshape from version 3.0.8 to 3.0.10
+  com.unity.render-pipelines.universal from version 7.1.8 to 7.3.1
+  com.unity.test-framework from version 1.1.11 to 1.1.13
