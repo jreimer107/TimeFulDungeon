@@ -7,15 +7,16 @@
     "com.unity.2d.tilemap": "1.0.0",
     "com.unity.2d.tilemap.extras": "https://github.com/Unity-Technologies/2d-extras.git#master",
     "com.unity.analytics": "3.3.5",
-    "com.unity.burst": "1.2.0",
-    "com.unity.cinemachine": "2.3.4",
+    "com.unity.burst": "1.3.0-preview.11",
+    "com.unity.cinemachine": "2.5.0",
+    "com.unity.entities": "0.10.0-preview.6",
     "com.unity.ext.nunit": "1.0.0",
     "com.unity.ide.vscode": "1.2.0",
+    "com.unity.jobs": "0.2.9-preview.15",
     "com.unity.render-pipelines.universal": "7.3.1",
     "com.unity.test-framework": "1.1.13",
     "com.unity.textmeshpro": "2.0.1",
-    "com.unity.timeline": "1.2.11",
-    "com.unity.xr.legacyinputhelpers": "2.0.2",
+    "com.unity.timeline": "1.2.14",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
@@ -51,7 +52,7 @@
   "lock": {
     "com.unity.2d.tilemap.extras": {
       "revision": "master",
-      "hash": "9badd6ae9fe7487601d2e79f5c2ff0a454cfb967"
+      "hash": "40dbbfa7be9c8e3141c1521f6200b22e091b3cec"
     }
   }
 }

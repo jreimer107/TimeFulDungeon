@@ -14,8 +14,8 @@ public class ConversationInspector : Editor {
 	private string[] names;
 	private int count;
 
-	private NPC newSpeaker;
-	private int removeSpeaker;
+	// private NPC newSpeaker;
+	// private int removeSpeaker;
 	private int selectSpeaker;
 	private int insertIndex;
 	private int moveToIndex, moveFromIndex;
@@ -26,8 +26,8 @@ public class ConversationInspector : Editor {
 		GetTarget = new SerializedObject(t);
 		// names = new List<string>();
 
-		newSpeaker = null;
-		removeSpeaker = -1;
+		// newSpeaker = null;
+		// removeSpeaker = -1;
 		insertIndex = 0;
 		moveToIndex = 0;
 		moveFromIndex = 0;

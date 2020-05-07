@@ -12,6 +12,8 @@ public class Board : MonoBehaviour {
 	[SerializeField] private Tile exitTile = null;
 	[SerializeField] private RuleTile wallTile = null;
 
+	[SerializeField] private Tile debugWallTile = null;
+
 	[SerializeField] private Tilemap groundTilemap = null, wallTilemap = null;
 	private Floor floor;
 
@@ -49,6 +51,7 @@ public class Board : MonoBehaviour {
 				switch (grid[x, y]) {
 					case TileType.Room:
 						groundTilemap.SetTile(position, roomTile);
+						wallTilemap.SetTile(position, null);
 						break;
 					case TileType.Path:
 						groundTilemap.SetTile(position, pathTile);
@@ -63,9 +66,15 @@ public class Board : MonoBehaviour {
 						groundTilemap.SetTile(position, exitTile);
 						break;
 					case TileType.Wall:
-						wallTilemap.SetTile(position, wallTile);
+						if (debugWallTile == null) {
+							wallTilemap.SetTile(position, wallTile);
+						} else {
+							wallTilemap.SetTile(position, debugWallTile);
+						}
 						break;
-					default: break;
+					default:
+						wallTilemap.SetTile(position, null);
+						break;
 				}
 			}
 		}

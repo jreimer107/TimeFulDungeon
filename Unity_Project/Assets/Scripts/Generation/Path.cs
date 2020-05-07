@@ -37,12 +37,14 @@ public class Path {
 			return Coordinate.GetValidSuccessorsForPathGen(curr, parent, endpoints);
 		};
 
+		float time = Time.realtimeSinceStartup;
 		this.pathCoords = Board.instance.GetShortestPath(
 			startPos, endPos,
 			successorsFunction,
 			constFunc,
 			Coordinate.heuristic
 		);
+		Debug.LogFormat("OOP pathing: {0}", (Time.realtimeSinceStartup - time) * 1000f);
 	}
 
 	int GetGValue(Coordinate suc, Coordinate curr, Coordinate parent, int currCost) {
@@ -77,26 +79,4 @@ public class Path {
 		return false;
 	}
 
-}
-
-public class PathNode : IComparable<PathNode> {
-	public Coordinate pos { get; }
-	public int heuristic { get; }
-
-	public PathNode(Coordinate pos, int heuristic) {
-		this.pos = pos;
-		this.heuristic = heuristic;
-	}
-
-	public int CompareTo(PathNode other) {
-		if (this.heuristic != other.heuristic) {
-			return this.heuristic.CompareTo(other.heuristic);
-		} else {
-			return this.pos.CompareTo(other.pos);
-		}
-	}
-
-	public override string ToString() {
-		return string.Format("[{0}, {1}]", this.pos, this.heuristic);
-	}
 }

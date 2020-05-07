@@ -39,7 +39,7 @@ public class Pickup : MonoBehaviour {
 	//Called before first frame update
 	// Spawning script should call SetItem() before this happens
 	void Start() {
-		Debug.Log("start called.");
+		// Debug.Log("start called.");
 
 		//If exists in scene (not spawned) need to call SetItem to get sprite
 		//If spawned, spawning script needs to call SetItem.
@@ -56,19 +56,19 @@ public class Pickup : MonoBehaviour {
 	}
 
 	private IEnumerator WaitCreateTrigger() {
-		Debug.Log("Waiting for collision collider.");
+		// Debug.Log("Waiting for collision collider.");
 		yield return new WaitUntil(() => collisionCollider != null);
 		triggerCollider.enabled = true;
-		Debug.Log("Trigger collider enabled.");
+		// Debug.Log("Trigger collider enabled.");
 	}
 
 	//This should only be run once when the item is spawned (before Start)
 	public void SetItem(Item item) {
-		Debug.Log("set item called.");
+		// Debug.Log("set item called.");
 		if (item != null) {
 			this.item = item;
 			spriteRenderer.sprite = item.sprite;
-			Debug.Log("Item set.");
+			// Debug.Log("Item set.");
 			itemSet = true;
 
 			//Now that we have a sprite, create the collision collider
@@ -77,9 +77,10 @@ public class Pickup : MonoBehaviour {
 				collisionCollider = gameObject.AddComponent<PolygonCollider2D>();
 				collisionCollider.sharedMaterial = (PhysicsMaterial2D)Resources.Load("Materials/PickupMaterial");
 			}
-			Debug.Log("Created collision collider.");
-		} else
-			Debug.Log("Item not set.");
+			// Debug.Log("Created collision collider.");
+		} else {
+			// Debug.Log("Item not set.");
+		}
 	}
 
 	// Update is called once per frame

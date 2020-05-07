@@ -5,7 +5,7 @@ using UnityEngine;
 /// Simple Min Heap. Allows a payload and priority per element, sorted by priority.
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public class MinHeap<T> where T : IComparable<T> {
+public class MinHeap<T> where T : struct, IComparable<T> {
 	private T[] elements;
 	public int size { get; set; }
 

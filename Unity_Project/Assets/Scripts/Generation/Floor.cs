@@ -241,7 +241,7 @@ public class Floor {
 		HashSet<Coordinate> closed = new HashSet<Coordinate>();
 
 		//Add starting position to closed list
-		open.Add(new PathNode(start, Coordinate.heuristic(start, end)));
+		open.Add(new PathNode(start, GetHeuristicFunction(start, end)));
 		parents[start] = null;
 		costs[start] = 0;
 		Coordinate currPos = null; //tile to analyze
@@ -262,7 +262,8 @@ public class Floor {
 				int newCost = GetCostFunction(suc, currPos, parents[currPos], costs[currPos]);
 
 				//Only edit dictionaries if node is new or better
-				if (!costs.ContainsKey(suc) || newCost < costs[suc]) {
+				int currentSucCost = 0;
+				if (!costs.TryGetValue(suc, out currentSucCost) || newCost < currentSucCost) {
 					//Add node to open with F = G + H values as priority
 					open.Add(new PathNode(suc, newCost + GetHeuristicFunction(suc, end)));
 					costs[suc] = newCost;
@@ -313,5 +314,28 @@ public class Floor {
 			str += "\n";
 		}
 		return str;
+	}
+}
+
+
+public struct PathNode : IComparable<PathNode> {
+	public Coordinate pos { get; }
+	public int heuristic { get; }
+
+	public PathNode(Coordinate pos, int heuristic) {
+		this.pos = pos;
+		this.heuristic = heuristic;
+	}
+
+	public int CompareTo(PathNode other) {
+		if (this.heuristic != other.heuristic) {
+			return this.heuristic.CompareTo(other.heuristic);
+		} else {
+			return this.pos.CompareTo(other.pos);
+		}
+	}
+
+	public override string ToString() {
+		return string.Format("[{0}, {1}]", this.pos, this.heuristic);
 	}
 }
