@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Entities;
+using Unity.Mathematics;
 
 public class Enemy : MonoBehaviour {
 	public int health;
@@ -10,16 +12,24 @@ public class Enemy : MonoBehaviour {
 
 	private DamagePopupManager damagePopupManager;
 
+	private MovementController movementController;
+
 	// Use this for initialization
 	void Start () {
 		//anim = GetComponent<Animator>();
 		//anim.SetBool("isRunning", true);
 		damagePopupManager = DamagePopupManager.instance;
+		movementController = GetComponent<MovementController>();
+		movementController.CreateEntityForPathfinding();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		//transform.Translate(Vector2.left * speed * Time.deltaTime);
+		if (Input.GetMouseButtonDown(0)) {
+			movementController.RequestPath(Player.instance.transform.position);
+		}
+
+		movementController.UpdateWaypoint();
 	}
 
 	public void TakeDamage(int damage) {

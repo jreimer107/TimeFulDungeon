@@ -86,7 +86,7 @@ public class HoldingPoint : MonoBehaviour {
 			}
 			angle -= (inHand as Melee).speed;
 			if (angle <= startSwingAngle - (inHand as Melee).arc / 2) {
-				Debug.Log("Attack ending");
+				// Debug.Log("Attack ending");
 				attacking = false;
 				hitbox.enabled = false;
 				animator.SetBool("action", false);

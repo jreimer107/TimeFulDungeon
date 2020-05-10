@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using TMPro;
 using System;
+using Unity.Mathematics;
 
 
 public class WorldGrid<T> {
@@ -33,7 +34,7 @@ public class WorldGrid<T> {
 			}
 		}
 
-		bool debug = true;
+		bool debug = false;
 		if (debug) {
 			TextMeshPro[,] debugTextArray = new TextMeshPro[width, height];
 			for (int x = 0; x < width; x++) {
@@ -51,13 +52,21 @@ public class WorldGrid<T> {
 		}
 	}
 
-	public Vector2 GetWorldPosition(int x, int y) {
-		return new Vector2(x, y) * cellSize + originPosition;
+	public Vector2 GetWorldPosition(int x, int y, bool center = false) {
+		Vector2 ret = new Vector2(x, y) * cellSize + originPosition;
+		return center ? ret + new Vector2(0.5f, 0.5f) : ret;
 	}
 
-	private void GetXY(Vector2 worldPositon, out int x, out int y) {
+	public void GetXY(Vector2 worldPositon, out int x, out int y) {
 		x = Mathf.FloorToInt((worldPositon - originPosition).x / cellSize);
 		y = Mathf.FloorToInt((worldPositon - originPosition).y / cellSize);
+	}
+
+	public int2 GetXY(Vector2 worldPositon) {
+		return new int2(
+			Mathf.FloorToInt((worldPositon - originPosition).x / cellSize),
+			Mathf.FloorToInt((worldPositon - originPosition).y / cellSize)
+		);
 	}
 
 	public void Set(int x, int y, T value) {

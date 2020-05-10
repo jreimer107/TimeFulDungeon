@@ -1,29 +1,47 @@
 ﻿using UnityEngine;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Mathematics;
 using Unity.Jobs;
 using Unity.Burst;
 using System;
 using Unity.Entities;
-using System.ComponentModel;
+using System.Collections.Generic;
 
 public class Pathfinding : ComponentSystem {
 
 	protected override void OnUpdate() {
+		NativeList<JobHandle> jobHandles = new NativeList<JobHandle>(Allocator.Temp);
+		List<FindPathJob> findPathJobs = new List<FindPathJob>();
+		float startTime = UnityEngine.Time.realtimeSinceStartup;
 		Entities.ForEach((Entity entity, DynamicBuffer<PathPosition> path, ref PathfindingParams pathfindingParams) => {
-			Debug.Log("Find path!");
-			FindPathJob findPathJob = new FindPathJob {
+			// Debug.Log("Find path!");
+			FindPathJob findPathJob = new FindPathJob
+			{
 				start = pathfindingParams.start,
 				end = pathfindingParams.end,
-				path = path, 
+				path = new NativeList<int2>(Allocator.TempJob),
 				gridSize = new int2(PathfindingGrid.Instance.width, PathfindingGrid.Instance.height),
 				walkableGrid = PathfindingGrid.Instance.GetNativeArray(Allocator.TempJob),
-				entity = entity,
-				pathFollowComponent = GetComponentDataFromEntity<PathFollow>(),
+				entity = entity
 			};
-			findPathJob.Run();
+			findPathJobs.Add(findPathJob);
+			jobHandles.Add(findPathJob.Schedule());
 			PostUpdateCommands.RemoveComponent<PathfindingParams>(entity);
 		});
+		JobHandle.CompleteAll(jobHandles);
+
+
+		foreach (FindPathJob findPathJob in findPathJobs) {
+			new FillBufferJob
+			{
+				path = findPathJob.path,
+				entity = findPathJob.entity,
+				pathfollowFromEntity = GetComponentDataFromEntity<PathFollow>(),
+				pathPositionBufferFromEntity = GetBufferFromEntity<PathPosition>()
+			}.Run();
+			findPathJob.path.Dispose();
+		}
 	}
 
 	[BurstCompile]
@@ -35,10 +53,9 @@ public class Pathfinding : ComponentSystem {
 		[DeallocateOnJobCompletion]
 		public NativeArray<bool> walkableGrid;
 
-		public Entity entity;
-		public DynamicBuffer<PathPosition> path;
-		public ComponentDataFromEntity<PathFollow> pathFollowComponent;
-
+		// TODO: Once this buffer issue is addressed, combine these two jobs.
+		public NativeList<int2> path; // Input for sequential buffer job
+		public Entity entity; // Data storage for sequential buffer job
 
 		public void Execute() {
 			GetPath();
@@ -74,7 +91,7 @@ public class Pathfinding : ComponentSystem {
 
 					float newSucCost = GetCost(curr, suc, costs[curr]);
 					float currentSucCost = 0;
-					if(!costs.TryGetValue(suc, out currentSucCost) || newSucCost < currentSucCost) {
+					if (!costs.TryGetValue(suc, out currentSucCost) || newSucCost < currentSucCost) {
 						open.Add(new MinHeapNode(suc, newSucCost + GetHeuristic(suc, end)));
 						costs[suc] = newSucCost;
 						parents[suc] = curr;
@@ -83,13 +100,10 @@ public class Pathfinding : ComponentSystem {
 				succesors.Dispose();
 			}
 
-			path.Clear();
 			while (curr.x != nothing.x || curr.y != nothing.y) {
-				path.Add(new PathPosition {position = curr });
-				// Debug.LogFormat("{0}, {1}", curr.x, curr.y);
+				path.Add(curr);
 				curr = parents[curr];
 			}
-			pathFollowComponent[entity] = new PathFollow { pathIndex = path.Length - 1};
 
 			open.Dispose();
 			closed.Dispose();
@@ -98,15 +112,19 @@ public class Pathfinding : ComponentSystem {
 		}
 
 		public NativeArray<int2> GetSuccessors(int2 p) {
-			NativeArray<int2> ret = new NativeArray<int2>(8, Allocator.Temp);
+			NativeArray<int2> ret = new NativeArray<int2>(4, Allocator.Temp);
 			ret[0] = new int2(p.x + 1, p.y);
-			ret[1] = new int2(p.x + 1, p.y + 1);
-			ret[2] = new int2(p.x, p.y + 1);
-			ret[3] = new int2(p.x - 1, p.y + 1);
-			ret[4] = new int2(p.x - 1, p.y);
-			ret[5] = new int2(p.x - 1, p.y - 1);
-			ret[6] = new int2(p.x, p.y - 1);
-			ret[7] = new int2(p.x + 1, p.y - 1);
+			ret[1] = new int2(p.x, p.y + 1);
+			ret[2] = new int2(p.x - 1, p.y);
+			ret[3] = new int2(p.x, p.y - 1);
+			// ret[0] = new int2(p.x + 1, p.y);
+			// ret[1] = new int2(p.x + 1, p.y + 1);
+			// ret[2] = new int2(p.x, p.y + 1);
+			// ret[3] = new int2(p.x - 1, p.y + 1);
+			// ret[4] = new int2(p.x - 1, p.y);
+			// ret[5] = new int2(p.x - 1, p.y - 1);
+			// ret[6] = new int2(p.x, p.y - 1);
+			// ret[7] = new int2(p.x + 1, p.y - 1);
 			return ret;
 		}
 
@@ -129,5 +147,30 @@ public class Pathfinding : ComponentSystem {
 		public int CompareTo(MinHeapNode other) => this.heuristic.CompareTo(other.heuristic);
 
 		public override string ToString() => string.Format("({0}, {1})", position, heuristic);
+	}
+}
+
+/// <summary>
+/// THIS JOB SHOULD BE REMOVED IN THE FUTURE.
+/// Dynamic buffers cannot be modified in a parallel environment. This job takes a NativeList,
+/// which can, and populates the Dynamic buffer in a sequential state.
+/// </summary>
+[BurstCompile]
+public struct FillBufferJob : IJob {
+	// [DeallocateOnJobCompletion]
+	public NativeList<int2> path;
+
+	public Entity entity;
+	public ComponentDataFromEntity<PathFollow> pathfollowFromEntity;
+	public BufferFromEntity<PathPosition> pathPositionBufferFromEntity;
+
+	public void Execute() {
+		DynamicBuffer<PathPosition> pathPositions = pathPositionBufferFromEntity[entity];
+		pathPositions.Clear();
+
+		for (int i = 0; i < path.Length; i++) {
+			pathPositions.Add(new PathPosition { position = path[i] });
+		}
+		pathfollowFromEntity[entity] = new PathFollow { pathIndex = path.Length - 1 };
 	}
 }
