@@ -26,10 +26,13 @@ public class Pathfinding : ComponentSystem {
 				entity = entity
 			};
 			findPathJobs.Add(findPathJob);
-			jobHandles.Add(findPathJob.Schedule());
+			// jobHandles.Add(findPathJob.Schedule());
+			Debug.ClearDeveloperConsole();
+			findPathJob.Run();
 			PostUpdateCommands.RemoveComponent<PathfindingParams>(entity);
 		});
-		JobHandle.CompleteAll(jobHandles);
+		// JobHandle.CompleteAll(jobHandles);
+		jobHandles.Dispose();
 
 
 		foreach (FindPathJob findPathJob in findPathJobs) {
@@ -82,10 +85,10 @@ public class Pathfinding : ComponentSystem {
 				}
 				closed.TryAdd(curr, new Utils.Empty());
 
-				NativeArray<int2> succesors = GetSuccessors(curr);
+				NativeList<int2> succesors = GetSuccessors(curr);
 				for (int i = 0; i < succesors.Length; i++) {
 					int2 suc = succesors[i];
-					if (!Utils.PointInBox(suc, gridSize) || closed.ContainsKey(suc) || !walkableGrid[suc.x * gridSize.x + suc.y]) {
+					if (!IsWalkable(suc.x, suc.y) || closed.ContainsKey(suc)) {
 						continue;
 					}
 
@@ -100,10 +103,124 @@ public class Pathfinding : ComponentSystem {
 				succesors.Dispose();
 			}
 
-			while (curr.x != nothing.x || curr.y != nothing.y) {
+			if (!curr.Equals(end)) {
+				open.Dispose();
+				closed.Dispose();
+				parents.Dispose();
+				costs.Dispose();
+				return;
+			}
+
+			while (!curr.Equals(nothing)) {
 				path.Add(curr);
 				curr = parents[curr];
 			}
+
+			/*
+			curr = start 
+			while curr is not end
+				turn = last node in path where turn.x == curr.x || turn.y == curr.y
+				while all nodes between curr and turn are walkable
+					turn = next node in path
+				waypoints.add(node before turn)
+				curr = node before turn
+			*/
+
+			NativeList<int2> waypoints = new NativeList<int2>(Allocator.Temp);
+			curr = start;
+			int currIndex = path.Length - 1;
+			Debug.LogFormat("Waypointifying path from {0} to {1}", start, end);
+			// Until we're testing the end waypoint
+			while (!curr.Equals(end)) {
+				// The next waypoint is the last node after a turn that is still visible from the current waypoint
+				Debug.LogFormat("Finding next waypoint from {0}", curr);
+
+				// Find the first node after a turn
+				int turnIndex = currIndex;
+				int2 turn = path[turnIndex];
+				while (curr.x == turn.x || curr.y == turn.y || math.abs(turn.x - curr.x) == math.abs(turn.y - curr.y)) {
+					if (turnIndex == 0) {
+						curr = end;
+						break;
+					}
+					turn = path[--turnIndex];
+					Debug.LogFormat("Testing turn index {0}: {1}", turnIndex, turn);
+				}
+				Debug.LogFormat("Found Turn at {0}", turn);
+
+				// Find the last node after the turn that is still visible from the current waypoint
+				bool inSight = true;
+				while (inSight && turnIndex > 0) {
+					// Check if the current node after the turn is visible from the current waypoint
+
+					// Check if all nodes between the post-turn node and the current waypoint are walkable
+					float2 delta = turn - curr;
+					float slope = delta.y / delta.x;
+					Debug.LogFormat("Possible waypoint is {0} away, slope of {1}", delta, slope);
+					if (math.abs(slope) >= 1) {
+						int x, y = 0;
+						float xf;
+						int2 test;
+						while (y != delta.y) {
+							xf = (float)y / slope;
+							x = (int)math.trunc(xf);
+							test.x = curr.x + x;
+							test.y = curr.y + y;
+
+							Debug.LogFormat("Testing walkability of ({0}, {1})", x, y);
+							if (!IsWalkable(test) ||
+								xf < x && !IsWalkable(test.x - 1, test.y) ||
+								xf > x && !IsWalkable(test.x + 1, test.y)) {
+								inSight = false;
+								break;
+							}
+							
+							y += delta.y > 0 ? 1 : -1;
+						}
+					} else {
+						int x = 0, y;
+						float yf;
+						int2 test;
+						while (x != delta.x) {
+							yf = x * slope;
+							y = (int)math.trunc(yf);
+							test.x = curr.x + x;
+							test.y = curr.y + y;
+
+							Debug.LogFormat("Testing walkability of ({0}, {1})", x, y);
+							if (!IsWalkable(test) ||
+								yf < x && !IsWalkable(test.x, test.y - 1) ||
+								yf > x && !IsWalkable(test.x, test.y + 1)) {
+								inSight = false;
+								break;
+							}
+							
+							x += delta.x > 0 ? 1 : -1;
+						}
+					}
+
+					// If no collision was found, then the path between this post-turn node and the current waypoint is walkable.
+					// Try again with the next post-turn node.
+					if (inSight) {
+						turn = path[--turnIndex];
+					} else {
+						// Only a bad turn fails this condition, so move one back
+						turn = path[++turnIndex];
+					}
+				}
+
+				// Start again at the next waypoint, add it to the waypoint list.
+				curr = turn;
+				currIndex = turnIndex;
+				waypoints.Add(curr);
+				Debug.LogFormat("Adding waypoint {0}", curr);
+			}
+			path.Clear();
+			for (int i = waypoints.Length - 1; i >= 0; i--) {
+				path.Add(waypoints[i]);
+				Debug.LogFormat("Waypoint: {0}", waypoints[i]);
+			}
+			waypoints.Dispose();
 
 			open.Dispose();
 			closed.Dispose();
@@ -111,20 +228,33 @@ public class Pathfinding : ComponentSystem {
 			costs.Dispose();
 		}
 
-		public NativeArray<int2> GetSuccessors(int2 p) {
-			NativeArray<int2> ret = new NativeArray<int2>(4, Allocator.Temp);
-			ret[0] = new int2(p.x + 1, p.y);
-			ret[1] = new int2(p.x, p.y + 1);
-			ret[2] = new int2(p.x - 1, p.y);
-			ret[3] = new int2(p.x, p.y - 1);
-			// ret[0] = new int2(p.x + 1, p.y);
-			// ret[1] = new int2(p.x + 1, p.y + 1);
-			// ret[2] = new int2(p.x, p.y + 1);
-			// ret[3] = new int2(p.x - 1, p.y + 1);
-			// ret[4] = new int2(p.x - 1, p.y);
-			// ret[5] = new int2(p.x - 1, p.y - 1);
-			// ret[6] = new int2(p.x, p.y - 1);
-			// ret[7] = new int2(p.x + 1, p.y - 1);
+		public bool IsWalkable(int2 p) {
+			if (!Utils.PointInBox(p, gridSize)) {
+				return false;
+			}
+			return walkableGrid[p.x * gridSize.x + p.y];
+		}
+		public bool IsWalkable(int x, int y) => IsWalkable(new int2(x, y));
+
+		public NativeList<int2> GetSuccessors(int2 p) {
+			NativeList<int2> ret = new NativeList<int2>(4, Allocator.Temp);
+			ret.Add(new int2(p.x + 1, p.y));
+			ret.Add(new int2(p.x, p.y + 1));
+			ret.Add(new int2(p.x - 1, p.y));
+			ret.Add(new int2(p.x, p.y - 1));
+
+			if (IsWalkable(p.x + 1, p.y) && IsWalkable(p.x, p.y + 1)) {
+				ret.Add(new int2(p.x + 1, p.y + 1));
+			}
+			if (IsWalkable(p.x, p.y + 1) && IsWalkable(p.x - 1, p.y)) {
+				ret.Add(new int2(p.x - 1, p.y + 1));
+			}
+			if (IsWalkable(p.x - 1, p.y) && IsWalkable(p.x, p.y - 1)) {
+				ret.Add(new int2(p.x - 1, p.y - 1));
+			}
+			if (IsWalkable(p.x, p.y - 1) && IsWalkable(p.x + 1, p.y)) {
+				ret.Add(new int2(p.x + 1, p.y - 1));
+			}
 			return ret;
 		}
 

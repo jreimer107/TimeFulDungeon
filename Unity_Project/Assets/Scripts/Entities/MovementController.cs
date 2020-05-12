@@ -73,7 +73,7 @@ public class MovementController : MonoBehaviour {
 	public void CreateEntityForPathfinding() {
 		entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 		entity = entityManager.CreateEntity();
-		entityManager.AddComponentData(entity, new PathFollow {pathIndex = -1});
+		entityManager.AddComponentData(entity, new PathFollow { pathIndex = -1 });
 		entityManager.AddBuffer<PathPosition>(entity);
 	}
 
@@ -93,6 +93,14 @@ public class MovementController : MonoBehaviour {
 
 		PathFollow pathFollow = entityManager.GetComponentData<PathFollow>(entity);
 		DynamicBuffer<PathPosition> path = entityManager.GetBuffer<PathPosition>(entity);
+		if (path.Length > 0) {
+			Debug.DrawLine(
+				transform.position,
+				PathfindingGrid.Instance.GetWorldPosition(path[path.Length - 1].position),
+				Color.green,
+				1f
+			);
+		}
 		for (int i = 1; i < path.Length; i++) {
 			Debug.DrawLine(
 				PathfindingGrid.Instance.GetWorldPosition(path[i - 1].position),
