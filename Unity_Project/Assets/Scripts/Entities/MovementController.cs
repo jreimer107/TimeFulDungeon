@@ -6,8 +6,14 @@ using Unity.Mathematics;
 public class MovementController : MonoBehaviour {
 	private float horizontalMove;
 	private float verticalMove;
+	private Vector2 waypoint;
 	private Vector2 destination;
-	public bool travelling { private set; get; }
+	private Vector2 start;
+
+	private PathFollow pathFollow;
+	private DynamicBuffer<PathPosition> path;
+	
+	public bool havePath { private set; get; }
 
 	[SerializeField] private float speed = 20f;
 	[Range(0, .3f)] [SerializeField] private float MovementSmoothing = .05f;
@@ -29,7 +35,7 @@ public class MovementController : MonoBehaviour {
 		horizontalMove = 0;
 		verticalMove = 0;
 		velocity = Vector3.zero;
-		destination = Vector2.zero;
+		waypoint = Vector2.zero;
 
 		rigidbody = GetComponent<Rigidbody2D>();
 		spriteRenderer = GetComponent<SpriteRenderer>();
@@ -45,22 +51,25 @@ public class MovementController : MonoBehaviour {
 			}
 		}
 
+		// Kick off pathfinding fetch loop
+		if (entity != null) {
+			InvokeRepeating("GetUpdatedPath", 0f, 1f);
+		}
+
 	}
 
 	private void Update() {
+		// Update animation
 		if (hasHorizontalAnimation)
 			animator.SetFloat("Horizontal", horizontalMove);
 		if (hasVerticalAnimation)
 			animator.SetFloat("Vertical", verticalMove);
 
-
-		if (travelling) {
-			if (Vector2.Distance(destination, transform.position) < 0.1f) {
-				SetMoveDirection(0f, 0f);
-				destination = Vector2.zero;
-				travelling = false;
+		if (entity != null && havePath) {
+			if (Vector2.Distance(waypoint, transform.position) < 0.25f) {
+				GetNextWaypoint();
 			} else {
-				Vector2 move = (destination - (Vector2)transform.position).normalized;
+				Vector2 move = (waypoint - (Vector2)transform.position).normalized;
 				SetMoveDirection(move.x, move.y);
 			}
 		}
@@ -77,51 +86,72 @@ public class MovementController : MonoBehaviour {
 		entityManager.AddBuffer<PathPosition>(entity);
 	}
 
-	public void SetDestination(Vector2 destination) {
-		this.destination = destination;
-		travelling = true;
-	}
 
-	public void RequestPath(Vector2 destination) {
+	/// <summary>
+	/// Sets a position to travel to. Entity will pathfind its way there.
+	/// </summary>
+	/// <param name="destination">Vector2 destination to travel to.</param>
+	public void Travel(Vector2 destination) {
+		this.destination = destination;
 		PathfindingGrid.Instance.RequestPath(entity, transform.position, destination);
 	}
 
-	public void UpdateWaypoint() {
-		if (entity == null) {
-			return;
-		}
-
-		PathFollow pathFollow = entityManager.GetComponentData<PathFollow>(entity);
-		DynamicBuffer<PathPosition> path = entityManager.GetBuffer<PathPosition>(entity);
-		if (path.Length > 0) {
-			Debug.DrawLine(
-				transform.position,
-				PathfindingGrid.Instance.GetWorldPosition(path[path.Length - 1].position),
-				Color.green,
-				1f
-			);
-		}
-		for (int i = 1; i < path.Length; i++) {
-			Debug.DrawLine(
-				PathfindingGrid.Instance.GetWorldPosition(path[i - 1].position),
-				PathfindingGrid.Instance.GetWorldPosition(path[i].position),
-				Color.green,
-				1f
-			);
-		}
-
-		int index = pathFollow.pathIndex;
-
-		if (index >= 0) {
-			if (!travelling) {
-				int2 pathPosition = path[index].position;
-
-				Vector2 wayPoint = PathfindingGrid.Instance.GetWorldPosition(pathPosition);
-				SetDestination(wayPoint);
-				Debug.LogFormat("Setting waypoint to {0}", wayPoint);
-				pathFollow.pathIndex--;
-				entityManager.SetComponentData(entity, pathFollow);
+	private void GetUpdatedPath() {
+		if (destination != Vector2.zero) {
+			// Debug.Log("Requesting new path and fetching.");
+			PathfindingGrid.Instance.RequestPath(entity, transform.position, destination);
+			pathFollow = entityManager.GetComponentData<PathFollow>(entity);
+			if (pathFollow.pathIndex != -1) {
+				// Debug.Log("Got path!");
+				havePath = true;
+				GetNextWaypoint();
 			}
+		}
+	}
+
+	private void GetNextWaypoint() {
+		// Get index of waypoint from PathFollow struct
+		int index = pathFollow.pathIndex;
+		// Debug.LogFormat("Getting waypoint {0}", index);
+
+		pathFollow = entityManager.GetComponentData<PathFollow>(entity);
+		path = entityManager.GetBuffer<PathPosition>(entity);
+
+		// If we have a waypoint left
+		if (index >= 0) {
+			if (path.Length > 0) {
+				Debug.DrawLine(
+					transform.position,
+					PathfindingGrid.Instance.GetWorldPosition(path[path.Length - 1].position),
+					Color.green,
+					1f
+				);
+			}
+			for (int i = 1; i < path.Length; i++) {
+				Debug.DrawLine(
+					PathfindingGrid.Instance.GetWorldPosition(path[i - 1].position),
+					PathfindingGrid.Instance.GetWorldPosition(path[i].position),
+					Color.green,
+					1f
+				);
+			}
+
+
+			// Get the waypoint
+			int2 pathPosition = path[index].position;
+			waypoint = PathfindingGrid.Instance.GetWorldPosition(pathPosition);
+			// Debug.LogFormat("Setting waypoint to {0}", waypoint);
+
+			// Update the index for the next time
+			pathFollow.pathIndex--;
+			entityManager.SetComponentData(entity, pathFollow);
+		}
+		else {
+			Debug.Log("Done traveling.");
+			havePath = false;
+			// waypoint = Vector2.zero;
+			SetMoveDirection(0, 0);
+			destination = Vector2.zero;
 		}
 	}
 

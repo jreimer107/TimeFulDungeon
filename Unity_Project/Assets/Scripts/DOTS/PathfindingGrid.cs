@@ -33,12 +33,12 @@ public class PathfindingGrid : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	void Update() {
-		if (Input.GetMouseButtonDown(0)) {
-			Vector2 mousePos = Utils.GetMouseWorldPosition2D();
-			grid.Set(mousePos, !grid.Get(mousePos));
-		}
-	}
+	// void Update() {
+	// 	if (Input.GetMouseButtonDown(0)) {
+	// 		Vector2 mousePos = Utils.GetMouseWorldPosition2D();
+	// 		grid.Set(mousePos, !grid.Get(mousePos));
+	// 	}
+	// }
 
 	private void FixedUpdate() {
 		if (intervalCounter >= UpdateInterval) {
@@ -82,12 +82,10 @@ public class PathfindingGrid : MonoBehaviour {
 		});
 	}
 
-	// private class PathRequest {
-	// 	private Entity entity;
+	// private class GridPos {
+	// 	private int x, y;
 
-	// 	public PathRequest() {
-			
-	// 	}
+	// 	public
 	// }
 
 }

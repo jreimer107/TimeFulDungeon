@@ -4967,7 +4967,7 @@ MonoBehaviour:
   entranceTile: {fileID: 11400000, guid: 8ac25a94421061b499530deb77e71e26, type: 2}
   exitTile: {fileID: 11400000, guid: 9546e48682a8afe468745e5010fd9fae, type: 2}
   wallTile: {fileID: 11400000, guid: 78076987623bd594ca473bb486ae4c45, type: 2}
-  debugWallTile: {fileID: 0}
+  debugWallTile: {fileID: 11400000, guid: e7fcfec3eaeee0e4fa2835713f542cd2, type: 2}
   groundTilemap: {fileID: 1769315888}
   wallTilemap: {fileID: 2013943013}
   genConfig: {fileID: 1992490088}

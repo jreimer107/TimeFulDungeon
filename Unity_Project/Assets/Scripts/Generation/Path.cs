@@ -44,7 +44,7 @@ public class Path {
 			constFunc,
 			Coordinate.heuristic
 		);
-		Debug.LogFormat("OOP pathing: {0}", (Time.realtimeSinceStartup - time) * 1000f);
+		// Debug.LogFormat("OOP pathing: {0}", (Time.realtimeSinceStartup - time) * 1000f);
 	}
 
 	int GetGValue(Coordinate suc, Coordinate curr, Coordinate parent, int currCost) {

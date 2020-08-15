@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 using Unity.Mathematics;
 using Unity.Jobs;
 using Unity.Burst;
@@ -65,6 +64,7 @@ public class Pathfinding : ComponentSystem {
 		}
 
 		private void GetPath() {
+			// A Star pathfinding. Finds rough path between two points.
 			NativeMinHeap<MinHeapNode> open = new NativeMinHeap<MinHeapNode>(Allocator.Temp);
 			NativeHashMap<int2, Utils.Empty> closed = new NativeHashMap<int2, Utils.Empty>(16, Allocator.Temp);
 
@@ -103,6 +103,7 @@ public class Pathfinding : ComponentSystem {
 				succesors.Dispose();
 			}
 
+			// If we didn't find a path, dispose and return
 			if (!curr.Equals(end)) {
 				open.Dispose();
 				closed.Dispose();
@@ -111,11 +112,18 @@ public class Pathfinding : ComponentSystem {
 				return;
 			}
 
+			// If we did find a path, extract path from parents hashmap. Then dispose and continue.
 			while (!curr.Equals(nothing)) {
 				path.Add(curr);
 				curr = parents[curr];
 			}
+			open.Dispose();
+			closed.Dispose();
+			parents.Dispose();
+			costs.Dispose();
+			// End of A Star
 
+			// Waypointifying. Removes unnecessary positions from A Star result
 			/*
 			curr = start 
 			while curr is not end
@@ -125,49 +133,59 @@ public class Pathfinding : ComponentSystem {
 				waypoints.add(node before turn)
 				curr = node before turn
 			*/
-
 			NativeList<int2> waypoints = new NativeList<int2>(Allocator.Temp);
 			curr = start;
 			int currIndex = path.Length - 1;
-			Debug.LogFormat("Waypointifying path from {0} to {1}", start, end);
+			// Debug.LogFormat("Waypointifying path from {0} to {1}", start, end);
 			// Until we're testing the end waypoint
 			while (!curr.Equals(end)) {
 				// The next waypoint is the last node after a turn that is still visible from the current waypoint
-				Debug.LogFormat("Finding next waypoint from {0}", curr);
+				// Debug.Log($"Finding next waypoint from {curr}, {currIndex}");
 
 				// Find the first node after a turn
 				int turnIndex = currIndex;
 				int2 turn = path[turnIndex];
 				while (curr.x == turn.x || curr.y == turn.y || math.abs(turn.x - curr.x) == math.abs(turn.y - curr.y)) {
+					// Debug.Log($"Turnskip {turn}, {turnIndex}");
 					if (turnIndex == 0) {
+						// Debug.Log("Turn finder reached end of path.");
 						curr = end;
 						break;
 					}
 					turn = path[--turnIndex];
-					Debug.LogFormat("Testing turn index {0}: {1}", turnIndex, turn);
 				}
-				Debug.LogFormat("Found Turn at {0}", turn);
+
+				// If there's a turn on the last position, the inSight check won't happen. Add the second-last position.
+				if (turnIndex == 0) {
+					waypoints.Add(path[turnIndex + 1]);
+				}
+				// Debug.Log($"Turn {turn} found at index {turnIndex}");
 
 				// Find the last node after the turn that is still visible from the current waypoint
 				bool inSight = true;
 				while (inSight && turnIndex > 0) {
-					// Check if the current node after the turn is visible from the current waypoint
-
+					// Check if the node after the turn is visible from the current waypoint
 					// Check if all nodes between the post-turn node and the current waypoint are walkable
+					// Debug.Log($"Possible waypoint is {turn}, {delta} away, slope of {slope}");
 					float2 delta = turn - curr;
 					float slope = delta.y / delta.x;
-					Debug.LogFormat("Possible waypoint is {0} away, slope of {1}", delta, slope);
 					if (math.abs(slope) >= 1) {
+						// If slope > 1, path crosses at least one y border for each x.
+						// So for each y crossed, check that the positions left or right walkable, based on where the entity is
+						Debug.LogFormat("Slope > 1: {0}", slope);
 						int x, y = 0;
 						float xf;
 						int2 test;
 						while (y != delta.y) {
+							// Get the exact and rounded x coordinates
 							xf = (float)y / slope;
 							x = (int)math.trunc(xf);
 							test.x = curr.x + x;
 							test.y = curr.y + y;
 
-							Debug.LogFormat("Testing walkability of ({0}, {1})", x, y);
+							// If exactX < roundedX, entity is on right half of square. Check square left of current pos.
+							// If exactX > roundedX, entity is on left half of square. Check square right of current pos.
+							// Debug.LogFormat("Testing walkability of ({0}, {1})", x, y);
 							if (!IsWalkable(test) ||
 								xf < x && !IsWalkable(test.x - 1, test.y) ||
 								xf > x && !IsWalkable(test.x + 1, test.y)) {
@@ -175,26 +193,34 @@ public class Pathfinding : ComponentSystem {
 								break;
 							}
 							
+							// Move up or down based on slope
 							y += delta.y > 0 ? 1 : -1;
 						}
 					} else {
+						// Debug.Log("Slope < 1:" + slope);
+						// If slope < 1, path crosses at least one x for each y.
+						// For each x crossed, check that the position up or down is walkable, based on where the entity is
 						int x = 0, y;
 						float yf;
 						int2 test;
 						while (x != delta.x) {
+							// Get the exact and rounded y coordinates
 							yf = x * slope;
 							y = (int)math.trunc(yf);
 							test.x = curr.x + x;
 							test.y = curr.y + y;
 
-							Debug.LogFormat("Testing walkability of ({0}, {1})", x, y);
+							// Debug.LogFormat("Testing walkability of ({0}, {1})", test.x, test.y);
+							// If exactY < roundedY, entity is on bottom half of square. Check the square below.
+							// If exactY > roundedY, entity is on top half of square. Check the square above.
 							if (!IsWalkable(test) ||
-								yf < x && !IsWalkable(test.x, test.y - 1) ||
-								yf > x && !IsWalkable(test.x, test.y + 1)) {
+								yf < y && !IsWalkable(test.x, test.y - 1) ||
+								yf > y && !IsWalkable(test.x, test.y + 1)) {
 								inSight = false;
 								break;
 							}
 							
+							// Move left or right based on slope
 							x += delta.x > 0 ? 1 : -1;
 						}
 					}
@@ -204,7 +230,7 @@ public class Pathfinding : ComponentSystem {
 					if (inSight) {
 						turn = path[--turnIndex];
 					} else {
-						// Only a bad turn fails this condition, so move one back
+						// Only a bad turn fails this condition, so move one back. The square before a bad turn is a waypoint.
 						turn = path[++turnIndex];
 					}
 				}
@@ -213,19 +239,17 @@ public class Pathfinding : ComponentSystem {
 				curr = turn;
 				currIndex = turnIndex;
 				waypoints.Add(curr);
-				Debug.LogFormat("Adding waypoint {0}", curr);
+				// Debug.LogFormat("Adding waypoint {0}", curr);
 			}
+
+			// Add waypoints to path buffer so that external processes can access.
 			path.Clear();
 			for (int i = waypoints.Length - 1; i >= 0; i--) {
 				path.Add(waypoints[i]);
-				Debug.LogFormat("Waypoint: {0}", waypoints[i]);
+				// Debug.LogFormat("Waypoint: {0}", waypoints[i]);
 			}
 			waypoints.Dispose();
-
-			open.Dispose();
-			closed.Dispose();
-			parents.Dispose();
-			costs.Dispose();
+			// End of waypointifying
 		}
 
 		public bool IsWalkable(int2 p) {
