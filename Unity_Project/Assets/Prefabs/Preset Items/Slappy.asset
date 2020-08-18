@@ -9,19 +9,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 778a08971988a4c41aa01a4e96d6996e, type: 3}
   m_Name: Slappy
-  m_EditorClassIdentifier: Assembly-CSharp::Melee
-  name: 
-  ID: 1
-  description: 
+  m_EditorClassIdentifier: 
+  name: Slappy
+  ID: 0
+  description: Look out! He's armed!
   sprite: {fileID: 7417140616732155178, guid: d5e7c31c509b3b14d945fe95aebbf94c, type: 3}
   stackable: 0
   count: 0
+  autoPickup: 0
   idleClip: {fileID: 7400000, guid: 9b136b77d79c84540a3caa85dfeb706d, type: 2}
   actionClip: {fileID: 7400000, guid: 43a94df92163b5c4d9af8b466fd38293, type: 2}
   type: 0
-  arc: 360
+  arc: 180
   damage: 10
   range: 2
   speed: 7

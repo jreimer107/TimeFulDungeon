@@ -38,6 +38,7 @@ public class EquipmentManager : MonoBehaviour {
 	public void Equip(Equipment newEquip) {
 		int slotIndex = (int)newEquip.type;
 		Equipment currentEquip = currentEquipment[slotIndex];
+		Debug.Log($"Equipping {newEquip.name}");
 
 		//Add currently equipped item back into inventory
 		if (currentEquipment[slotIndex] != null) {

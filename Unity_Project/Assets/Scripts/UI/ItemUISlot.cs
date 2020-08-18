@@ -4,10 +4,13 @@ using UnityEngine.UI;
 
 
 [RequireComponent(typeof(Button))]
-public class ItemUISlot : MonoBehaviour, IPointerClickHandler, IDragHandler, IBeginDragHandler, IEndDragHandler {
+public class ItemUISlot : MonoBehaviour, IPointerClickHandler, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler {
 	public Item item;
 	[SerializeField] private Image icon = null;
 	private Button button;
+
+	[SerializeField]
+	private Tooltip tooltip = null;
 
 	void Awake() {
 		button = GetComponent<Button>();
@@ -99,5 +102,14 @@ public class ItemUISlot : MonoBehaviour, IPointerClickHandler, IDragHandler, IBe
 			Debug.Log("Right click");
 			Use();
 		}
+	}
+
+	// Hovering for tooltips
+	public void OnPointerEnter(PointerEventData eventData) {
+		tooltip?.ShowFormat(item.name, item.description, item.redText);	
+	}
+
+	public void OnPointerExit(PointerEventData eventData) {
+		tooltip?.Hide();
 	}
 }

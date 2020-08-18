@@ -50,4 +50,13 @@ public static class Utils {
 	}
 
 	public struct Empty {};
+
+	public static string GetRandomText() {
+		string abc = "abcdefghijklmnopqrstuvwxyz\n\n\n\nABCDEFGHIJKLMNOPQRSTUVWXYZ\t\t\t";
+		string text = "";
+		for (int i = 0; i < UnityEngine.Random.Range(20, 100); i++) {
+			text += abc[UnityEngine.Random.Range(0, abc.Length)];
+		}
+		return text;
+	}
 }

@@ -6,6 +6,7 @@ public class Item : ScriptableObject, IEquatable<Item> {
 	new public string name;
 	public int ID;
 	public string description;
+	public string redText;
 	public Sprite sprite;
 	public bool stackable;
 	public int count;
@@ -13,7 +14,7 @@ public class Item : ScriptableObject, IEquatable<Item> {
 	public AnimationClip idleClip;
 	public AnimationClip actionClip;
 
-	public Item(string name, int ID, string description, Sprite sprite, bool stackable, int count, bool autoPickup) {
+	public Item(string name, int ID, string description, Sprite sprite, bool stackable, int count, bool autoPickup, string redText = "") {
 		this.name = name;
 		this.ID = ID;
 		this.description = description;
@@ -36,6 +37,7 @@ public class Item : ScriptableObject, IEquatable<Item> {
 		this.name = copy.name;
 		this.ID = copy.ID;
 		this.description = copy.description;
+		this.redText = copy.redText;
 		this.sprite = copy.sprite;
 		this.stackable = copy.stackable;
 		this.count = copy.count;
