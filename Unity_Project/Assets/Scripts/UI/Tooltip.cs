@@ -33,19 +33,12 @@ public class Tooltip : MonoBehaviour {
 
 	private void randomText() => SetText(Utils.GetRandomText());
 
+	private void Start() {
+		UpdatePosition();	
+	}
 
 	private void Update() {
-		// Scale mouse position to screen
-		Vector2 anchoredPosition = Input.mousePosition / canvasRectTransform.localScale.x;
-
-		// Tooltip left screen on right or top
-		if (constrainToScreen) {
-			anchoredPosition.x = Mathf.Min(anchoredPosition.x, canvasRectTransform.rect.width - backgroundTransform.rect.width);
-			anchoredPosition.y = Mathf.Min(anchoredPosition.y, canvasRectTransform.rect.height - backgroundTransform.rect.height);
-		}
-
-		// Assign tooltip position
-		backgroundTransform.anchoredPosition = anchoredPosition;
+		UpdatePosition();
 
 #if UNITY_EDITOR
 		if (changedInEditor) {
@@ -142,4 +135,18 @@ public class Tooltip : MonoBehaviour {
 	/// Permanently makes the tooltip invisible.
 	/// </summary>
 	public void Destroy() => Destroy(gameObject);
+
+	private void UpdatePosition() {
+		// Scale mouse position to screen
+		Vector2 anchoredPosition = Input.mousePosition / canvasRectTransform.localScale.x;
+
+		// Tooltip left screen on right or top
+		if (constrainToScreen) {
+			anchoredPosition.x = Mathf.Min(anchoredPosition.x, canvasRectTransform.rect.width - backgroundTransform.rect.width);
+			anchoredPosition.y = Mathf.Min(anchoredPosition.y, canvasRectTransform.rect.height - backgroundTransform.rect.height);
+		}
+
+		// Assign tooltip position
+		backgroundTransform.anchoredPosition = anchoredPosition;
+	}
 }

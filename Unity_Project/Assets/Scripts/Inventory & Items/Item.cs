@@ -44,4 +44,6 @@ public class Item : ScriptableObject, IEquatable<Item> {
 	}
 
 	public virtual Item Clone() => new Item(this);
+
+	public string GetTooltipText() => $"<size=32>{name}</size>\n{description}\n<color=red>{redText}</color>";
 }
