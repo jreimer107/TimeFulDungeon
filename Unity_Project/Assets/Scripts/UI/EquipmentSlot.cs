@@ -11,7 +11,8 @@ public class EquipmentSlot : ItemUISlot {
 		}
 	}
 
-	void Start() {
+	protected new void Start() {
+		base.Start();
 		equipmentManager = EquipmentManager.instance;
 	}
 

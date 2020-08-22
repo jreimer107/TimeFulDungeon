@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 //Simple GameObject wrapper for item class. Item contains all functional aspects of the item.
 //This simply a dropped object that, when picked up, gives the player the attached item.
@@ -36,16 +35,12 @@ public class Pickup : MonoBehaviour {
 	[SerializeField] private float discardMaxVelocity = 30f;
 
 	// Tooltip timer
-	private float tooltipHoverTime = 0f;
-	private bool mouseHovering = false;
-	[SerializeField] [Range(0, 5)] private float showTooltipAfter = 1f;
 	private Tooltip tooltip;
-	private TooltipManager tooltipManager;
 
 	//Called before first frame update
 	// Spawning script should call SetItem() before this happens
 	private void Start() {
-		tooltipManager = TooltipManager.instance;
+		tooltip = Tooltip.instance;
 
 		//If exists in scene (not spawned) need to call SetItem to get sprite
 		//If spawned, spawning script needs to call SetItem.
@@ -97,14 +92,6 @@ public class Pickup : MonoBehaviour {
 				pickup();
 			Merge();
 			scaleSizeByDistance();
-		}
-
-		// Mouse hover over for tooltip
-		if (mouseHovering) {
-			tooltipHoverTime += Time.deltaTime;
-			if (!tooltip && tooltipHoverTime >= showTooltipAfter) {
-				tooltip = tooltipManager.ShowTooltip(item.GetTooltipText(), 300, () => transform.position);
-			}
 		}
 	}
 
@@ -236,18 +223,13 @@ public class Pickup : MonoBehaviour {
 		}
 	}
 
-	#region TooltipMouseOver
+	#region TooltipHover
 	private void OnMouseEnter() {
-		Debug.Log("Mouse is over " + name);
-		mouseHovering = true;
-		tooltipHoverTime = 0f;
+		tooltip.ShowTextOnDelay(item.GetTooltipText(), 300);
 	}
 
 	private void OnMouseExit() {
-		Debug.Log("Mouse is no longer over " + name);
-		mouseHovering = false;
-		tooltip.Destroy();
-		tooltip = null;
+		tooltip.Hide();
 	}
 	#endregion
 }

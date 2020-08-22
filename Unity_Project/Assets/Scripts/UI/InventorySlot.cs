@@ -8,7 +8,8 @@ public class InventorySlot : ItemUISlot {
 	public int slotNumber;
 	private Inventory inventory;
 
-	void Start() {
+	protected new void Start() {
+		base.Start();
 		inventory = Inventory.instance;
 	}
 

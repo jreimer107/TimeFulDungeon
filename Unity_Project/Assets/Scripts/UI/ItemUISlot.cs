@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Collections;
 
 
 [RequireComponent(typeof(Button))]
@@ -9,11 +10,15 @@ public class ItemUISlot : MonoBehaviour, IPointerClickHandler, IDragHandler, IBe
 	[SerializeField] private Image icon = null;
 	private Button button;
 
-	[SerializeField]
-	private Tooltip tooltip = null;
+	// Tooltip timer
+	private Tooltip tooltip;
 
-	void Awake() {
+	private void Awake() {
 		button = GetComponent<Button>();
+	}
+
+	protected void Start() {
+		tooltip = Tooltip.instance;
 	}
 
 	//This method should ONLY be called by a UI manager script.
@@ -105,11 +110,15 @@ public class ItemUISlot : MonoBehaviour, IPointerClickHandler, IDragHandler, IBe
 	}
 
 	// Hovering for tooltips
+	#region TooltipHover
 	public void OnPointerEnter(PointerEventData eventData) {
-		tooltip?.ShowFormat(item.name, item.description, item.redText);	
+		if (item) {
+			tooltip.ShowTextOnDelay(item.GetTooltipText(), 300);
+		}
 	}
 
 	public void OnPointerExit(PointerEventData eventData) {
-		tooltip?.Hide();
+		tooltip.Hide();
 	}
+	#endregion
 }
