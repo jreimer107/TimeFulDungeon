@@ -52,13 +52,16 @@ public class Player : MonoBehaviour {
 			Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")
 		);
 
-		if (Input.GetKeyDown(KeyCode.T)) {
+		if (Input.GetKeyDown(KeyCode.G)) {
 			Damage(1);
 		}
-		if (Input.GetKeyDown(KeyCode.G)) {
+		if (Input.GetKeyDown(KeyCode.H)) {
 			Heal(1);
 		}
 
+		if (Input.GetKeyDown(KeyCode.T)) {
+			ChatBubble.Create(transform, new Vector3(.5f, .5f), "Quack damn you!");
+		}
 
 		// Adjust stamina based on shielding or regenning
 		if (shielding) {

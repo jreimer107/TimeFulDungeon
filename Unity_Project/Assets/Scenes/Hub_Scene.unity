@@ -250,6 +250,11 @@ PrefabInstance:
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
       objectReference: {fileID: 0}
+    - target: {fileID: 4091082390148873483, guid: 82f062ceab0c514438c7fec165f42c55,
+        type: 3}
+      propertyPath: textObj
+      value: 
+      objectReference: {fileID: 1726704465}
     - target: {fileID: 4091082391476250822, guid: 82f062ceab0c514438c7fec165f42c55,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -941,6 +946,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e1cef4c4db61e284394774b96ee049be, type: 3}
+--- !u!114 &1726704465 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4091082390406288441, guid: 82f062ceab0c514438c7fec165f42c55,
+    type: 3}
+  m_PrefabInstance: {fileID: 239139374}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1878137651
 GameObject:
   m_ObjectHideFlags: 0
@@ -1025,7 +1042,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1878137655
 MonoBehaviour:
@@ -1162,7 +1179,7 @@ PrefabInstance:
     - target: {fileID: 8079311984827461440, guid: 397a3396a0ec57248930da365a84cfde,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8079311984827461440, guid: 397a3396a0ec57248930da365a84cfde,
         type: 3}

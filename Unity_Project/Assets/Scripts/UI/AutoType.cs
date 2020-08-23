@@ -1,55 +1,58 @@
 ﻿using System.Collections;
 using TMPro;
 using UnityEngine;
+using System;
 
 [RequireComponent(typeof(AudioSource))]
 public class AutoType : MonoBehaviour {
-	[SerializeField][Range(0, 1)] private float letterPause = 0.2f;
+	[Range(0, 0.2f)] public float letterPause = 0.05f;
+	
+	[SerializeField] private TMP_Text textObj = null;
+	private string content = null;
+	private Action onDoneCallback;
+
 	[SerializeField] private AudioClip sound = null;
-	[SerializeField] private TextMeshProUGUI textMeshProUGUI = null;
 	private AudioSource audioSource;
 
-	private string content;
-	public bool done;
-
-	private bool donePrinting;
 	private Coroutine typer;
+	public bool done { get; private set; } = true;
 
 	private void Start() {
 		audioSource = GetComponent<AudioSource>();
-		textMeshProUGUI.text = "";
-		done = true;
-		content = "";
+		// textObj.text = "";
+		// done = false;
 	}
 
-	private void Update() {
-		if (Input.GetKeyDown(KeyCode.E)) {
-			if (donePrinting) {
-				done = true;
-			} else {
-				StopCoroutine(typer);
-				textMeshProUGUI.text = content;
-				donePrinting = true;
-			}
+	public void PrintMessage(string content = null, Action onDone = null) {
+		if (content != null) {
+			this.content = content;
+		} else {
+			this.content = textObj.text;
 		}
-	}
-
-	public void PrintMessage(string message) {
-		content = message;
-		textMeshProUGUI.text = "";
+		textObj.text = "";
+		onDoneCallback = onDone;
 		done = false;
-		donePrinting = false;
 		typer = StartCoroutine(TypeText());
 	}
 
 	private IEnumerator TypeText() {
 		foreach (char letter in content.ToCharArray()) {
-			textMeshProUGUI.text += letter;
+			textObj.text += letter;
 			if (sound) {
 				audioSource.PlayOneShot(sound);
 			}
 			yield return new WaitForSeconds(letterPause);
 		}
-		donePrinting = true;
+		done = true;
+		onDoneCallback?.Invoke();
+	}
+
+	public void SkipToEnd() {
+		if (typer != null) {
+			StopCoroutine(typer);
+			textObj.text = content;
+			done = true;
+			onDoneCallback?.Invoke();
+		}
 	}
 }

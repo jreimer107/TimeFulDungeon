@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class ConversationManager : MonoBehaviour {
 	[SerializeField] private GameObject conversationPanel = null;
 	private AutoType conversationTyper;
 	private Conversation currentConversation;
-	private Conversation nextConversation;
+	private Queue<Conversation> conversations;
 
 	public Conversation testConversation;
 
@@ -20,13 +21,14 @@ public class ConversationManager : MonoBehaviour {
 	#endregion
 
 	private void Start() {
+		conversations = new Queue<Conversation>();
 		conversationTyper = conversationPanel.GetComponent<AutoType>();
 		conversationPanel.SetActive(false);
 		StartConversation(testConversation);
 	}
 
 	public void StartConversation(Conversation conversation) {
-		nextConversation = conversation;
+		conversations.Enqueue(conversation);
 	}
 
 	private IEnumerator PlayConversation() {
@@ -35,6 +37,7 @@ public class ConversationManager : MonoBehaviour {
 		foreach (Conversation.Page section in currentConversation) {
 			conversationTyper.PrintMessage(section.content);
 			yield return new WaitUntil(() => conversationTyper.done);
+			yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
 		}
 		currentConversation = null;
 		conversationPanel.SetActive(false);
@@ -42,10 +45,13 @@ public class ConversationManager : MonoBehaviour {
 
 	// Update is called once per frame
 	private void Update() {
-		if (nextConversation != null && currentConversation == null) {
-			currentConversation = nextConversation;
-			nextConversation = null;
+		if (conversations.Count != 0 && !currentConversation) {
+			currentConversation = conversations.Dequeue();
 			StartCoroutine(PlayConversation());
+		}
+
+		if (currentConversation && Input.GetKeyDown(KeyCode.E)) {
+			conversationTyper.SkipToEnd();
 		}
 	}
 }
