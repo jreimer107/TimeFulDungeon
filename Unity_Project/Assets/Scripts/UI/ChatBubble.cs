@@ -2,7 +2,7 @@
 using TMPro;
 
 /// <summary>
-/// Controller for tooltip UI. Uses a TextMeshPro object for cool stuff. Can follow a Vector3 position, and even stick inside the screen bounds.
+/// Chat bubble class. Allows creating a chat bubble that will follow gameobjects.
 /// </summary>
 public class ChatBubble : MonoBehaviour {
 
@@ -10,6 +10,12 @@ public class ChatBubble : MonoBehaviour {
 	private TextMeshPro textMeshPro;
 	private AutoType autoType;
 
+	/// <summary>
+	/// Creates a chat bubble.
+	/// </summary>
+	/// <param name="parent">The gameobject to follow.</param>
+	/// <param name="localPosition">Offset from the gameobject's postion.</param>
+	/// <param name="text">The text to print.</param>
 	public static void Create(Transform parent, Vector3 localPosition, string text) {
 		Transform chatBubbleTrfm = Instantiate(Resources.Load<Transform>("Prefabs/ChatBubble"), parent);
 		chatBubbleTrfm.localPosition = localPosition;
