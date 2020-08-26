@@ -397,6 +397,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickupPrefab: {fileID: 8079311984827461445, guid: 397a3396a0ec57248930da365a84cfde,
     type: 3}
+  player: {fileID: 0}
+  inventory: {fileID: 0}
 --- !u!114 &598950365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1136,11 +1138,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 407564586414283703, guid: 397a3396a0ec57248930da365a84cfde,
-        type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
     - target: {fileID: 8079311984827461440, guid: 397a3396a0ec57248930da365a84cfde,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1207,7 +1204,8 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 990e8d2bd1f14b14db0fa4dc50e3c596,
         type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3276685858375471830, guid: 397a3396a0ec57248930da365a84cfde, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 397a3396a0ec57248930da365a84cfde, type: 3}
 --- !u!224 &2031998214 stripped
 RectTransform:

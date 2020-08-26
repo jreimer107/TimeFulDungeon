@@ -9,6 +9,10 @@ public static class Utils {
 		return Camera.main.ScreenToWorldPoint(Input.mousePosition);
 	}
 
+	public static Vector3 GetMouseWorldPosition3D() {
+		return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+	}
+
 	public static TextMeshPro CreateWorldText(string text, Transform parent = null, Vector2 localPosition = default(Vector2), int fontSize = 40, Color? color = null, TextAnchor textAnchor = TextAnchor.UpperLeft, TextAlignmentOptions textAlignment = TextAlignmentOptions.Center, int sortingOrder = 5000) {
 		if (color == null) color = Color.white;
 		return CreateWorldText(parent, text, localPosition, fontSize, (Color)color, textAnchor, textAlignment, sortingOrder);

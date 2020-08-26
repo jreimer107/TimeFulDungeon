@@ -5,7 +5,7 @@ using System.Collections;
 
 
 [RequireComponent(typeof(Button))]
-public class ItemUISlot : MonoBehaviour, IPointerClickHandler, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler {
+public class ItemUISlot : MonoBehaviour, IPointerClickHandler, IDragHandler, IBeginDragHandler, IEndDragHandler, IDropHandler, IPointerEnterHandler, IPointerExitHandler {
 	public Item item;
 	[SerializeField] private Image icon = null;
 	private Button button;
@@ -58,7 +58,8 @@ public class ItemUISlot : MonoBehaviour, IPointerClickHandler, IDragHandler, IBe
 	}
 
 	protected virtual void DiscardItem() {
-		PickupManager.instance.DiscardItem(item);
+		// PickupManager.instance.DiscardItem(item);
+		Pickup.DiscardPickup(item);
 	}
 
 	protected virtual void DropOn(ItemUISlot otherSlot) { }
@@ -100,6 +101,10 @@ public class ItemUISlot : MonoBehaviour, IPointerClickHandler, IDragHandler, IBe
 			// icon.enabled = true;
 			icon.color = Color.white;
 		}
+	}
+
+	public void OnDrop(PointerEventData eventData) {
+		Debug.Log("Dropped!");
 	}
 
 	public void OnPointerClick(PointerEventData eventData) {
