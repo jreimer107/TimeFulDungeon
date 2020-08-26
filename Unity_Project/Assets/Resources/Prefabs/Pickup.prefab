@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8213613491009363476}
   - component: {fileID: 4359918218084567288}
-  m_Layer: 11
+  m_Layer: 2
   m_Name: MergeRadius
   m_TagString: Pickup
   m_Icon: {fileID: 0}
@@ -95,6 +95,8 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -149,7 +151,6 @@ MonoBehaviour:
   shrinkDistance: 2
   minShrinkScale: 0.5
   mergeRadius: 0.1
-  spriteRenderer: {fileID: 8079311984827461447}
   discardVelocityScaler: 5
   discardMinVelocity: 10
   discardMaxVelocity: 30

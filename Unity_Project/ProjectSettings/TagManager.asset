@@ -20,7 +20,7 @@ TagManager:
   - Ghost
   - Player
   - Pickup
-  - PickupVacuum
+  - 
   - Uninteractable
   - Hand
   - Damageable
