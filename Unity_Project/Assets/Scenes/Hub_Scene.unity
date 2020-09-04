@@ -133,7 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 113601203}
   - component: {fileID: 113601202}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Grid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -623,6 +623,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 24298522, guid: e93ab3209c971734a96555e1daafe6da, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 24298522, guid: e93ab3209c971734a96555e1daafe6da, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 787340087, guid: e93ab3209c971734a96555e1daafe6da, type: 3}
       propertyPath: speed
       value: 40
@@ -634,6 +642,10 @@ PrefabInstance:
     - target: {fileID: 1076900600, guid: e93ab3209c971734a96555e1daafe6da, type: 3}
       propertyPath: m_Layer
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1076900600, guid: e93ab3209c971734a96555e1daafe6da, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1127876373250036, guid: e93ab3209c971734a96555e1daafe6da, type: 3}
       propertyPath: m_Name
@@ -997,7 +1009,7 @@ GameObject:
   - component: {fileID: 1717197425}
   - component: {fileID: 1717197424}
   - component: {fileID: 1717197426}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Tilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -17,7 +17,6 @@ public class Pickup : MonoBehaviour {
 
 	private Transform target = null;
 	private Vector2 velocity = Vector2.zero;
-	private float distanceToTarget = float.MaxValue;
 
 	private bool beingPickedUp = false;
 	private bool beingDropped = false;
@@ -27,7 +26,7 @@ public class Pickup : MonoBehaviour {
 	private SpriteRenderer spriteRenderer;
 	private PolygonCollider2D collisionCollider;
 	private CircleCollider2D triggerCollider;
-	// private MovementController movementController;
+	private MovementController movementController;
 
 	//Discard velocity parameters, presets feel nice
 	[SerializeField] private float discardVelocityScaler = 5;
@@ -60,7 +59,7 @@ public class Pickup : MonoBehaviour {
 		// Get own references
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		triggerCollider = GetComponentInChildren<CircleCollider2D>();
-		// movementController = GetComponent<MovementController>();
+		movementController = GetComponent<MovementController>();
 
 		// Preconstructed item, not created by SpawnPickup
 		if (item && !collisionCollider) {
@@ -83,7 +82,7 @@ public class Pickup : MonoBehaviour {
 	private void Update() {
 		//If we have a targetPosition, scale size based on distance to it.
 		if (target) {
-			distanceToTarget = Vector2.Distance(target.position, transform.position);
+			float distanceToTarget = Vector2.Distance(target.position, transform.position);
 
 			// Check if we can merge or pickup
 			if (beingMerged && distanceToTarget <= mergeRadius) {
@@ -96,6 +95,7 @@ public class Pickup : MonoBehaviour {
 					Destroy(gameObject);
 				} else {
 					target = null;
+					movementController.StopSimpleFollow();
 				}
 			}
 
@@ -110,14 +110,16 @@ public class Pickup : MonoBehaviour {
 		}
 	}
 
-	private void FixedUpdate() {
-		if (target) {
-			//MoveTowards for linar movement, smoothdamp for smoothed movement.
-			// transform.position = Vector2.MoveTowards(transform.position, player.transform.position, maxSpeed * Time.fixedDeltaTime);
-			transform.position = Vector2.SmoothDamp(transform.position, target.transform.position, ref velocity, smoothTime, maxSpeed, Time.fixedDeltaTime);
-			distanceToTarget = Vector2.Distance(target.transform.position, transform.position);
-		}
-	}
+	// private void FixedUpdate() {
+	// 	if (target) {
+	// 		//MoveTowards for linar movement, smoothdamp for smoothed movement.
+	// 		// transform.position = Vector2.MoveTowards(transform.position, player.transform.position, maxSpeed * Time.fixedDeltaTime);
+	// 		Vector2 move = (target.position - transform.position).normalized * maxSpeed;
+	// 		// transform.position = Vector2.SmoothDamp(transform.position, target.position, ref velocity, smoothTime, maxSpeed, Time.fixedDeltaTime);
+	// 		Rigidbody2D rigidbody = GetComponent<Rigidbody2D>();
+	// 		rigidbody.velocity = Vector2.SmoothDamp(rigidbody.velocity, move, ref velocity, smoothTime);
+	// 	}
+	// }
 
 	//This should only be run once after instantiation
 	private void SetItem(Item item) {
@@ -151,7 +153,7 @@ public class Pickup : MonoBehaviour {
 			push = push.normalized * discardMinVelocity;
 		}
 		// GetComponent<MovementController>().Push(push);
-		GetComponent<Rigidbody2D>().velocity = push;
+		movementController.Push(push);
 		// Debug.Log(push);
 	}
 
@@ -161,12 +163,14 @@ public class Pickup : MonoBehaviour {
 				Debug.Log("Pickup check passed!");
 				beingPickedUp = true;
 				target = player;
+				movementController.StartSimpleFollow(player);
 			}
 		} else if (item.stackable && other.CompareTag("Pickup")) {
 			//Merge nearby items of same type
 			Pickup other_pickup = other.GetComponentInParent<Pickup>();
 			if (item == other_pickup.item) {
 				target = other.transform;
+				movementController.StartSimpleFollow(other.transform);
 				Debug.Log("Target position set to " + target.transform.position);
 				//Item with greater ID gets destroyed to avoid race conditions
 				if (transform.GetInstanceID() > target.GetInstanceID()) {
@@ -188,6 +192,7 @@ public class Pickup : MonoBehaviour {
 			beingDropped = false;
 		}
 		target = null;
+		movementController.StopSimpleFollow();
 		// movementController.SetMoveDirection(0, 0);
 		transform.localScale = Vector3.one;
 	}

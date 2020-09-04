@@ -15,6 +15,9 @@ public class MovementController : MonoBehaviour {
 	
 	public bool havePath { private set; get; }
 
+	private Transform simpleFollowTarget;
+	public bool movementEnabled = true;
+
 	[SerializeField] private float speed = 20f;
 	[Range(0, .3f)] [SerializeField] private float MovementSmoothing = .05f;
 
@@ -31,7 +34,7 @@ public class MovementController : MonoBehaviour {
 	private Entity entity;
 	private EntityManager entityManager;
 
-	private void Start() {
+	private void Awake() {
 		horizontalMove = 0;
 		verticalMove = 0;
 		velocity = Vector3.zero;
@@ -40,14 +43,16 @@ public class MovementController : MonoBehaviour {
 		rigidbody = GetComponent<Rigidbody2D>();
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		animator = GetComponent<Animator>();
-		foreach (AnimatorControllerParameter parameter in animator.parameters) {
-			if (parameter.name == "Horizontal") {
-				hasHorizontalAnimation = true;
-			} else if (parameter.name == "Vertical") {
-				hasVerticalAnimation = true;
-			}
-			if (hasHorizontalAnimation && hasVerticalAnimation) {
-				break;
+		if (animator.runtimeAnimatorController) {
+			foreach (AnimatorControllerParameter parameter in animator.parameters) {
+				if (parameter.name == "Horizontal") {
+					hasHorizontalAnimation = true;
+				} else if (parameter.name == "Vertical") {
+					hasVerticalAnimation = true;
+				}
+				if (hasHorizontalAnimation && hasVerticalAnimation) {
+					break;
+				}
 			}
 		}
 
@@ -72,11 +77,15 @@ public class MovementController : MonoBehaviour {
 				Vector2 move = (waypoint - (Vector2)transform.position).normalized;
 				SetMoveDirection(move.x, move.y);
 			}
+		} else if (simpleFollowTarget) {
+			SetMoveDirection((simpleFollowTarget.position - transform.position).normalized);
 		}
 	}
 
 	private void FixedUpdate() {
-		Move(horizontalMove * Time.fixedDeltaTime, verticalMove * Time.fixedDeltaTime);
+		if (movementEnabled) {
+			Move(horizontalMove * Time.fixedDeltaTime, verticalMove * Time.fixedDeltaTime);
+		}
 	}
 
 	public void CreateEntityForPathfinding() {
@@ -155,9 +164,29 @@ public class MovementController : MonoBehaviour {
 		}
 	}
 
+	public void StartSimpleFollow(Transform target) {
+		this.simpleFollowTarget = target;
+	}
+
+	public void StopSimpleFollow() {
+		this.simpleFollowTarget = null;
+	}
+
+	public void Push(Vector2 pushDirection) {
+		// SetMoveDirection(0, 0);
+		rigidbody.velocity = pushDirection;
+		velocity = pushDirection;
+		movementEnabled = false;
+	}
+
+	public void SetMoveDirection(Vector2 moveDir) {
+		SetMoveDirection(moveDir.x, moveDir.y);
+	}
+
 	public void SetMoveDirection(float horizontal, float vertical) {
 		horizontalMove = horizontal * speed;
 		verticalMove = vertical * speed;
+		movementEnabled = true;
 	}
 
 	private void Move(float horizontal, float vertical) {
