@@ -856,7 +856,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radius: 0.75
-  inHand: {fileID: 0}
+  inHand: {fileID: 11400000, guid: 990e8d2bd1f14b14db0fa4dc50e3c596, type: 2}
   animator: {fileID: 0}
   animatorOverrideController: {fileID: 0}
   testIdleClip: {fileID: 7400000, guid: 9b136b77d79c84540a3caa85dfeb706d, type: 2}

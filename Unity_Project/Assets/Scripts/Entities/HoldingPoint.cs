@@ -81,7 +81,7 @@ public class HoldingPoint : MonoBehaviour {
 		if (!attacking) {
 			RotateToMouse();
 		} else {
-			if (inHand.type != EquipType.Melee) {
+			if (!inHand || inHand.type != EquipType.Melee) {
 				return;
 			}
 			angle -= (inHand as Melee).speed;

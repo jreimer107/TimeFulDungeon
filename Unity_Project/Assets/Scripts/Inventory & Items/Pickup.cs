@@ -38,6 +38,11 @@ public class Pickup : MonoBehaviour {
 	private Tooltip tooltip;
 
 	public static Pickup SpawnPickup(Item item, Vector2 position) {
+		if (!item) {
+			Debug.LogWarning("Null item in pickup!");
+			return null;
+		}
+
 		Pickup pickup = Instantiate(
 			Resources.Load<GameObject>("Prefabs/Pickup"),
 			position,
@@ -52,7 +57,7 @@ public class Pickup : MonoBehaviour {
 		if (!player) {
 			player = Player.instance.transform;
 		}
-		SpawnPickup(item, player.transform.position).Discard();
+		SpawnPickup(item, player.transform.position)?.Discard();
 	}
 
 
@@ -121,10 +126,6 @@ public class Pickup : MonoBehaviour {
 
 	//This should only be run once after instantiation
 	private void SetItem(Item item) {
-		if (!item) {
-			Debug.LogWarning("Null item in pickup!");
-		}
-
 		this.item = item;
 		spriteRenderer.sprite = item.sprite;
 
