@@ -73,6 +73,7 @@ public class PathfindingGrid : MonoBehaviour {
 
 	public void RequestPath(Entity entity, Vector2 start, Vector2 end) {
 		if (entity == null) {
+			Debug.LogWarning("Pathfinding Grid RequestPath: Null entity!");
 			return;
 		}
 		entityManager.AddComponentData(entity, new PathfindingParams

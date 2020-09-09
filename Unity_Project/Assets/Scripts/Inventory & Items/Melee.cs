@@ -23,4 +23,8 @@ public class Melee : Equipment {
 		this.speed = copy.speed;
 		this.cooldown = copy.cooldown;
 	}
+
+	public override string GetTooltipText() {
+		return $"<size=32>{name}</size>\n{description}\n{damage} dmg\n{arc} degrees\n{speed} angle/sec\n{range}m range\n{cooldown}s cooldown<color=red>{redText}</color>";
+	}
 }

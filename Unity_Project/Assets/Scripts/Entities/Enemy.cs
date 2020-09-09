@@ -14,8 +14,11 @@ public class Enemy : MonoBehaviour {
 
 	private MovementController movementController;
 
+	private Transform player;
+
 	// Use this for initialization
 	void Start () {
+		player = Player.instance.transform;
 		//anim = GetComponent<Animator>();
 		//anim.SetBool("isRunning", true);
 		damagePopupManager = DamagePopupManager.instance;
@@ -27,7 +30,7 @@ public class Enemy : MonoBehaviour {
 	void Update () {
 		if (Input.GetMouseButtonDown(0)) {
 			// movementController.RequestPath(Player.instance.transform.position);
-			movementController.Travel(Player.instance.transform.position);
+			movementController.Travel(player.position);
 		}
 
 		// movementController.UpdateWaypoint();

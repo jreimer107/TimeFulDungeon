@@ -15,6 +15,7 @@
 
 # TextMesh Pro files
 [Aa]ssets/TextMesh*Pro/
+[Aa]ssets/LeanTween/
 
 # Text Editor cache directory
 .vs/
