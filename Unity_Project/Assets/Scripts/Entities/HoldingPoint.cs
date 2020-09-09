@@ -66,7 +66,7 @@ public class HoldingPoint : MonoBehaviour {
 		}
 
 		// Check for attacking
-		if (inHand != null && inHand.type == EquipType.Melee && !attacking && Input.GetButton("Fire1") && !EventSystem.current.IsPointerOverGameObject()) {
+		if (inHand != null && inHand.type == EquipType.Melee && !attacking && Input.GetButton("Fire1") && !EventSystem.current.IsPointerOverGameObject() && !ClickAndDrag.instance.active) {
 			attacking = true;
 			hitbox.enabled = true;
 			animator.SetBool("action", true);
@@ -164,6 +164,7 @@ public class HoldingPoint : MonoBehaviour {
 	/// Swaps the currently rendered item to the in hand item.
 	/// </summary>
 	private void SwapRendered() {
+		Debug.Log("In hand: " + inHand);
 		if (inHand != null) {
 			spriteRenderer.sprite = inHand.sprite;
 			animatorOverrideController["idle"] = inHand.idleClip;
@@ -192,6 +193,8 @@ public class HoldingPoint : MonoBehaviour {
 			}
 		} else {
 			spriteRenderer.sprite = null;
+			animatorOverrideController["idle"] = null;
+			animatorOverrideController["action"] = null;
 		}
 	}
 

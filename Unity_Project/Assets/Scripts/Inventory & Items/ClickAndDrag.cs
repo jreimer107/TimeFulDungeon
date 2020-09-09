@@ -36,4 +36,6 @@ public class ClickAndDrag : MonoBehaviour {
 		item = null;
 		icon.enabled = false;
 	}
+
+	public bool active { get { return item != null; } }
 }

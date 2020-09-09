@@ -25,6 +25,14 @@ public class Melee : Equipment {
 	}
 
 	public override string GetTooltipText() {
-		return $"<size=32>{name}</size>\n{description}\n{damage} dmg\n{arc} degrees\n{speed} angle/sec\n{range}m range\n{cooldown}s cooldown<color=red>{redText}</color>";
+		return
+			$"<size=32>{name}</size>\n" +
+			(description != "" ? $"{description}\n" : "") +
+			$"{damage} dmg\n" +
+			$"{arc}\u00b0 arc\n" +
+			$"{speed}\u00b0/sec\n" +
+			$"{range}m range\n" +
+			$"{cooldown}s cooldown\n" + 
+			(redText != "" ? $"<color=red>{redText}</color>" : "");
 	}
 }

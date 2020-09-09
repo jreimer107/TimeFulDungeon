@@ -39,8 +39,8 @@ public class EquipmentSlot : ItemUISlot {
 	}
 
 	protected override void DiscardItem() {
-		equipmentManager.DeleteEquipped((int)equipment.type);
 		base.DiscardItem();
+		equipmentManager.DeleteEquipped((int)equipment.type);
 	}
 
 }
