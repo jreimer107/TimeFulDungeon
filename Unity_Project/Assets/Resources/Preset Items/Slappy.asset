@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Slappy
   ID: 0
-  description: Look out! He's armed!
+  description: 
+  redText: Look out! He's armed!
   sprite: {fileID: 7417140616732155178, guid: d5e7c31c509b3b14d945fe95aebbf94c, type: 3}
   stackable: 0
   count: 0

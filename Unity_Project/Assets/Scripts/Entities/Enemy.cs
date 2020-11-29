@@ -10,8 +10,6 @@ public class Enemy : MonoBehaviour {
 
 	private Animator anim;
 
-	private DamagePopupManager damagePopupManager;
-
 	private MovementController movementController;
 
 	private Transform player;
@@ -21,7 +19,6 @@ public class Enemy : MonoBehaviour {
 		player = Player.instance.transform;
 		//anim = GetComponent<Animator>();
 		//anim.SetBool("isRunning", true);
-		damagePopupManager = DamagePopupManager.instance;
 		movementController = GetComponent<MovementController>();
 		movementController.CreateEntityForPathfinding();
 	}
@@ -49,7 +46,7 @@ public class Enemy : MonoBehaviour {
 			Debug.Log("Taking damage");;
 			int damage = (HoldingPoint.instance.inHand as Melee).damage;
 			TakeDamage(damage);
-			damagePopupManager.CreateDamagePopup(damage.ToString(), transform.position, Color.yellow);
+			Popup.CreateDamagePopup(damage.ToString(), transform.position, Color.yellow);
 		}
 	}
 

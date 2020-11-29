@@ -294,6 +294,11 @@ PrefabInstance:
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
       objectReference: {fileID: 0}
+    - target: {fileID: 4091082390065985887, guid: 82f062ceab0c514438c7fec165f42c55,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4091082390148873483, guid: 82f062ceab0c514438c7fec165f42c55,
         type: 3}
       propertyPath: textObj

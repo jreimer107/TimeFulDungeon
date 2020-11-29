@@ -1,7 +1,23 @@
 ﻿using UnityEngine;
 using TMPro;
 
-public class DamagePopup : MonoBehaviour {
+public class Popup : MonoBehaviour {
+	private static GameObject popupPrefab;
+
+	/// <summary>
+	/// Creates a damage popup.
+	/// </summary>
+	/// <param name="text">The text to display.</param>
+	/// <param name="position">The position to display the text at</param>
+	/// <param name="color">The color of the text.</param>
+	public static void CreateDamagePopup(string text, Vector3 position, Color color) {
+		if (!popupPrefab) {
+			popupPrefab = Resources.Load<GameObject>("Prefabs/Damage Popup");
+		}
+		Popup damagePopup = Instantiate(popupPrefab).GetComponent<Popup>();
+		damagePopup.SetUp(text, position, color);
+	}
+
 	private Animator animator;
 	private TextMeshProUGUI textMeshPro;
 	private RectTransform rectTransform;
@@ -15,6 +31,8 @@ public class DamagePopup : MonoBehaviour {
 		textMeshPro = GetComponentInChildren<TextMeshProUGUI>();
 		rectTransform = GetComponent<RectTransform>();
 
+		LeanTween.moveY(gameObject, -25f, 0.15f).setOnComplete(() => {})
+		);
 		Destroy(gameObject, animator.GetCurrentAnimatorStateInfo(0).length);
 	}
 
