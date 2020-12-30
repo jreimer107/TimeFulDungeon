@@ -4,8 +4,7 @@ using Unity.Mathematics;
 
 [RequireComponent(typeof(Animator), typeof(Rigidbody2D))]
 public class MovementController : MonoBehaviour {
-	private float horizontalMove;
-	private float verticalMove;
+	private Vector2 steering;
 	private Vector2 waypoint;
 	private Vector2 destination;
 	private Vector2 start;
@@ -15,15 +14,21 @@ public class MovementController : MonoBehaviour {
 	
 	public bool havePath { private set; get; }
 
-	[SerializeField] private float speed = 20f;
-	[Range(0, .3f)] [SerializeField] private float MovementSmoothing = .05f;
+	[SerializeField] private float maxSpeed = 10f;
+	[SerializeField] private float maxAcceleration = 10f;
+	[SerializeField] private float approachDistance = 10f;
 
-	private new Rigidbody2D rigidbody;
+	private Rigidbody2D rb;
 	private SpriteRenderer spriteRenderer;
 	private Animator animator;
 	private bool hasVerticalAnimation;
 	private bool hasHorizontalAnimation;
-	private bool FacingRight;
+	private bool facingRight;
+
+	/// <summary>
+	/// Controls what type of movement is used. Players use manual.
+	/// </summary>
+	public bool automatedMovement = true;
 
 	private Vector2 velocity;
 
@@ -32,12 +37,9 @@ public class MovementController : MonoBehaviour {
 	private EntityManager entityManager;
 
 	private void Start() {
-		horizontalMove = 0;
-		verticalMove = 0;
-		velocity = Vector3.zero;
 		waypoint = Vector2.zero;
 
-		rigidbody = GetComponent<Rigidbody2D>();
+		rb = GetComponent<Rigidbody2D>();
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		animator = GetComponent<Animator>();
 		foreach (AnimatorControllerParameter parameter in animator.parameters) {
@@ -52,7 +54,7 @@ public class MovementController : MonoBehaviour {
 		}
 
 		// Kick off pathfinding fetch loop
-		if (entity != null) {
+		if (automatedMovement) {
 			InvokeRepeating("GetUpdatedPath", 0f, 1f);
 		}
 
@@ -61,22 +63,57 @@ public class MovementController : MonoBehaviour {
 	private void Update() {
 		// Update animation
 		if (hasHorizontalAnimation)
-			animator.SetFloat("Horizontal", horizontalMove);
+			animator.SetFloat("Horizontal", rb.velocity.x);
 		if (hasVerticalAnimation)
-			animator.SetFloat("Vertical", verticalMove);
+			animator.SetFloat("Vertical", rb.velocity.y);
 
-		if (entity != null && havePath) {
+		if (automatedMovement && havePath) {
 			if (Vector2.Distance(waypoint, transform.position) < 0.25f) {
 				GetNextWaypoint();
 			} else {
-				Vector2 move = (waypoint - (Vector2)transform.position).normalized;
-				SetMoveDirection(move.x, move.y);
+				// Vector2 move = (waypoint - (Vector2)transform.position).normalized;
+				// SetMoveDirection(move.x, move.y);
+				Seek(waypoint);
 			}
 		}
 	}
 
 	private void FixedUpdate() {
-		Move(horizontalMove * Time.fixedDeltaTime, verticalMove * Time.fixedDeltaTime);
+		if (automatedMovement) {
+			SteeringBehaviors.Steer(rb, steering, maxSpeed);
+		}
+		else {
+			ManualMovement();
+		}
+		
+		//If input is moving the player right and player is facing left
+		if (spriteRenderer != null) {
+			if (rb.velocity.x > 0 && !facingRight) {
+				Flip();
+			} else if (rb.velocity.x < 0 && facingRight) {
+				Flip();
+			}
+		}
+	}
+
+	public void SetManualMoveDirection(float horizontal, float vertical) {
+		steering = new Vector2(horizontal, vertical) * maxSpeed;
+	}
+
+	private void ManualMovement() {
+		//Move player by finding target velocity
+		Vector2 targetVelocity = steering * Time.fixedDeltaTime * 10f;
+		//And then smoothing it out and applying it to the character
+		rb.velocity = Vector2.SmoothDamp(rb.velocity, targetVelocity, ref velocity, 1 / maxAcceleration);
+	}
+
+	public void Seek(Vector2 target) {
+		Vector2 desired = SteeringBehaviors.Arrive(target, transform.position, maxSpeed, approachDistance);
+		steering = Vector2.ClampMagnitude(desired - rb.velocity, maxAcceleration);
+
+		Debug.DrawRay(transform.position, steering, Color.blue);
+		Debug.DrawRay(transform.position, rb.velocity, Color.red);
+		Debug.DrawRay(transform.position, desired, Color.green);
 	}
 
 	public void CreateEntityForPathfinding() {
@@ -136,7 +173,6 @@ public class MovementController : MonoBehaviour {
 				);
 			}
 
-
 			// Get the waypoint
 			int2 pathPosition = path[index].position;
 			waypoint = PathfindingGrid.Instance.GetWorldPosition(pathPosition);
@@ -150,37 +186,14 @@ public class MovementController : MonoBehaviour {
 			Debug.Log("Done traveling.");
 			havePath = false;
 			// waypoint = Vector2.zero;
-			SetMoveDirection(0, 0);
-			destination = Vector2.zero;
-		}
-	}
-
-	public void SetMoveDirection(float horizontal, float vertical) {
-		horizontalMove = horizontal * speed;
-		verticalMove = vertical * speed;
-	}
-
-	private void Move(float horizontal, float vertical) {
-		//Move player by finding target velocity
-		Vector2 targetVelocity = new Vector2(horizontal * 10f, vertical * 10f);
-		//And then smoothing it out and applying it to the character
-		rigidbody.velocity = Vector2.SmoothDamp(rigidbody.velocity, targetVelocity, ref velocity, MovementSmoothing);
-
-		//If input is moving the player right and player is facing left
-		if (spriteRenderer != null) {
-			if (horizontal > 0 && !FacingRight) {
-				Flip();
-			} else if (horizontal < 0 && FacingRight) {
-				Flip();
-			}
+			// SetMoveDirection(0, 0);
+			// destination = Vector2.zero;
 		}
 	}
 
 	private void Flip() {
-		FacingRight = !FacingRight;
+		facingRight = !facingRight;
 		spriteRenderer.flipX = !spriteRenderer.flipX;
 	}
-
-
 }
 

@@ -40,13 +40,14 @@ public class Player : MonoBehaviour {
 		pickupTrigger = GetComponentInChildren<CircleCollider2D>();
 		collisionCollider = GetComponent<BoxCollider2D>();
 		controller = GetComponent<MovementController>();
+		controller.automatedMovement = false;
 		equipmentManager = EquipmentManager.instance;
 	}
 
 	// Update is called once per frame
 	private void Update() {
 		//Get input from player
-		controller.SetMoveDirection(
+		controller.SetManualMoveDirection(
 			Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")
 		);
 
@@ -101,7 +102,9 @@ public class Player : MonoBehaviour {
 	}
 
 	private void Die() {
+#if UNITY_EDITOR
 		EditorApplication.ExitPlaymode();
+#endif
 		Debug.Log("Dead");
 	}
 

@@ -63,4 +63,17 @@ public static class Utils {
 		}
 		return text;
 	}
+
+	/// <summary>
+	/// Maps a position on one vector to an equivalent point on another.
+	/// </summary>
+	/// <param name="distance">How far down the source vector the point is.</param>
+	/// <param name="srcVecStart">Where the source vector starts.</param>
+	/// <param name="srcVecEnd">Where the source vector ends.</param>
+	/// <param name="dstVecStart">Where the destination vector starts.</param>
+	/// <param name="dstVecEnd">Where the destination vector ends.</param>
+	/// <returns>A float with the position on the destination vector.</returns>
+	public static float Map(float distance, float srcVecStart, float srcVecEnd, float dstVecStart, float dstVecEnd) {
+		return (distance - srcVecStart) / (srcVecEnd - srcVecStart) * (dstVecEnd - dstVecStart) + dstVecStart;
+	}
 }

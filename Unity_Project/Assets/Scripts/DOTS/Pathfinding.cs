@@ -172,7 +172,7 @@ public class Pathfinding : ComponentSystem {
 					if (math.abs(slope) >= 1) {
 						// If slope > 1, path crosses at least one y border for each x.
 						// So for each y crossed, check that the positions left or right walkable, based on where the entity is
-						Debug.LogFormat("Slope > 1: {0}", slope);
+						// Debug.LogFormat("Slope > 1: {0}", slope);
 						int x, y = 0;
 						float xf;
 						int2 test;

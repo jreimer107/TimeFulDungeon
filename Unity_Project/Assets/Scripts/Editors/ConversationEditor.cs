@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
 using UnityEngine;
 using System;
 
@@ -186,3 +187,5 @@ public class ConversationInspector : Editor {
 		serializedObject.ApplyModifiedProperties();
 	}
 }
+
+#endif

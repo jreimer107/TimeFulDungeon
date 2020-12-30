@@ -31,8 +31,7 @@ public class Popup : MonoBehaviour {
 		textMeshPro = GetComponentInChildren<TextMeshProUGUI>();
 		rectTransform = GetComponent<RectTransform>();
 
-		LeanTween.moveY(gameObject, -25f, 0.15f).setOnComplete(() => {})
-		);
+		LeanTween.moveY(gameObject, -25f, 0.15f).setOnComplete(() => {});
 		Destroy(gameObject, animator.GetCurrentAnimatorStateInfo(0).length);
 	}
 

@@ -25,10 +25,10 @@ public class Enemy : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetMouseButtonDown(0)) {
-			// movementController.RequestPath(Player.instance.transform.position);
-			movementController.Travel(player.position);
-		}
+		// if (Input.GetMouseButtonDown(0)) {
+		// 	movementController.Travel(Player.instance.transform.position);
+		// }
+		movementController.Seek(Utils.GetMouseWorldPosition2D());
 
 		// movementController.UpdateWaypoint();
 	}
