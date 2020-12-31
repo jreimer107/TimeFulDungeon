@@ -1,4 +1,6 @@
-﻿public static class Extensions {
+﻿using UnityEngine;
+
+public static class Extensions {
 	public static int Clamp(this int value, int inclusiveMin,
 		int exclusiveMax) {
 		if (inclusiveMin == exclusiveMax) {
@@ -19,4 +21,15 @@
 	public static int Max(this int x, int y) {
 		return (x > y) ? x : y;
 	}
+
+	/// <summary>
+	/// Projects the given vector onto this vector.
+	/// </summary>
+	/// <param name="target">The vector that will be projected onto.</param>
+	/// <param name="source">The vector that will be projected onto this vector.</param>
+	/// <returns>A projected vector.</returns>
+	public static Vector2 Project(this Vector2 target, Vector2 source) {
+		return target * source.magnitude * Vector2.Angle(target, source);
+	}
+	
 }

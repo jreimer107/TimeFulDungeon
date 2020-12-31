@@ -76,4 +76,10 @@ public static class Utils {
 	public static float Map(float distance, float srcVecStart, float srcVecEnd, float dstVecStart, float dstVecEnd) {
 		return (distance - srcVecStart) / (srcVecEnd - srcVecStart) * (dstVecEnd - dstVecStart) + dstVecStart;
 	}
+
+	public static Vector2 GetNormalPoint(Vector2 vectorStart, Vector2 vectorEnd, Vector2 projSrc) {
+		Vector2 targetVector = vectorEnd - vectorStart;
+		Vector2 sourceVector = projSrc - vectorStart;
+		return targetVector.Project(sourceVector) + vectorStart;
+	}
 }

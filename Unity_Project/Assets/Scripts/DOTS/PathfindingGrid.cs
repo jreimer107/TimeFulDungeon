@@ -2,6 +2,7 @@
 using Unity.Collections;
 using Unity.Mathematics;
 using Unity.Entities;
+using System.Collections.Generic;
 
 public class PathfindingGrid : MonoBehaviour {
 	[SerializeField] GenConfig genConfig;
@@ -83,10 +84,6 @@ public class PathfindingGrid : MonoBehaviour {
 		});
 	}
 
-	// private class GridPos {
-	// 	private int x, y;
-
-	// 	public
-	// }
+	// public List<Vector2> RequestPath()
 
 }

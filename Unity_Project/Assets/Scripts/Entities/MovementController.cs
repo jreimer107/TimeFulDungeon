@@ -4,37 +4,39 @@ using Unity.Mathematics;
 
 [RequireComponent(typeof(Animator), typeof(Rigidbody2D))]
 public class MovementController : MonoBehaviour {
-	private Vector2 steering;
-	private Vector2 waypoint;
-	private Vector2 destination;
-	private Vector2 start;
-
-	private PathFollow pathFollow;
-	private DynamicBuffer<PathPosition> path;
-	
-	public bool havePath { private set; get; }
-
+	// Movement configuration
 	[SerializeField] private float maxSpeed = 10f;
 	[SerializeField] private float maxAcceleration = 10f;
 	[SerializeField] private float approachDistance = 10f;
+	
+	/// <summary>
+	/// Controls what type of movement is used. Players use manual.
+	/// </summary>
+	public bool automatedMovement = true;
+	
+	// Controls where we are going, used by both modes
+	private Vector2 steering;
+	
+	// Manual pathfinding reference
+	private Vector2 velocity;
 
+	// Automatic pathfinding variables
+	private Vector2 waypoint;
+	private Vector2 destination;
+	private Vector2 start;
+	private PathFollow pathFollow;
+	private DynamicBuffer<PathPosition> path;
+	private Entity entity;
+	private EntityManager entityManager;
+	public bool havePath { private set; get; }
+
+	// Physics and animation
 	private Rigidbody2D rb;
 	private SpriteRenderer spriteRenderer;
 	private Animator animator;
 	private bool hasVerticalAnimation;
 	private bool hasHorizontalAnimation;
 	private bool facingRight;
-
-	/// <summary>
-	/// Controls what type of movement is used. Players use manual.
-	/// </summary>
-	public bool automatedMovement = true;
-
-	private Vector2 velocity;
-
-	// [SerializeField] private ConvertedEntityHolder convertedEntityHolder = null;
-	private Entity entity;
-	private EntityManager entityManager;
 
 	private void Start() {
 		waypoint = Vector2.zero;
@@ -55,6 +57,10 @@ public class MovementController : MonoBehaviour {
 
 		// Kick off pathfinding fetch loop
 		if (automatedMovement) {
+			entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+			entity = entityManager.CreateEntity();
+			entityManager.AddComponentData(entity, new PathFollow { pathIndex = -1 });
+			entityManager.AddBuffer<PathPosition>(entity);
 			InvokeRepeating("GetUpdatedPath", 0f, 1f);
 		}
 
@@ -73,7 +79,33 @@ public class MovementController : MonoBehaviour {
 			} else {
 				// Vector2 move = (waypoint - (Vector2)transform.position).normalized;
 				// SetMoveDirection(move.x, move.y);
-				Seek(waypoint);
+				AutomatedMovement(destination);
+			}
+		}
+
+		//If input is moving the player right and player is facing left
+		if (spriteRenderer != null) {
+			if (rb.velocity.x > 0 && !facingRight) {
+				Flip();
+			} else if (rb.velocity.x < 0 && facingRight) {
+				Flip();
+			}
+		}
+
+		if (havePath) {
+			path = entityManager.GetBuffer<PathPosition>(entity);
+			Debug.DrawLine(
+				start,
+				PathfindingGrid.Instance.GetWorldPosition(path[path.Length - 1].position),
+				Color.magenta
+			);
+
+			for (int i = 1; i < path.Length; i++) {
+				Debug.DrawLine(
+					PathfindingGrid.Instance.GetWorldPosition(path[i - 1].position),
+					PathfindingGrid.Instance.GetWorldPosition(path[i].position),
+					Color.magenta
+				);
 			}
 		}
 	}
@@ -84,15 +116,6 @@ public class MovementController : MonoBehaviour {
 		}
 		else {
 			ManualMovement();
-		}
-		
-		//If input is moving the player right and player is facing left
-		if (spriteRenderer != null) {
-			if (rb.velocity.x > 0 && !facingRight) {
-				Flip();
-			} else if (rb.velocity.x < 0 && facingRight) {
-				Flip();
-			}
 		}
 	}
 
@@ -107,20 +130,14 @@ public class MovementController : MonoBehaviour {
 		rb.velocity = Vector2.SmoothDamp(rb.velocity, targetVelocity, ref velocity, 1 / maxAcceleration);
 	}
 
-	public void Seek(Vector2 target) {
+	public void AutomatedMovement(Vector2 target) {
+		// Steer towards our target
 		Vector2 desired = SteeringBehaviors.Arrive(target, transform.position, maxSpeed, approachDistance);
 		steering = Vector2.ClampMagnitude(desired - rb.velocity, maxAcceleration);
 
 		Debug.DrawRay(transform.position, steering, Color.blue);
 		Debug.DrawRay(transform.position, rb.velocity, Color.red);
 		Debug.DrawRay(transform.position, desired, Color.green);
-	}
-
-	public void CreateEntityForPathfinding() {
-		entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-		entity = entityManager.CreateEntity();
-		entityManager.AddComponentData(entity, new PathFollow { pathIndex = -1 });
-		entityManager.AddBuffer<PathPosition>(entity);
 	}
 
 
@@ -130,12 +147,14 @@ public class MovementController : MonoBehaviour {
 	/// <param name="destination">Vector2 destination to travel to.</param>
 	public void Travel(Vector2 destination) {
 		this.destination = destination;
+		this.start = transform.position;
 		PathfindingGrid.Instance.RequestPath(entity, transform.position, destination);
 	}
 
 	private void GetUpdatedPath() {
 		if (destination != Vector2.zero) {
 			// Debug.Log("Requesting new path and fetching.");
+			start = transform.position;
 			PathfindingGrid.Instance.RequestPath(entity, transform.position, destination);
 			pathFollow = entityManager.GetComponentData<PathFollow>(entity);
 			if (pathFollow.pathIndex != -1) {
@@ -156,22 +175,6 @@ public class MovementController : MonoBehaviour {
 
 		// If we have a waypoint left
 		if (index >= 0) {
-			if (path.Length > 0) {
-				Debug.DrawLine(
-					transform.position,
-					PathfindingGrid.Instance.GetWorldPosition(path[path.Length - 1].position),
-					Color.green,
-					1f
-				);
-			}
-			for (int i = 1; i < path.Length; i++) {
-				Debug.DrawLine(
-					PathfindingGrid.Instance.GetWorldPosition(path[i - 1].position),
-					PathfindingGrid.Instance.GetWorldPosition(path[i].position),
-					Color.green,
-					1f
-				);
-			}
 
 			// Get the waypoint
 			int2 pathPosition = path[index].position;

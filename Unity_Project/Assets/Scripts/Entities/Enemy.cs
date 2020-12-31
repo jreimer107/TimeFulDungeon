@@ -20,15 +20,14 @@ public class Enemy : MonoBehaviour {
 		//anim = GetComponent<Animator>();
 		//anim.SetBool("isRunning", true);
 		movementController = GetComponent<MovementController>();
-		movementController.CreateEntityForPathfinding();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		// if (Input.GetMouseButtonDown(0)) {
-		// 	movementController.Travel(Player.instance.transform.position);
-		// }
-		movementController.Seek(Utils.GetMouseWorldPosition2D());
+		if (Input.GetMouseButtonDown(0)) {
+			movementController.Travel(Player.instance.transform.position);
+		}
+		// movementController.AutomatedMovement(Utils.GetMouseWorldPosition2D());
 
 		// movementController.UpdateWaypoint();
 	}
