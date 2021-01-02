@@ -95,8 +95,8 @@ public class Board : MonoBehaviour {
 	public HashSet<Coordinate> GetShortestPath(Coordinate start,
 		Coordinate end,
 		Func<Coordinate, Coordinate, Coordinate[]> GetSuccessorsFunction,
-		Func<Coordinate, Coordinate, Coordinate, int, int> GetCostFunction,
-		Func<Coordinate, Coordinate, int> GetHeuristicFunction) {
+		Func<Coordinate, Coordinate, Coordinate, float, float> GetCostFunction,
+		Func<Coordinate, Coordinate, float> GetHeuristicFunction) {
 		return floor.GetShortestPath(start, end, GetSuccessorsFunction, GetCostFunction, GetHeuristicFunction);
 	}
 }

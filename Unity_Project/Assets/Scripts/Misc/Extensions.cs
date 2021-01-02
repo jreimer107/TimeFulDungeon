@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using  Unity.Mathematics;
 
 public static class Extensions {
 	public static int Clamp(this int value, int inclusiveMin,
@@ -31,5 +32,4 @@ public static class Extensions {
 	public static Vector2 Project(this Vector2 target, Vector2 source) {
 		return target * source.magnitude * Vector2.Angle(target, source);
 	}
-	
 }

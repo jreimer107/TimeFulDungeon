@@ -18,6 +18,11 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 		this.y = y_pos;
 	}
 
+	public Coordinate(Vector2Int a) {
+		this.x = a.x;
+		this.y = a.y;
+	}
+
 	public int CompareTo(Coordinate other) {
 		if (this.x != other.x) {
 			return this.x.CompareTo(other.x);
@@ -37,6 +42,8 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 
 	public static bool operator ==(Coordinate a, Coordinate b) => !ReferenceEquals(a, null) && a.Equals(b);
 	public static bool operator !=(Coordinate a, Coordinate b) => !ReferenceEquals(a, null) && !a.Equals(b);
+
+	public static implicit operator Vector2Int(Coordinate a) => new Vector2Int(a.x, a.y);
 
 	public override int GetHashCode() {
 		int hash = 13;
@@ -164,17 +171,7 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 		);
 	}
 
-	// public bool IsNextToPath(TileType[,] tiles) {
-	// 	List<Coordinate> successors = this.getSuccessors(tiles);
-	// 	foreach (Coordinate suc in successors) {
-	// 		if (tiles[suc.x, suc.y] == TileType.Path) {
-	// 			return true;
-	// 		}
-	// 	}
-	// 	return false;
-	// }
-
-	public static int heuristic(Coordinate a, Coordinate b) {
+	public static float heuristic(Coordinate a, Coordinate b) {
 		return Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y);
 	}
 }

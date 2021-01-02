@@ -2,7 +2,7 @@
 using TMPro;
 using System;
 using Unity.Mathematics;
-
+using VoraUtils;
 
 public class WorldGrid<T> {
 	public int width { private set; get; }
@@ -15,6 +15,11 @@ public class WorldGrid<T> {
 	public class OnGridChangedEventArgs : EventArgs {
 		public int x;
 		public int y;
+	}
+
+	public T this[int x, int y] {
+		get { return Get(x, y); }
+		set { Set(x, y, value); }
 	}
 
 	public delegate T CreateGridObject(WorldGrid<T> worldGrid, int x, int y);
@@ -62,8 +67,8 @@ public class WorldGrid<T> {
 		y = Mathf.FloorToInt((worldPositon - originPosition).y / cellSize);
 	}
 
-	public int2 GetXY(Vector2 worldPositon) {
-		return new int2(
+	public Vector2Int GetXY(Vector2 worldPositon) {
+		return new Vector2Int(
 			Mathf.FloorToInt((worldPositon - originPosition).x / cellSize),
 			Mathf.FloorToInt((worldPositon - originPosition).y / cellSize)
 		);

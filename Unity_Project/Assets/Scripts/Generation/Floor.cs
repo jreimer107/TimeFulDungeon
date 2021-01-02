@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Random = System.Random;
+using VoraUtils;
 
 public class Floor {
 	//Floor constraints
@@ -18,6 +19,7 @@ public class Floor {
 	//Pathing
 	private readonly int MinPaths;
 	private readonly int MaxPaths;
+	private Pathfinding<Coordinate> pathfinding;
 
 
 	private List<Room> room_list;
@@ -40,6 +42,7 @@ public class Floor {
 		path_list = new List<Path>();
 		rng = new Random();
 		tiles = new TileType[gencfg.FloorWidth, gencfg.FloorHeight];
+		pathfinding = new Pathfinding<Coordinate>();
 	}
 
 	public void Generate() {
@@ -229,56 +232,10 @@ public class Floor {
 		Coordinate start,
 		Coordinate end,
 		Func<Coordinate, Coordinate, Coordinate[]> GetSuccessorsFunction,
-		Func<Coordinate, Coordinate, Coordinate, int, int> GetCostFunction,
-		Func<Coordinate, Coordinate, int> GetHeuristicFunction) {
-
-		Dictionary<Coordinate, Coordinate> parents = new Dictionary<Coordinate, Coordinate>();
-		Dictionary<Coordinate, int> costs = new Dictionary<Coordinate, int>();
-
-		//Coordinates being considered to find the closest path
-		MinHeap<PathNode> open = new MinHeap<PathNode>(300);
-		//Coordinates that have already been considered and do not have to be considered again
-		HashSet<Coordinate> closed = new HashSet<Coordinate>();
-
-		//Add starting position to closed list
-		open.Add(new PathNode(start, GetHeuristicFunction(start, end)));
-		parents[start] = null;
-		costs[start] = 0;
-		Coordinate currPos = null; //tile to analyze
-		while (!open.IsEmpty()) {
-			currPos = open.Pop().pos;
-
-			//We've added destination to the closed list, found a path
-			if (currPos.Equals(end)) {
-				break;
-			}
-			closed.Add(currPos); //Switch square from open to closed list
-
-			foreach (Coordinate suc in GetSuccessorsFunction(currPos, parents[currPos])) {
-				if (closed.Contains(suc)) {
-					continue;
-				}
-
-				int newCost = GetCostFunction(suc, currPos, parents[currPos], costs[currPos]);
-
-				//Only edit dictionaries if node is new or better
-				int currentSucCost = 0;
-				if (!costs.TryGetValue(suc, out currentSucCost) || newCost < currentSucCost) {
-					//Add node to open with F = G + H values as priority
-					open.Add(new PathNode(suc, newCost + GetHeuristicFunction(suc, end)));
-					costs[suc] = newCost;
-					parents[suc] = currPos;
-				}
-			}
-		}
-
-		//Now start at end and work backward through parents
-		HashSet<Coordinate> pathCoords = new HashSet<Coordinate>();
-		while (currPos != null) {
-			pathCoords.Add(currPos);
-			currPos = parents[currPos];
-		}
-		return pathCoords;
+		Func<Coordinate, Coordinate, Coordinate, float, float> GetCostFunction,
+		Func<Coordinate, Coordinate, float> GetHeuristicFunction) {
+			return new HashSet<Coordinate>(pathfinding.AStar(start, end, GetSuccessorsFunction, GetCostFunction, GetHeuristicFunction));
+		
 	}
 
 	public override string ToString() {
@@ -318,24 +275,3 @@ public class Floor {
 }
 
 
-public struct PathNode : IComparable<PathNode> {
-	public Coordinate pos { get; }
-	public int heuristic { get; }
-
-	public PathNode(Coordinate pos, int heuristic) {
-		this.pos = pos;
-		this.heuristic = heuristic;
-	}
-
-	public int CompareTo(PathNode other) {
-		if (this.heuristic != other.heuristic) {
-			return this.heuristic.CompareTo(other.heuristic);
-		} else {
-			return this.pos.CompareTo(other.pos);
-		}
-	}
-
-	public override string ToString() {
-		return string.Format("[{0}, {1}]", this.pos, this.heuristic);
-	}
-}

@@ -18,9 +18,9 @@ public class Path {
 		Coordinate startPos = startRoom.GetRandCoordinate();
 		Coordinate endPos = endRoom.GetRandCoordinate();
 
-		int GetGValue(Coordinate suc, Coordinate curr, Coordinate parent, int currCost) {
+		float GetGValue(Coordinate suc, Coordinate curr, Coordinate parent, float currCost) {
 			//Get G value, adjust to reuse paths and to continue in same direction
-			int newCost = currCost + 2;
+			float newCost = currCost + 2;
 			if (!Board.instance.IsTileOfType(suc, TileType.Path)) {
 				newCost += 7;
 			}
@@ -32,7 +32,7 @@ public class Path {
 			}
 			return newCost;
 		}
-		Func<Coordinate, Coordinate, Coordinate, int, int> constFunc = GetGValue;
+		Func<Coordinate, Coordinate, Coordinate, float, float> constFunc = GetGValue;
 		Func<Coordinate, Coordinate, Coordinate[]> successorsFunction = (Coordinate curr, Coordinate parent) => {
 			return Coordinate.GetValidSuccessorsForPathGen(curr, parent, endpoints);
 		};

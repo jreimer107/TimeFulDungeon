@@ -3,11 +3,13 @@ using Unity.Collections;
 using Unity.Mathematics;
 using Unity.Entities;
 using System.Collections.Generic;
+using VoraUtils;
 
 public class PathfindingGrid : MonoBehaviour {
 	[SerializeField] GenConfig genConfig;
 	[SerializeField] [Range(0f, 2f)] float UpdateInterval = 0.2f;
 	private float intervalCounter = 0;
+	private Pathfinding<Coordinate> pathfinding;
 
 	public WorldGrid<bool> grid;
 
@@ -68,8 +70,9 @@ public class PathfindingGrid : MonoBehaviour {
 		return nativeArray;
 	}
 
-	public int2 GetXY(Vector2 worldPosition) => grid.GetXY(worldPosition);
+	public Vector2Int GetXY(Vector2 worldPosition) => grid.GetXY(worldPosition);
 	public void GetXY(Vector2 worldPosition, out int x, out int y) => grid.GetXY(worldPosition, out x, out y);
+	public Vector2 GetWorldPosition(Vector2Int xy) => grid.GetWorldPosition(xy.x, xy.y, true);
 	public Vector2 GetWorldPosition(int2 xy) => grid.GetWorldPosition(xy.x, xy.y, true);
 
 	public void RequestPath(Entity entity, Vector2 start, Vector2 end) {
@@ -77,13 +80,42 @@ public class PathfindingGrid : MonoBehaviour {
 			Debug.LogWarning("Pathfinding Grid RequestPath: Null entity!");
 			return;
 		}
+		Vector2Int startInt = GetXY(start);
+		Vector2Int endInt = GetXY(end);
 		entityManager.AddComponentData(entity, new PathfindingParams
 		{
-			start = GetXY(start),
-			end = GetXY(end)
+			start = new int2(startInt.x, startInt.y),
+			end = new int2(endInt.x, endInt.y)
 		});
 	}
 
-	// public List<Vector2> RequestPath()
+	public List<Vector2> RequestPath(Vector2 start, Vector2 end) {
+		Coordinate startCoord = new Coordinate(GetXY(start));
+		Coordinate endCoord = new Coordinate(GetXY(end));
+		float GetCost(Coordinate successor, Coordinate current, Coordinate parent, float currentCost) => currentCost + Vector2Int.Distance(current, successor);
+		Coordinate[] GetSuccessor(Coordinate curr, Coordinate parent) {
+			int x = curr.x;
+			int y = curr.y;
+			List<Coordinate> successors = new List<Coordinate> {
+				new Coordinate(x + 1, y),
+				new Coordinate(x + 1, y + 1),
+				new Coordinate(x, y + 1),
+				new Coordinate(x - 1, y + 1),
+				new Coordinate(x - 1, y),
+				new Coordinate(x - 1, y - 1),
+				new Coordinate(x, y - 1),
+				new Coordinate(x + 1, y - 1)
+			};
+			successors.RemoveAll(a => grid[a.x, a.y]);
+			return successors.ToArray();
+		}
+		float GetHeuristic(Coordinate a, Coordinate b) => Coordinate.heuristic(a, b);
+		List<Coordinate> coordinates = pathfinding.AStar(startCoord, endCoord, GetSuccessor, GetCost, GetHeuristic);
+		List<Vector2> path = new List<Vector2>();
+		foreach (Coordinate coordinate in coordinates) {
+			path.Add(GetWorldPosition(coordinate));
+		}
+		return path;
+	}
 
 }

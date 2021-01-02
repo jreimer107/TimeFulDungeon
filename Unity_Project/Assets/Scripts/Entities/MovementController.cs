@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Unity.Entities;
 using Unity.Mathematics;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Animator), typeof(Rigidbody2D))]
 public class MovementController : MonoBehaviour {
@@ -25,10 +26,12 @@ public class MovementController : MonoBehaviour {
 	private Vector2 destination;
 	private Vector2 start;
 	private PathFollow pathFollow;
-	private DynamicBuffer<PathPosition> path;
+	private DynamicBuffer<PathPosition> pathBuffer;
 	private Entity entity;
 	private EntityManager entityManager;
 	public bool havePath { private set; get; }
+
+	private List<Vector2> path;
 
 	// Physics and animation
 	private Rigidbody2D rb;
@@ -79,7 +82,7 @@ public class MovementController : MonoBehaviour {
 			} else {
 				// Vector2 move = (waypoint - (Vector2)transform.position).normalized;
 				// SetMoveDirection(move.x, move.y);
-				AutomatedMovement(destination);
+				AutomatedMovement(waypoint);
 			}
 		}
 
@@ -93,17 +96,17 @@ public class MovementController : MonoBehaviour {
 		}
 
 		if (havePath) {
-			path = entityManager.GetBuffer<PathPosition>(entity);
+			pathBuffer = entityManager.GetBuffer<PathPosition>(entity);
 			Debug.DrawLine(
 				start,
-				PathfindingGrid.Instance.GetWorldPosition(path[path.Length - 1].position),
+				PathfindingGrid.Instance.GetWorldPosition(pathBuffer[pathBuffer.Length - 1].position),
 				Color.magenta
 			);
 
-			for (int i = 1; i < path.Length; i++) {
+			for (int i = 1; i < pathBuffer.Length; i++) {
 				Debug.DrawLine(
-					PathfindingGrid.Instance.GetWorldPosition(path[i - 1].position),
-					PathfindingGrid.Instance.GetWorldPosition(path[i].position),
+					PathfindingGrid.Instance.GetWorldPosition(pathBuffer[i - 1].position),
+					PathfindingGrid.Instance.GetWorldPosition(pathBuffer[i].position),
 					Color.magenta
 				);
 			}
@@ -149,6 +152,7 @@ public class MovementController : MonoBehaviour {
 		this.destination = destination;
 		this.start = transform.position;
 		PathfindingGrid.Instance.RequestPath(entity, transform.position, destination);
+		// path = PathfindingGrid.Instance.RequestPath(start, destination);
 	}
 
 	private void GetUpdatedPath() {
@@ -171,13 +175,13 @@ public class MovementController : MonoBehaviour {
 		// Debug.LogFormat("Getting waypoint {0}", index);
 
 		pathFollow = entityManager.GetComponentData<PathFollow>(entity);
-		path = entityManager.GetBuffer<PathPosition>(entity);
+		pathBuffer = entityManager.GetBuffer<PathPosition>(entity);
 
 		// If we have a waypoint left
 		if (index >= 0) {
 
 			// Get the waypoint
-			int2 pathPosition = path[index].position;
+			int2 pathPosition = pathBuffer[index].position;
 			waypoint = PathfindingGrid.Instance.GetWorldPosition(pathPosition);
 			// Debug.LogFormat("Setting waypoint to {0}", waypoint);
 

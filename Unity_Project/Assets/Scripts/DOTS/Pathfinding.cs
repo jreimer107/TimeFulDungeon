@@ -6,6 +6,7 @@ using Unity.Burst;
 using System;
 using Unity.Entities;
 using System.Collections.Generic;
+using VoraUtils;
 
 public class Pathfinding : ComponentSystem {
 

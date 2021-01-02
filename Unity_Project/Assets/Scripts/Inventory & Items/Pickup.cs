@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using VoraUtils;
 
 //Simple GameObject wrapper for item class. Item contains all functional aspects of the item.
 //This simply a dropped object that, when picked up, gives the player the attached item.
