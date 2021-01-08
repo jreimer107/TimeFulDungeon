@@ -22,6 +22,11 @@ public class WorldGrid<T> {
 		set { Set(x, y, value); }
 	}
 
+	public T this[Vector2Int a] {
+		get { return gridArray[a.x, a.y]; }
+		set { gridArray[a.x, a.y] = value; }
+	}
+
 	public delegate T CreateGridObject(WorldGrid<T> worldGrid, int x, int y);
 
 	public WorldGrid(int width, int height, float cellSize, Vector2 originPosition = default(Vector2), CreateGridObject createObject = null) {
@@ -44,7 +49,9 @@ public class WorldGrid<T> {
 			TextMeshPro[,] debugTextArray = new TextMeshPro[width, height];
 			for (int x = 0; x < width; x++) {
 				for (int y = 0; y < height; y++) {
-					debugTextArray[x, y] = Utils.CreateWorldText(gridArray[x, y]?.ToString(), null, GetWorldPosition(x, y) + new Vector2(cellSize, cellSize) * 0.5f, 4, Color.white, TextAnchor.MiddleCenter);
+					debugTextArray[x, y] = Utils.CreateWorldText(gridArray[x, y]?.ToString() + 
+						$"\n({x}, {y})", null, GetWorldPosition(x, y) + new Vector2(cellSize, cellSize) * 0.5f, 4, Color.white, TextAnchor.MiddleCenter);
+					debugTextArray[x, y].fontSize = 2;
 					Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x, y + 1), Color.white, 100f);
 					Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x + 1, y), Color.white, 100f);
 				}
@@ -52,10 +59,13 @@ public class WorldGrid<T> {
 			Debug.DrawLine(GetWorldPosition(0, height), GetWorldPosition(width, height), Color.white, 100f);
 			Debug.DrawLine(GetWorldPosition(width, 0), GetWorldPosition(width, height), Color.white, 100f);
 			OnGridChange += (object sender, OnGridChangedEventArgs eventArgs) => {
-				debugTextArray[eventArgs.x, eventArgs.y].text = gridArray[eventArgs.x, eventArgs.y]?.ToString();
+				debugTextArray[eventArgs.x, eventArgs.y].text = gridArray[eventArgs.x, eventArgs.y]?.ToString() +
+					$"\n({eventArgs.x}, {eventArgs.y})";
 			};
 		}
 	}
+
+	public T[,] GetGrid() => gridArray;
 
 	public Vector2 GetWorldPosition(int x, int y, bool center = false) {
 		Vector2 ret = new Vector2(x, y) * cellSize + originPosition;

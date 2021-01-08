@@ -32,6 +32,7 @@ public class MovementController : MonoBehaviour {
 	public bool havePath { private set; get; }
 
 	private List<Vector2> path;
+	private int currentWaypoint;
 
 	// Physics and animation
 	private Rigidbody2D rb;
@@ -76,14 +77,9 @@ public class MovementController : MonoBehaviour {
 		if (hasVerticalAnimation)
 			animator.SetFloat("Vertical", rb.velocity.y);
 
-		if (automatedMovement && havePath) {
-			if (Vector2.Distance(waypoint, transform.position) < 0.25f) {
-				GetNextWaypoint();
-			} else {
-				// Vector2 move = (waypoint - (Vector2)transform.position).normalized;
-				// SetMoveDirection(move.x, move.y);
-				AutomatedMovement(waypoint);
-			}
+		
+		if (automatedMovement && destination != default(Vector2) && path.Count != 0) {
+			AutomatedMovement(waypoint);
 		}
 
 		//If input is moving the player right and player is facing left
@@ -95,20 +91,17 @@ public class MovementController : MonoBehaviour {
 			}
 		}
 
-		if (havePath) {
-			pathBuffer = entityManager.GetBuffer<PathPosition>(entity);
-			Debug.DrawLine(
-				start,
-				PathfindingGrid.Instance.GetWorldPosition(pathBuffer[pathBuffer.Length - 1].position),
-				Color.magenta
-			);
+		if (automatedMovement && path != null) {
+			// pathBuffer = entityManager.GetBuffer<PathPosition>(entity);
+			// Debug.DrawLine(
+			// 	start,
+			// 	PathfindingGrid.Instance.GetWorldPosition(pathBuffer[pathBuffer.Length - 1].position),
+			// 	Color.magenta
+			// );
+			// Debug.DrawLine(transform.position, path[0], Color.magenta);
 
-			for (int i = 1; i < pathBuffer.Length; i++) {
-				Debug.DrawLine(
-					PathfindingGrid.Instance.GetWorldPosition(pathBuffer[i - 1].position),
-					PathfindingGrid.Instance.GetWorldPosition(pathBuffer[i].position),
-					Color.magenta
-				);
+			for (int i = 0; i < path.Count - 1; i++) {
+				Debug.DrawLine(path[i], path[i+1], Color.magenta);
 			}
 		}
 	}
@@ -122,6 +115,10 @@ public class MovementController : MonoBehaviour {
 		}
 	}
 
+	private void OnDrawGizmos() {
+		Gizmos.DrawSphere(waypoint, 0.2f);
+	}
+
 	public void SetManualMoveDirection(float horizontal, float vertical) {
 		steering = new Vector2(horizontal, vertical) * maxSpeed;
 	}
@@ -133,9 +130,16 @@ public class MovementController : MonoBehaviour {
 		rb.velocity = Vector2.SmoothDamp(rb.velocity, targetVelocity, ref velocity, 1 / maxAcceleration);
 	}
 
-	public void AutomatedMovement(Vector2 target) {
+	public void AutomatedMovement(Vector2 _) {
 		// Steer towards our target
-		Vector2 desired = SteeringBehaviors.Arrive(target, transform.position, maxSpeed, approachDistance);
+		// Vector2 desired = SteeringBehaviors.Arrive(target, transform.position, maxSpeed, approachDistance);
+		Vector2 target = SteeringBehaviors.Follow(path.ToArray(), ref currentWaypoint, rb.velocity, transform.position, maxSpeed, approachDistance);
+		if (target != Vector2.zero) {
+			Debug.Log("Target:" + target);
+			waypoint = target;
+		}
+		Vector2 desired = SteeringBehaviors.Seek(waypoint, transform.position, maxSpeed);
+		// Debug.Log("Desired: " + desired);
 		steering = Vector2.ClampMagnitude(desired - rb.velocity, maxAcceleration);
 
 		Debug.DrawRay(transform.position, steering, Color.blue);
@@ -151,50 +155,19 @@ public class MovementController : MonoBehaviour {
 	public void Travel(Vector2 destination) {
 		this.destination = destination;
 		this.start = transform.position;
-		PathfindingGrid.Instance.RequestPath(entity, transform.position, destination);
-		// path = PathfindingGrid.Instance.RequestPath(start, destination);
+		// PathfindingGrid.Instance.RequestPath(entity, transform.position, destination);
+		GetUpdatedPath();
+		Debug.Log("Destination: " + destination);
+		Debug.Log("Path:");
+		foreach(Vector2 waypoint in path) {
+			Debug.Log(waypoint);
+		}
 	}
 
 	private void GetUpdatedPath() {
-		if (destination != Vector2.zero) {
-			// Debug.Log("Requesting new path and fetching.");
-			start = transform.position;
-			PathfindingGrid.Instance.RequestPath(entity, transform.position, destination);
-			pathFollow = entityManager.GetComponentData<PathFollow>(entity);
-			if (pathFollow.pathIndex != -1) {
-				// Debug.Log("Got path!");
-				havePath = true;
-				GetNextWaypoint();
-			}
-		}
-	}
-
-	private void GetNextWaypoint() {
-		// Get index of waypoint from PathFollow struct
-		int index = pathFollow.pathIndex;
-		// Debug.LogFormat("Getting waypoint {0}", index);
-
-		pathFollow = entityManager.GetComponentData<PathFollow>(entity);
-		pathBuffer = entityManager.GetBuffer<PathPosition>(entity);
-
-		// If we have a waypoint left
-		if (index >= 0) {
-
-			// Get the waypoint
-			int2 pathPosition = pathBuffer[index].position;
-			waypoint = PathfindingGrid.Instance.GetWorldPosition(pathPosition);
-			// Debug.LogFormat("Setting waypoint to {0}", waypoint);
-
-			// Update the index for the next time
-			pathFollow.pathIndex--;
-			entityManager.SetComponentData(entity, pathFollow);
-		}
-		else {
-			Debug.Log("Done traveling.");
-			havePath = false;
-			// waypoint = Vector2.zero;
-			// SetMoveDirection(0, 0);
-			// destination = Vector2.zero;
+		if (destination != default(Vector2)) {
+			path = PathfindingGrid.Instance.RequestPath(transform.position, destination);
+			// currentWaypoint = 0;
 		}
 	}
 

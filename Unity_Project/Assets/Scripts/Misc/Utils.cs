@@ -46,6 +46,7 @@ namespace VoraUtils {
 			return 14 * math.min(xDistance, yDistance) + 10 * remainder;
 		}
 
+		public static bool PointInBox(Vector2Int point, Vector2Int box) => PointInBox(point.x, point.y, box.x, box.y);
 		public static bool PointInBox(int2 point, int2 box) => PointInBox(point.x, point.y, box.x, box.y);
 		public static bool PointInBox(int pointX, int pointY, int boxX, int boxY) {
 			return
@@ -85,6 +86,128 @@ namespace VoraUtils {
 			return targetVector.Project(sourceVector) + vectorStart;
 		}
 
+		public static bool PointOnSegment(Vector2 segmentStart, Vector2 segmentEnd, Vector2 point) {
+			Vector2 ab = segmentEnd - segmentStart;
+			Vector2 ac = point - segmentStart;
+			float dotAC = Vector2.Dot(ab, ac);
+			float dotAB = Vector2.Dot(ab, ab);
+			return 0 <= dotAC && dotAC <= dotAB;
+		}
+
+		/// <summary>
+		/// Removes unnecessary positions from A Star result.
+		/// This version uses a matrix of acceptable paths to determine which path points are skippable.
+		/// </summary>
+		/// <param name="path">A list of Vector2s representing the path.</param>
+		/// <returns>A list of Vector2s representing the simplified path.</returns>
+		public static List<Vector2Int> Waypointify(Vector2Int[] path, WorldGrid<bool> environment) {
+			List<Vector2Int> waypoints = new List<Vector2Int>();
+			int currIndex = path.Length - 1;
+			Vector2Int curr = path[currIndex];
+			Vector2Int end = path[0];
+			waypoints.Add(curr);
+
+			while (curr != end) {
+				// The next waypoint is the last node after a turn that is still visible from the current waypoint
+				int turnIndex = currIndex;
+				Vector2Int turn = path[turnIndex];
+
+				// Find the first node after a turn
+				while (curr.x == turn.x || curr.y == turn.y || math.abs(turn.x - curr.x) == math.abs(turn.y - curr.y)) {
+					if (turnIndex == 0) {
+						// Debug.Log("Turn finder reached end of path.");
+						curr = end;
+						break;
+					}
+					turn = path[--turnIndex];
+				}
+
+				// If there's a turn on the last position, the inSight check won't happen. Add the second-last position.
+				if (turnIndex == 0) {
+					waypoints.Add(path[turnIndex + 1]);
+				}
+
+				// Find the last node after the turn that is still visible from the current waypoint
+				bool inSight = true;
+				while (inSight && turnIndex > 0) {
+					// Check if the node after the turn is visible from the current waypoint
+					// Check if all nodes between the post-turn node and the current waypoint are walkable
+					// Debug.Log($"Possible waypoint is {turn}, {delta} away, slope of {slope}");
+					Vector2Int delta = turn - curr;
+					float slope = delta.y / delta.x;
+					if (math.abs(slope) >= 1) {
+						// If slope > 1, path crosses at least one y border for each x.
+						// So for each y crossed, check that the positions left or right walkable, based on where the entity is
+						// Debug.LogFormat("Slope > 1: {0}", slope);
+						int x, y = 0;
+						float xf;
+						Vector2Int test = default(Vector2Int);
+						while (y != delta.y) {
+							// Get the exact and rounded x coordinates
+							xf = (float)y / slope;
+							x = (int)math.trunc(xf);
+							test.x = curr.x + x;
+							test.y = curr.y + y;
+
+							// If exactX < roundedX, entity is on right half of square. Check square left of current pos.
+							// If exactX > roundedX, entity is on left half of square. Check square right of current pos.
+							// Debug.LogFormat("Testing walkability of ({0}, {1})", x, y);
+							if (!environment[test] ||
+								xf < x && !environment[test.x - 1, test.y] ||
+								xf > x && !environment[test.x + 1, test.y]) {
+								inSight = false;
+								break;
+							}
+							
+							// Move up or down based on slope
+							y += delta.y > 0 ? 1 : -1;
+						}
+					} else {
+						// Debug.Log("Slope < 1:" + slope);
+						// If slope < 1, path crosses at least one x for each y.
+						// For each x crossed, check that the position up or down is walkable, based on where the entity is
+						int x = 0, y;
+						float yf;
+						Vector2Int test = default(Vector2Int);
+						while (x != delta.x) {
+							// Get the exact and rounded y coordinates
+							yf = x * slope;
+							y = (int)math.trunc(yf);
+							test.x = curr.x + x;
+							test.y = curr.y + y;
+
+							// Debug.LogFormat("Testing walkability of ({0}, {1})", test.x, test.y);
+							// If exactY < roundedY, entity is on bottom half of square. Check the square below.
+							// If exactY > roundedY, entity is on top half of square. Check the square above.
+							if (!environment[test] ||
+								yf < y && !environment[test.x, test.y - 1] ||
+								yf > y && !environment[test.x, test.y + 1]) {
+								inSight = false;
+								break;
+							}
+							
+							// Move left or right based on slope
+							x += delta.x > 0 ? 1 : -1;
+						}
+					}
+
+					// If no collision was found, then the path between this post-turn node and the current waypoint is walkable.
+					// Try again with the next post-turn node.
+					if (inSight) {
+						turn = path[--turnIndex];
+					} else {
+						// Only a bad turn fails this condition, so move one back. The square before a bad turn is a waypoint.
+						turn = path[++turnIndex];
+					}
+				}
+
+				// Start again at the next waypoint, add it to the waypoint list.
+				curr = turn;
+				currIndex = turnIndex;
+				waypoints.Add(curr);
+			}
+			return waypoints;
+		}
 	}
 
 	/// <summary>

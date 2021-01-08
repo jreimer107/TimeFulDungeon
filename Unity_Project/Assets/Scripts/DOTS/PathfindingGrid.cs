@@ -4,6 +4,8 @@ using Unity.Mathematics;
 using Unity.Entities;
 using System.Collections.Generic;
 using VoraUtils;
+using System.Linq;
+using System;
 
 public class PathfindingGrid : MonoBehaviour {
 	[SerializeField] GenConfig genConfig;
@@ -33,6 +35,7 @@ public class PathfindingGrid : MonoBehaviour {
 	void Start() {
 		grid = new WorldGrid<bool>(75, 75, 1.0f);
 		entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+		pathfinding = new Pathfinding<Coordinate>();
 	}
 
 	// Update is called once per frame
@@ -98,24 +101,73 @@ public class PathfindingGrid : MonoBehaviour {
 			int y = curr.y;
 			List<Coordinate> successors = new List<Coordinate> {
 				new Coordinate(x + 1, y),
-				new Coordinate(x + 1, y + 1),
 				new Coordinate(x, y + 1),
-				new Coordinate(x - 1, y + 1),
 				new Coordinate(x - 1, y),
-				new Coordinate(x - 1, y - 1),
-				new Coordinate(x, y - 1),
-				new Coordinate(x + 1, y - 1)
+				new Coordinate(x, y - 1)
 			};
-			successors.RemoveAll(a => grid[a.x, a.y]);
+			if (grid[x + 1, y] && grid[x, y + 1]) {
+				successors.Add(new Coordinate(x + 1, y + 1));
+			}
+			if (grid[x, y + 1] && grid[x - 1, y]) {
+				successors.Add(new Coordinate(x - 1, y + 1));
+			}
+			if (grid[x - 1, y] && grid[x, y - 1]) {
+				successors.Add(new Coordinate(x - 1, y - 1));
+			}
+			if (grid[x, y - 1] && grid[x + 1, y]) {
+				successors.Add(new Coordinate(x + 1, y - 1));
+			}
+
+			successors.RemoveAll(a => !grid[a.x, a.y]);
 			return successors.ToArray();
 		}
 		float GetHeuristic(Coordinate a, Coordinate b) => Coordinate.heuristic(a, b);
+		
 		List<Coordinate> coordinates = pathfinding.AStar(startCoord, endCoord, GetSuccessor, GetCost, GetHeuristic);
-		List<Vector2> path = new List<Vector2>();
-		foreach (Coordinate coordinate in coordinates) {
-			path.Add(GetWorldPosition(coordinate));
+		// List<Vector2Int> waypoints = Utils.Waypointify(coordinates.ConvertAll(a => (Vector2Int)a).ToArray(), grid);
+		List<Vector2> waypoints = Waypointify(coordinates.ConvertAll(a => (Vector2Int)a).ToArray());
+		return waypoints;
+	}
+
+	/// <summary>
+	/// Removes unnecessary positions from A Star result.
+	/// Alternative to Utils version as this uses raycasts instead of the environment matrix.
+	/// </summary>
+	/// <param name="path">A list of Vector2s representing the path.</param>
+	/// <returns>A list of Vector2s representing world coordinates of the simplified path.</returns>
+	private List<Vector2> Waypointify(Vector2Int[] path) {
+		// Set the current position to the path start (end of array)
+		Vector2Int curr = path[path.Length - 1];
+		Vector2 currWorld = GetWorldPosition(curr);
+
+		// Set the first potential waypoint to the next spot
+		int turnIndex = path.Length - 2;
+		Vector2Int turn = path[turnIndex];
+		Vector2 turnWorld = GetWorldPosition(turn);
+
+		// Create the list and add the start
+		List<Vector2> waypoints = new List<Vector2>{curr};
+
+		Vector2Int end = path[0];
+		while (curr != end && turnIndex > 0) {
+			// The next waypoint is the last node after a turn that is still visible from the current waypoint
+			RaycastHit2D hit = Physics2D.Raycast(currWorld, turnWorld - currWorld, Vector2.Distance(turnWorld, currWorld), LayerMask.GetMask("Obstacle"));
+			if (hit.collider) {
+				// Obstacle hit, so spot before this was a waypoint. Move curr to right behind turn, and add to list
+				curr = path[turnIndex + 1];
+				currWorld = GetWorldPosition(curr);
+				waypoints.Add(currWorld);
+			}
+			else {
+				// No obstacle, try next spot. Advance turn.
+				turn = path[--turnIndex];
+				turnWorld = GetWorldPosition(turn);
+			}
 		}
-		return path;
+
+		// Add the end, as the above loop never reaches it
+		waypoints.Add(end);
+		return waypoints;
 	}
 
 }

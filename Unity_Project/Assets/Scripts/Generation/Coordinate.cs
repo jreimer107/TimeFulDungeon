@@ -52,6 +52,8 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 		return hash;
 	}
 
+	public static float Distance(Coordinate a, Coordinate b) => Vector2Int.Distance(a, b);
+
 	public override string ToString() => $"({this.x}, {this.y})"; 
 
 	public Coordinate[] GetValidSuccessorsForPathfinding() {

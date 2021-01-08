@@ -885,6 +885,10 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1630242196, guid: 919447006cd75ed4a955468b341003e0, type: 3}
+      propertyPath: approachDistance
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1630242196, guid: 919447006cd75ed4a955468b341003e0, type: 3}
       propertyPath: MovementSmoothing
       value: 1
       objectReference: {fileID: 0}
