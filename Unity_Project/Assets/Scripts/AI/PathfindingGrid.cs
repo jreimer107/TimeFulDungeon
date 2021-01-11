@@ -8,8 +8,12 @@ using System.Linq;
 using System;
 
 public class PathfindingGrid : MonoBehaviour {
-	[SerializeField] GenConfig genConfig;
-	[SerializeField] [Range(0f, 2f)] float UpdateInterval = 0.2f;
+	[SerializeField] private GenConfig genConfig;
+	[SerializeField] [Range(0f, 2f)] private float UpdateInterval = 0.2f;
+	[SerializeField] private int gridWidth = 100;
+	[SerializeField] private int gridHeight = 100;
+	[SerializeField] private float cellSize = 0.5f;
+
 	private float intervalCounter = 0;
 	private Pathfinding<Coordinate> pathfinding;
 
@@ -33,7 +37,7 @@ public class PathfindingGrid : MonoBehaviour {
 
 	// Start is called before the first frame update
 	void Start() {
-		grid = new WorldGrid<bool>(75, 75, 0.5f);
+		grid = new WorldGrid<bool>(gridWidth, gridHeight, cellSize);
 		entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 		pathfinding = new Pathfinding<Coordinate>();
 	}

@@ -25,7 +25,6 @@ public class MovementController : MonoBehaviour {
 	private Vector2 waypoint;
 	private Vector2 destination;
 	private Vector2 start;
-	private PathFollow pathFollow;
 	private DynamicBuffer<PathPosition> pathBuffer;
 	private Entity entity;
 	private EntityManager entityManager;
@@ -62,7 +61,6 @@ public class MovementController : MonoBehaviour {
 		if (automatedMovement) {
 			entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 			entity = entityManager.CreateEntity();
-			entityManager.AddComponentData(entity, new PathFollow { pathIndex = -1 });
 			entityManager.AddBuffer<PathPosition>(entity);
 			InvokeRepeating("GetUpdatedPath", 0f, 1f);
 		}

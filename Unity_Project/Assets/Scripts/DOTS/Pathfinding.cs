@@ -40,7 +40,6 @@ public class Pathfinding : ComponentSystem {
 			{
 				path = findPathJob.path,
 				entity = findPathJob.entity,
-				pathfollowFromEntity = GetComponentDataFromEntity<PathFollow>(),
 				pathPositionBufferFromEntity = GetBufferFromEntity<PathPosition>()
 			}.Run();
 			findPathJob.path.Dispose();
@@ -316,7 +315,6 @@ public struct FillBufferJob : IJob {
 	public NativeList<int2> path;
 
 	public Entity entity;
-	public ComponentDataFromEntity<PathFollow> pathfollowFromEntity;
 	public BufferFromEntity<PathPosition> pathPositionBufferFromEntity;
 
 	public void Execute() {
@@ -326,6 +324,5 @@ public struct FillBufferJob : IJob {
 		for (int i = 0; i < path.Length; i++) {
 			pathPositions.Add(new PathPosition { position = path[i] });
 		}
-		pathfollowFromEntity[entity] = new PathFollow { pathIndex = path.Length - 1 };
 	}
 }
