@@ -72,15 +72,15 @@ public class WorldGrid<T> {
 		return center ? ret + new Vector2(0.5f, 0.5f) : ret;
 	}
 
-	public void GetXY(Vector2 worldPositon, out int x, out int y) {
-		x = Mathf.FloorToInt((worldPositon - originPosition).x / cellSize);
-		y = Mathf.FloorToInt((worldPositon - originPosition).y / cellSize);
+	public void GetXY(Vector2 worldPosition, out int x, out int y) {
+		x = Mathf.FloorToInt((worldPosition - originPosition).x / cellSize);
+		y = Mathf.FloorToInt((worldPosition - originPosition).y / cellSize);
 	}
 
-	public Vector2Int GetXY(Vector2 worldPositon) {
+	public Vector2Int GetXY(Vector2 worldPosition) {
 		return new Vector2Int(
-			Mathf.FloorToInt((worldPositon - originPosition).x / cellSize),
-			Mathf.FloorToInt((worldPositon - originPosition).y / cellSize)
+			Mathf.FloorToInt((worldPosition - originPosition).x / cellSize),
+			Mathf.FloorToInt((worldPosition - originPosition).y / cellSize)
 		);
 	}
 

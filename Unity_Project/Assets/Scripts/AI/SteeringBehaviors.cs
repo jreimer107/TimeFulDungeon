@@ -30,9 +30,9 @@ public static class SteeringBehaviors
         return desired;
     }
 
-    public static Vector2 Follow(Vector2[] path, ref int currentWaypoint, Vector2 velocity, Vector2 location, float maxSpeed, float approachDistance) {
+    public static Vector2 Follow(Vector2[] path, Vector2 velocity, Vector2 location, float maxSpeed, float approachDistance) {
         // Predict what our location will be in x updates based on current position and velocity
-        Vector2 prediction = velocity.normalized * Time.fixedDeltaTime * 10 + location;
+        Vector2 prediction = velocity * Time.fixedDeltaTime * 10 + location;
         // Debug.Log("Prediction: " + prediction);
 
         // Find the normal to the path from the predicted location
@@ -40,7 +40,7 @@ public static class SteeringBehaviors
         Vector2 target =  Vector2.zero;//path[currentWaypoint];
 
         // Find the closest normal point, this should be our target
-        for (int i = currentWaypoint; i < path.Length - 1; i++) {
+        for (int i = 0; i < path.Length - 1; i++) {
             // Get a line segment
             Vector2 segmentStart = path[i];
             Vector2 segmentEnd = path[i+1];
@@ -56,7 +56,6 @@ public static class SteeringBehaviors
                 closestNormalDistance = distance;
                 // Seek a little ahead of the normal to be smart. Can be removed if this is dumb
                 target = normalPoint + (segmentEnd - segmentStart).normalized * Time.fixedDeltaTime * 10;
-                currentWaypoint = i;
             }
         }
         return target;

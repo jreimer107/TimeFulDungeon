@@ -32,7 +32,6 @@ public class MovementController : MonoBehaviour {
 	public bool havePath { private set; get; }
 
 	private List<Vector2> path;
-	private int currentWaypoint;
 
 	// Physics and animation
 	private Rigidbody2D rb;
@@ -133,9 +132,9 @@ public class MovementController : MonoBehaviour {
 	public void AutomatedMovement(Vector2 _) {
 		// Steer towards our target
 		// Vector2 desired = SteeringBehaviors.Arrive(target, transform.position, maxSpeed, approachDistance);
-		Vector2 target = SteeringBehaviors.Follow(path.ToArray(), ref currentWaypoint, rb.velocity, transform.position, maxSpeed, approachDistance);
+		Vector2 target = SteeringBehaviors.Follow(path.ToArray(), rb.velocity, transform.position, maxSpeed, approachDistance);
 		if (target != Vector2.zero) {
-			Debug.Log("Target:" + target);
+			// Debug.Log("Target:" + target);
 			waypoint = target;
 		}
 		Vector2 desired = SteeringBehaviors.Seek(waypoint, transform.position, maxSpeed);

@@ -33,7 +33,7 @@ public class PathfindingGrid : MonoBehaviour {
 
 	// Start is called before the first frame update
 	void Start() {
-		grid = new WorldGrid<bool>(75, 75, 1.0f);
+		grid = new WorldGrid<bool>(75, 75, 0.5f);
 		entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 		pathfinding = new Pathfinding<Coordinate>();
 	}
@@ -124,7 +124,7 @@ public class PathfindingGrid : MonoBehaviour {
 		float GetHeuristic(Coordinate a, Coordinate b) => Coordinate.heuristic(a, b);
 		
 		List<Coordinate> coordinates = pathfinding.AStar(startCoord, endCoord, GetSuccessor, GetCost, GetHeuristic);
-		// List<Vector2Int> waypoints = Utils.Waypointify(coordinates.ConvertAll(a => (Vector2Int)a).ToArray(), grid);
+		// List<Vector2> waypoints = Utils.Waypointify(coordinates.ConvertAll(a => (Vector2Int)a).ToArray(), grid).ConvertAll(a => GetWorldPosition(a));
 		List<Vector2> waypoints = Waypointify(coordinates.ConvertAll(a => (Vector2Int)a).ToArray());
 		return waypoints;
 	}
@@ -146,27 +146,45 @@ public class PathfindingGrid : MonoBehaviour {
 		Vector2 turnWorld = GetWorldPosition(turn);
 
 		// Create the list and add the start
-		List<Vector2> waypoints = new List<Vector2>{curr};
-
+		List<Vector2> waypoints = new List<Vector2>{currWorld};
 		Vector2Int end = path[0];
 		while (curr != end && turnIndex > 0) {
-			// The next waypoint is the last node after a turn that is still visible from the current waypoint
-			RaycastHit2D hit = Physics2D.Raycast(currWorld, turnWorld - currWorld, Vector2.Distance(turnWorld, currWorld), LayerMask.GetMask("Obstacle"));
-			if (hit.collider) {
-				// Obstacle hit, so spot before this was a waypoint. Move curr to right behind turn, and add to list
-				curr = path[turnIndex + 1];
-				currWorld = GetWorldPosition(curr);
-				waypoints.Add(currWorld);
-			}
-			else {
-				// No obstacle, try next spot. Advance turn.
+			// Find the first node after a turn
+			while (curr.x == turn.x || curr.y == turn.y || math.abs(turn.x - curr.x) == math.abs(turn.y - curr.y)) {
+				if (turnIndex == 0) {
+					curr = end;
+					break;
+				}
 				turn = path[--turnIndex];
-				turnWorld = GetWorldPosition(turn);
+			}
+
+			// If we got through the turn finder, there's a turn on the last spot.
+			// Raycast won't add it, so do it here.
+			if (turnIndex == 0) {
+				waypoints.Add(GetWorldPosition(path[turnIndex + 1]));
+			}
+
+			// Find the last node after the turn that is still visible from the current waypoint, this is the next waypoint
+			while (turnIndex > 0) {
+				RaycastHit2D hit = Physics2D.Raycast(currWorld, turnWorld - currWorld, Vector2.Distance(turnWorld, currWorld), LayerMask.GetMask("Obstacle"));
+				if (hit.collider) {
+					// Obstacle hit, so spot before this was a waypoint. Move curr to right behind turn, and add to list
+					curr =  path[turnIndex + 1];
+					currWorld = GetWorldPosition(curr);
+					waypoints.Add(currWorld);
+					break;
+				}
+				else {
+					// No obstacle, try next spot. Advance turn.
+					turn = path[--turnIndex];
+					turnWorld = GetWorldPosition(turn);
+				}
 			}
 		}
 
 		// Add the end, as the above loop never reaches it
-		waypoints.Add(end);
+		waypoints.Add(GetWorldPosition(end));
+		// Debug.Log(string.Join(",", waypoints.ConvertAll(a => a.ToString())));
 		return waypoints;
 	}
 
