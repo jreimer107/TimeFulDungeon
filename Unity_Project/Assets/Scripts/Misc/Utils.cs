@@ -231,12 +231,12 @@ namespace VoraUtils {
 			Dictionary<T, float> costs = new Dictionary<T, float>();
 
 			//Ts being considered to find the closest path
-			MinHeap<PathNode> open = new MinHeap<PathNode>(300);
+			MinHeap<PathNode<T>> open = new MinHeap<PathNode<T>>(300);
 			//Ts that have already been considered and do not have to be considered again
 			HashSet<T> closed = new HashSet<T>();
 
 			//Add starting position to closed list
-			open.Add(new PathNode(start, GetHeuristicFunction(start, end)));
+			open.Add(new PathNode<T>(start, GetHeuristicFunction(start, end)));
 			parents[start] = null;
 			costs[start] = 0;
 			T currPos = null; //tile to analyze
@@ -260,7 +260,7 @@ namespace VoraUtils {
 					float currentSucCost = 0;
 					if (!costs.TryGetValue(suc, out currentSucCost) || newCost < currentSucCost) {
 						//Add node to open with F = G + H values as priority
-						open.Add(new PathNode(suc, newCost + GetHeuristicFunction(suc, end)));
+						open.Add(new PathNode<T>(suc, newCost + GetHeuristicFunction(suc, end)));
 						costs[suc] = newCost;
 						parents[suc] = currPos;
 					}
@@ -275,27 +275,27 @@ namespace VoraUtils {
 			}
 			return pathCoords;
 		}
+	}
 
-		private struct PathNode : IComparable<PathNode> {
-			public T pos { get; }
-			public float heuristic { get; }
+	public struct PathNode<T> : IComparable<PathNode<T>> where T: IComparable<T> {
+		public T pos { get; }
+		public float heuristic { get; }
 
-			public PathNode(T pos, float heuristic) {
-				this.pos = pos;
-				this.heuristic = heuristic;
+		public PathNode(T pos, float heuristic) {
+			this.pos = pos;
+			this.heuristic = heuristic;
+		}
+
+		public int CompareTo(PathNode<T> other) {
+			if (this.heuristic != other.heuristic) {
+				return this.heuristic.CompareTo(other.heuristic);
+			} else {
+				return this.pos.CompareTo(other.pos);
 			}
+		}
 
-			public int CompareTo(PathNode other) {
-				if (this.heuristic != other.heuristic) {
-					return this.heuristic.CompareTo(other.heuristic);
-				} else {
-					return this.pos.CompareTo(other.pos);
-				}
-			}
-
-			public override string ToString() {
-				return string.Format("[{0}, {1}]", this.pos, this.heuristic);
-			}
+		public override string ToString() {
+			return string.Format("[{0}, {1}]", this.pos, this.heuristic);
 		}
 	}
 }

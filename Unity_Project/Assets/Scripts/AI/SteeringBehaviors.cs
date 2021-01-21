@@ -61,4 +61,15 @@ public static class SteeringBehaviors
         return target;
         // return Seek(target, location, maxSpeed);
     }
+
+    public static Vector2 WallAvoidance(Vector2 velocity, Vector2 location) {
+        Vector2 prediction = velocity * Time.fixedDeltaTime * 10 + location;
+        RaycastHit2D hit = Physics2D.Raycast(location, prediction, (prediction - location).magnitude, LayerMask.GetMask("Obstacle"));
+        if (hit.collider) {
+            Vector2 avoidancePoint = Utils.GetNormalPoint(location, prediction, hit.centroid);
+            Vector2 avoidance = avoidancePoint - hit.centroid;
+            Vector2 avoidanceForce = prediction;
+        }
+        return Vector2.zero;
+    }
 }

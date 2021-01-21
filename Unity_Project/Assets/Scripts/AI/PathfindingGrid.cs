@@ -42,13 +42,14 @@ public class PathfindingGrid : MonoBehaviour {
 		pathfinding = new Pathfinding<Coordinate>();
 	}
 
-	// Update is called once per frame
-	// void Update() {
-	// 	if (Input.GetMouseButtonDown(0)) {
-	// 		Vector2 mousePos = Utils.GetMouseWorldPosition2D();
-	// 		grid.Set(mousePos, !grid.Get(mousePos));
-	// 	}
-	// }
+	private void Update() {
+		if (Input.GetKeyDown(KeyCode.L)) {
+			JumpPointTest();
+		}
+		if (Input.GetKeyDown(KeyCode.O)) {
+			grid.ShowDebug();
+		}
+	}
 
 	private void FixedUpdate() {
 		if (intervalCounter >= UpdateInterval) {
@@ -65,6 +66,33 @@ public class PathfindingGrid : MonoBehaviour {
 		} else {
 			intervalCounter += Time.fixedDeltaTime;
 		}
+	}
+
+	private class JumpPointSquare {
+		private int[] values;
+		public JumpPointSquare(int[] values) {
+			this.values = values;
+		}
+		public override string ToString() {
+			return $"{values[0]}  {values[1]}  {values[2]}\n{values[3]}     {values[4]}\n{values[5]}  {values[6]}  {values[7]}";
+			// return $"  {value & 4}  \n{value & 8}   {value & 2}\n  {value & 1}  ";
+			// return value.ToString();
+		}
+	}
+
+	private WorldGrid<JumpPointSquare> jumpPoints;
+	public void JumpPointTest() {
+		Debug.Log("Creating new worldgrid");
+		jumpPoints = new WorldGrid<JumpPointSquare>(width, height, cellSize);
+		JPSPlus jps = new JPSPlus(grid);
+		jps.CalculateJumpPointMap();
+		jps.CalculateDistanceMap();
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				jumpPoints[i, j] = new JumpPointSquare(jps.distanceMap[i, j]);
+			}
+		}
+		jumpPoints.ShowDebug();
 	}
 
 	public NativeArray<bool> GetNativeArray(Allocator allocator) {
