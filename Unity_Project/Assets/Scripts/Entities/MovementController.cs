@@ -58,12 +58,12 @@ public class MovementController : MonoBehaviour {
 		}
 
 		// Kick off pathfinding fetch loop
-		if (automatedMovement) {
-			entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-			entity = entityManager.CreateEntity();
-			entityManager.AddBuffer<PathPosition>(entity);
-			InvokeRepeating("GetUpdatedPath", 0f, 1f);
-		}
+		// if (automatedMovement) {
+		// 	// entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+		// 	// entity = entityManager.CreateEntity();
+		// 	// entityManager.AddBuffer<PathPosition>(entity);
+		// 	InvokeRepeating("GetUpdatedPath", 0f, 1f);
+		// }
 
 	}
 
@@ -76,6 +76,7 @@ public class MovementController : MonoBehaviour {
 
 		
 		if (automatedMovement && destination != default(Vector2) && path.Count != 0) {
+			GetUpdatedPath();
 			AutomatedMovement(waypoint);
 		}
 

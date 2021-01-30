@@ -40,8 +40,13 @@ public class Coordinate : IComparable<Coordinate>, IEquatable<Coordinate> {
 
 	public override bool Equals(object obj) => obj is Coordinate coordinate && this.Equals(coordinate);
 
-	public static bool operator ==(Coordinate a, Coordinate b) => !ReferenceEquals(a, null) && a.Equals(b);
+	public static bool operator ==(Coordinate a, Coordinate b) => ReferenceEquals(a, b) || a.Equals(b);
 	public static bool operator !=(Coordinate a, Coordinate b) => !ReferenceEquals(a, null) && !a.Equals(b);
+	public static bool operator !(Coordinate a) => ReferenceEquals(a, null);
+	public static bool operator true(Coordinate a) => !ReferenceEquals(a, null);
+	public static bool operator false(Coordinate a) => ReferenceEquals(a, null);
+	public static Coordinate operator +(Coordinate a, Coordinate b) => new Coordinate(a.x + b.x, a.y + b.y);
+	public static Coordinate operator -(Coordinate a, Coordinate b) => new Coordinate(a.x - b.x, a.y - b.y);
 
 	public static implicit operator Vector2Int(Coordinate a) => new Vector2Int(a.x, a.y);
 

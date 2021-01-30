@@ -73,7 +73,7 @@ public class WorldGrid<T> {
 
 	public Vector2 GetWorldPosition(int x, int y, bool center = false) {
 		Vector2 ret = new Vector2(x, y) * cellSize + originPosition;
-		return center ? ret + new Vector2(0.5f, 0.5f) : ret;
+		return center ? ret + Vector2.one * cellSize / 2 : ret;
 	}
 
 	public void GetXY(Vector2 worldPosition, out int x, out int y) {

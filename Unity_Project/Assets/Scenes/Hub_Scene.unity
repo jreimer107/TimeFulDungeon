@@ -433,7 +433,7 @@ MonoBehaviour:
   UpdateInterval: 0.2
   gridWidth: 75
   gridHeight: 75
-  cellSize: 1
+  cellSize: 0.5
 --- !u!114 &598950365
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -128,37 +128,87 @@ public class PathfindingGrid : MonoBehaviour {
 		Coordinate startCoord = new Coordinate(GetXY(start));
 		Coordinate endCoord = new Coordinate(GetXY(end));
 		float GetCost(Coordinate successor, Coordinate current, Coordinate parent, float currentCost) => currentCost + Vector2Int.Distance(current, successor);
-		Coordinate[] GetSuccessor(Coordinate curr, Coordinate parent) {
-			int x = curr.x;
-			int y = curr.y;
-			List<Coordinate> successors = new List<Coordinate> {
-				new Coordinate(x + 1, y),
-				new Coordinate(x, y + 1),
-				new Coordinate(x - 1, y),
-				new Coordinate(x, y - 1)
-			};
-			if (grid[x + 1, y] && grid[x, y + 1]) {
-				successors.Add(new Coordinate(x + 1, y + 1));
-			}
-			if (grid[x, y + 1] && grid[x - 1, y]) {
-				successors.Add(new Coordinate(x - 1, y + 1));
-			}
-			if (grid[x - 1, y] && grid[x, y - 1]) {
-				successors.Add(new Coordinate(x - 1, y - 1));
-			}
-			if (grid[x, y - 1] && grid[x + 1, y]) {
-				successors.Add(new Coordinate(x + 1, y - 1));
-			}
-
-			successors.RemoveAll(a => !grid[a.x, a.y]);
-			return successors.ToArray();
-		}
 		float GetHeuristic(Coordinate a, Coordinate b) => Coordinate.heuristic(a, b);
+		Coordinate[] GetSuccessor(Coordinate curr, Coordinate parent) => GetSuccessorsWithJump(curr, endCoord);
 		
 		List<Coordinate> coordinates = pathfinding.AStar(startCoord, endCoord, GetSuccessor, GetCost, GetHeuristic);
 		// List<Vector2> waypoints = Utils.Waypointify(coordinates.ConvertAll(a => (Vector2Int)a).ToArray(), grid).ConvertAll(a => GetWorldPosition(a));
 		List<Vector2> waypoints = Waypointify(coordinates.ConvertAll(a => (Vector2Int)a).ToArray());
+		// List<Vector2> waypoints = WaypointifyJPS(coordinates.ConvertAll(a => (Vector2Int)a).ToArray());
+		// List<Vector2> waypoints = coordinates.ConvertAll(a => GetWorldPosition(a));
 		return waypoints;
+	}
+
+	private Coordinate[] GetSuccessors(Coordinate curr, Coordinate parent) {
+		int x = curr.x;
+		int y = curr.y;
+		List<Coordinate> successors = new List<Coordinate> {
+			new Coordinate(x + 1, y),
+			new Coordinate(x, y + 1),
+			new Coordinate(x - 1, y),
+			new Coordinate(x, y - 1)
+		};
+		if (grid[x + 1, y] && grid[x, y + 1]) {
+			successors.Add(new Coordinate(x + 1, y + 1));
+		}
+		if (grid[x, y + 1] && grid[x - 1, y]) {
+			successors.Add(new Coordinate(x - 1, y + 1));
+		}
+		if (grid[x - 1, y] && grid[x, y - 1]) {
+			successors.Add(new Coordinate(x - 1, y - 1));
+		}
+		if (grid[x, y - 1] && grid[x + 1, y]) {
+			successors.Add(new Coordinate(x + 1, y - 1));
+		}
+
+		successors.RemoveAll(a => !grid[a.x, a.y]);
+		return successors.ToArray();
+	}
+
+	private Coordinate[] GetSuccessorsWithJump(Coordinate curr, Coordinate end) {
+		List<Coordinate> successors = new List<Coordinate>(8) {
+			Jump(curr, 1, 0, end),
+			Jump(curr, 1, 1, end),
+			Jump(curr, 0, 1, end),
+			Jump(curr, -1, 1, end),
+			Jump(curr, -1, 0, end),
+			Jump(curr, -1, -1, end),
+			Jump(curr, 0, -1, end),
+			Jump(curr, 1, -1, end)
+		};
+	
+		successors.RemoveAll(x => !x);
+		return successors.ToArray();
+	}
+
+	private Coordinate Jump(Coordinate curr, int dx, int dy, Coordinate end) {
+		Coordinate next = new Coordinate(curr.x + dx, curr.y + dy);
+
+		// If blocked, can't jump
+		if (!grid[next.x, next.y]) {
+			return null;
+		}
+
+		// If goal, return it
+		if (next == end) {
+			return end;
+		}
+
+		// If next has forced neighbors (or, is a jump point), return it
+		if ((grid[next.x + dy, next.y + dx] && !grid[next.x - dx + dy, next.y - dy + dx]) || // 1st forced neighbor
+			(grid[next.x - dy, next.y - dx] && !grid[next.x - dx - dy, next.y - dy - dx]))  { // 2nd forced neighbor
+			return next;
+		}
+
+		// Diagonal case
+		if (dx != 0 && dy != 0) {
+			if (!!Jump(next, dx, 0, end) || !!Jump(next, 0, dy, end)) {
+				return next;
+			}
+		}
+
+		// Have not found any forced neighbors or walls, check next node in line
+		return Jump(next, dx, dy, end);
 	}
 
 	/// <summary>
@@ -168,6 +218,10 @@ public class PathfindingGrid : MonoBehaviour {
 	/// <param name="path">A list of Vector2s representing the path.</param>
 	/// <returns>A list of Vector2s representing world coordinates of the simplified path.</returns>
 	private List<Vector2> Waypointify(Vector2Int[] path) {
+		if (path.Length < 3) {
+			return path.Select(x => GetWorldPosition(x)).ToList<Vector2>();
+		}
+
 		// Set the current position to the path start (end of array)
 		Vector2Int curr = path[path.Length - 1];
 		Vector2 currWorld = GetWorldPosition(curr);
@@ -180,25 +234,33 @@ public class PathfindingGrid : MonoBehaviour {
 		// Create the list and add the start
 		List<Vector2> waypoints = new List<Vector2>{currWorld};
 		Vector2Int end = path[0];
+		int layerMask = LayerMask.GetMask("Obstacle");
 		while (curr != end && turnIndex > 0) {
-			// Find the first node after a turn
-			while (curr.x == turn.x || curr.y == turn.y || math.abs(turn.x - curr.x) == math.abs(turn.y - curr.y)) {
+			/* Find the first node after a turn
+			 * The current tile and the next in the path form a line. Iterate through the following points.
+			 * The first point after to not be on that line is a turn and needs to be raycast-checked.
+			 */
+			Vector2 dir = turn - curr;
+			float length = dir.magnitude;
+			dir.Normalize();
+			bool inLine = true;
+			while(inLine) {
 				if (turnIndex == 0) {
 					curr = end;
 					break;
 				}
 				turn = path[--turnIndex];
-			}
+				Vector2 vector = turn - curr;
+				if (Vector2.Dot(dir, vector) != 0) {
+					inLine = false;
+				}
 
-			// If we got through the turn finder, there's a turn on the last spot.
-			// Raycast won't add it, so do it here.
-			if (turnIndex == 0) {
-				waypoints.Add(GetWorldPosition(path[turnIndex + 1]));
 			}
+			turnWorld = GetWorldPosition(turn);
 
 			// Find the last node after the turn that is still visible from the current waypoint, this is the next waypoint
-			while (turnIndex > 0) {
-				RaycastHit2D hit = Physics2D.Raycast(currWorld, turnWorld - currWorld, Vector2.Distance(turnWorld, currWorld), LayerMask.GetMask("Obstacle"));
+			do {
+				RaycastHit2D hit = Physics2D.Raycast(currWorld, turnWorld - currWorld, Vector2.Distance(turnWorld, currWorld), layerMask);
 				if (hit.collider) {
 					// Obstacle hit, so spot before this was a waypoint. Move curr to right behind turn, and add to list
 					curr =  path[turnIndex + 1];
@@ -208,10 +270,11 @@ public class PathfindingGrid : MonoBehaviour {
 				}
 				else {
 					// No obstacle, try next spot. Advance turn.
-					turn = path[--turnIndex];
+					// If turn on last spot, need to ensure index does not underflow.
+					turn = path[Math.Max(--turnIndex, 0)];
 					turnWorld = GetWorldPosition(turn);
 				}
-			}
+			} while (turnIndex > 0);
 		}
 
 		// Add the end, as the above loop never reaches it
@@ -219,5 +282,4 @@ public class PathfindingGrid : MonoBehaviour {
 		// Debug.Log(string.Join(",", waypoints.ConvertAll(a => a.ToString())));
 		return waypoints;
 	}
-
 }
