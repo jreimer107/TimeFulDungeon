@@ -94,6 +94,10 @@ namespace VoraUtils {
 			return 0 <= dotAC && dotAC <= dotAB;
 		}
 
+		public static float RoundToIncrement(float value, float incrementSize) {
+			return Mathf.Round(value / incrementSize) * incrementSize;
+		}
+
 		/// <summary>
 		/// Removes unnecessary positions from A Star result.
 		/// This version uses a matrix of acceptable paths to determine which path points are skippable.

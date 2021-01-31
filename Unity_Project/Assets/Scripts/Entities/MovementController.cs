@@ -25,10 +25,6 @@ public class MovementController : MonoBehaviour {
 	private Vector2 waypoint;
 	private Vector2 destination;
 	private Vector2 start;
-	private DynamicBuffer<PathPosition> pathBuffer;
-	private Entity entity;
-	private EntityManager entityManager;
-	public bool havePath { private set; get; }
 
 	private List<Vector2> path;
 
@@ -40,8 +36,13 @@ public class MovementController : MonoBehaviour {
 	private bool hasHorizontalAnimation;
 	private bool facingRight;
 
+	// Steering module
+	private ContextSteering contextSteering;
+
 	private void Start() {
 		waypoint = Vector2.zero;
+
+		contextSteering = GetComponent<ContextSteering>();
 
 		rb = GetComponent<Rigidbody2D>();
 		spriteRenderer = GetComponent<SpriteRenderer>();
@@ -56,15 +57,6 @@ public class MovementController : MonoBehaviour {
 				break;
 			}
 		}
-
-		// Kick off pathfinding fetch loop
-		// if (automatedMovement) {
-		// 	// entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-		// 	// entity = entityManager.CreateEntity();
-		// 	// entityManager.AddBuffer<PathPosition>(entity);
-		// 	InvokeRepeating("GetUpdatedPath", 0f, 1f);
-		// }
-
 	}
 
 	private void Update() {
@@ -90,14 +82,6 @@ public class MovementController : MonoBehaviour {
 		}
 
 		if (automatedMovement && path != null) {
-			// pathBuffer = entityManager.GetBuffer<PathPosition>(entity);
-			// Debug.DrawLine(
-			// 	start,
-			// 	PathfindingGrid.Instance.GetWorldPosition(pathBuffer[pathBuffer.Length - 1].position),
-			// 	Color.magenta
-			// );
-			// Debug.DrawLine(transform.position, path[0], Color.magenta);
-
 			for (int i = 0; i < path.Count - 1; i++) {
 				Debug.DrawLine(path[i], path[i+1], Color.magenta);
 			}
@@ -132,11 +116,15 @@ public class MovementController : MonoBehaviour {
 		// Steer towards our target
 		// Vector2 desired = SteeringBehaviors.Arrive(target, transform.position, maxSpeed, approachDistance);
 		Vector2 target = SteeringBehaviors.Follow(path.ToArray(), rb.velocity, transform.position, maxSpeed, approachDistance);
-		if (target != Vector2.zero) {
+		if (target != Vector2.zero && target != waypoint) {
 			// Debug.Log("Target:" + target);
+			contextSteering.RemoveInterest(waypoint);
+			contextSteering.AddInterest(target);
 			waypoint = target;
 		}
-		Vector2 desired = SteeringBehaviors.Seek(waypoint, transform.position, maxSpeed);
+		Vector2 contextResult = contextSteering.direction;
+		// Vector2 desired = SteeringBehaviors.Seek(contextResult, transform.position, maxSpeed);
+		Vector2 desired = contextResult * maxSpeed;
 		// Debug.Log("Desired: " + desired);
 		steering = Vector2.ClampMagnitude(desired - rb.velocity, maxAcceleration);
 
@@ -153,7 +141,6 @@ public class MovementController : MonoBehaviour {
 	public void Travel(Vector2 destination) {
 		this.destination = destination;
 		this.start = transform.position;
-		// PathfindingGrid.Instance.RequestPath(entity, transform.position, destination);
 		GetUpdatedPath();
 		Debug.Log("Destination: " + destination);
 		Debug.Log("Path:");

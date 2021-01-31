@@ -218,8 +218,11 @@ public class PathfindingGrid : MonoBehaviour {
 	/// <param name="path">A list of Vector2s representing the path.</param>
 	/// <returns>A list of Vector2s representing world coordinates of the simplified path.</returns>
 	private List<Vector2> Waypointify(Vector2Int[] path) {
+		List<Vector2> waypoints;
 		if (path.Length < 3) {
-			return path.Select(x => GetWorldPosition(x)).ToList<Vector2>();
+			waypoints = path.Select(x => GetWorldPosition(x)).ToList<Vector2>();
+			waypoints.Reverse();
+			return waypoints;
 		}
 
 		// Set the current position to the path start (end of array)
@@ -232,7 +235,7 @@ public class PathfindingGrid : MonoBehaviour {
 		Vector2 turnWorld = GetWorldPosition(turn);
 
 		// Create the list and add the start
-		List<Vector2> waypoints = new List<Vector2>{currWorld};
+		waypoints = new List<Vector2>{currWorld};
 		Vector2Int end = path[0];
 		int layerMask = LayerMask.GetMask("Obstacle");
 		while (curr != end && turnIndex > 0) {
