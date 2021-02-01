@@ -890,6 +890,10 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1630242196, guid: 919447006cd75ed4a955468b341003e0, type: 3}
+      propertyPath: maxAcceleration
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1630242196, guid: 919447006cd75ed4a955468b341003e0, type: 3}
       propertyPath: approachDistance
       value: 1.5
       objectReference: {fileID: 0}
@@ -919,12 +923,12 @@ PrefabInstance:
     - target: {fileID: 6518348834526014381, guid: 919447006cd75ed4a955468b341003e0,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 30.71
+      value: 19.31
       objectReference: {fileID: 0}
     - target: {fileID: 6518348834526014381, guid: 919447006cd75ed4a955468b341003e0,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.16
+      value: 10.86
       objectReference: {fileID: 0}
     - target: {fileID: 6518348834526014381, guid: 919447006cd75ed4a955468b341003e0,
         type: 3}
@@ -1119,6 +1123,7 @@ MonoBehaviour:
   maxInterestRange: 30
   resolution: 12
   mapIncrementCount: 10
+  wallCheckRange: 2
 --- !u!1 &1717197420
 GameObject:
   m_ObjectHideFlags: 0

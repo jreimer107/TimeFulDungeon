@@ -33,7 +33,7 @@ public static class SteeringBehaviors
     public static Vector2 Follow(Vector2[] path, Vector2 velocity, Vector2 location, float maxSpeed, float approachDistance) {
         // Predict what our location will be in x updates based on current position and velocity
         Vector2 prediction = velocity * Time.fixedDeltaTime * 10 + location;
-        Debug.DrawLine(location, prediction, Color.black);
+        // Debug.DrawLine(location, prediction, Color.black);
         // Debug.Log("Prediction: " + prediction);
 
         // Find the normal to the path from the predicted location

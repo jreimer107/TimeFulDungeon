@@ -1,5 +1,6 @@
 using UnityEngine;
 using VoraUtils;
+using UnityEditor;
 using System.Collections.Generic;
 
 public class ContextSteering : MonoBehaviour {
@@ -7,16 +8,19 @@ public class ContextSteering : MonoBehaviour {
     [SerializeField] private float maxInterestRange = 30f;
     [SerializeField] private int resolution = 12;
     [SerializeField] private int mapIncrementCount = 10;
+    [SerializeField] private float wallCheckRange = 1f;
 
     // Cached values calculated from configuration
     private float arcWidth;
     private float incrementSize;
+    private LayerMask wallsLayerMask; 
+    private Vector2[] mapVectors;
 
     // Lists modified by public add/remove functions, translated into maps
-    private List<Vector2> interestPositions;
-    private List<Transform> interestTransforms;
-    private List<Vector2> dangerPositions;
-    private List<Transform> dangerTransforms;
+    private HashSet<Vector2> interestPositions;
+    private HashSet<Transform> interestTransforms;
+    private HashSet<Vector2> dangerPositions;
+    private HashSet<Transform> dangerTransforms;
     
     // Scalar maps resulting from input lists
     private float[] interestMap;
@@ -35,28 +39,64 @@ public class ContextSteering : MonoBehaviour {
     public void RemoveDanger(Vector2 danger) => dangerPositions.Remove(danger);
     public void RemoveDanger(Transform danger) => dangerTransforms.Remove(danger);
 
+    public void ClearInterests() {
+        interestPositions.Clear();
+        interestTransforms.Clear();
+    }
+
+    public void ClearDangers() {
+        dangerPositions.Clear();
+        dangerTransforms.Clear();
+    }
+
     private void Awake() {
         arcWidth = 2 * Mathf.PI / resolution;
         incrementSize = 1 / (float) mapIncrementCount;
-        Debug.Log("Increment size: " + incrementSize);
+        wallsLayerMask = LayerMask.GetMask("Obstacle");
+        mapVectors = new Vector2[resolution];
+        for (int i = 0; i < resolution; i++) {
+            mapVectors[i] = GetVectorForMapSlot(i);
+        }
         interestMap = new float[resolution];
         dangerMap = new float[resolution];
-        interestPositions = new List<Vector2>();
-        interestTransforms = new List<Transform>();
-        dangerPositions = new List<Vector2>();
-        dangerTransforms = new List<Transform>();
+        interestPositions = new HashSet<Vector2>();
+        interestTransforms = new HashSet<Transform>();
+        dangerPositions = new HashSet<Vector2>();
+        dangerTransforms = new HashSet<Transform>();
     }
 
     private void Update() {
         ClearMaps();
         CreateMapsFromLists();
+        AvoidWalls();
         RoundMapsToIncrements();
         this.direction = CalculateSumInterest();
     }
 
+    private void OnDrawGizmos() {
+        if (EditorApplication.isPlaying) {
+            Vector2 position = transform.position;
+            Gizmos.color = Color.black;
+            Gizmos.DrawWireSphere(position, 0.5f);
+            for (int i = 0; i < resolution; i++) {
+                Vector2 start = position + mapVectors[i] / 2;
+                if (dangerMap[i] > interestMap[i]) {
+                    Gizmos.color = Color.red;
+                    Vector2 dangerVector = 2 * mapVectors[i] * dangerMap[i];
+                    Gizmos.DrawLine(start, start + dangerVector);
+                }
+                else if (interestMap[i] > 0) {
+                    Gizmos.color = Color.green;
+                    Vector2 interestVector = 2 * mapVectors[i] * interestMap[i];
+                    Gizmos.DrawLine(start, start + interestVector);
+                }
+            }
+        }
+    }
+
     private float ScaleDesirability(float distance, float desirability) {
         // Linear scale. Distance of zero has 100% modifier. Distance of max or larger has 0% modifier.
-        float distanceModifier = 1 - (distance / maxInterestRange);
+        float distanceModifier = 1 - (distance / (float) maxInterestRange);
         float normalizedDesirability = desirability * distanceModifier;
         return normalizedDesirability;
     }
@@ -101,7 +141,7 @@ public class ContextSteering : MonoBehaviour {
         float distance = Vector2.Distance(target, transform.position);
         for (int i = 0; i < resolution; i++) {
             // Find a point represented by this slot of the interest map
-            Vector2 interestPoint = GetVectorForMapSlot(i, distance);
+            Vector2 interestPoint = mapVectors[i] * distance;
 
             // Get its distance from the actual target
             float interestDistance = Vector2.Distance(target, interestPoint + (Vector2) transform.position);
@@ -162,9 +202,19 @@ public class ContextSteering : MonoBehaviour {
             // Ignore any interests in direction of higher danger
             if (dangerMap[i] <= lowestDanger) {
                 // Sum vectors to create sum interest
-                interestVector += GetVectorForMapSlot(i, interestMap[i]);
+                interestVector += mapVectors[i] * interestMap[i];
             }
         }
         return interestVector.normalized;
+    }
+
+    private void AvoidWalls() {
+        for (int i = 0; i < resolution; i++) {
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, mapVectors[i], wallCheckRange, wallsLayerMask);
+            if (hit.collider) {
+                // Debug.DrawLine(transform.position, (Vector2) transform.position + mapVectors[i] * wallCheckRange, Color.cyan);
+                AddInterestOrDanger(hit.centroid, dangerMap);
+            }
+        }
     }
 }

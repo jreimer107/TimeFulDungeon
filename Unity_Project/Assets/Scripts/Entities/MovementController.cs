@@ -81,11 +81,11 @@ public class MovementController : MonoBehaviour {
 			}
 		}
 
-		if (automatedMovement && path != null) {
-			for (int i = 0; i < path.Count - 1; i++) {
-				Debug.DrawLine(path[i], path[i+1], Color.magenta);
-			}
-		}
+		// if (automatedMovement && path != null) {
+		// 	for (int i = 0; i < path.Count - 1; i++) {
+		// 		Debug.DrawLine(path[i], path[i+1], Color.magenta);
+		// 	}
+		// }
 	}
 
 	private void FixedUpdate() {
@@ -98,7 +98,7 @@ public class MovementController : MonoBehaviour {
 	}
 
 	private void OnDrawGizmos() {
-		Gizmos.DrawSphere(waypoint, 0.2f);
+		// Gizmos.DrawSphere(waypoint, 0.2f);
 	}
 
 	public void SetManualMoveDirection(float horizontal, float vertical) {
@@ -128,9 +128,9 @@ public class MovementController : MonoBehaviour {
 		// Debug.Log("Desired: " + desired);
 		steering = Vector2.ClampMagnitude(desired - rb.velocity, maxAcceleration);
 
-		Debug.DrawRay(transform.position, steering, Color.blue);
-		Debug.DrawRay(transform.position, rb.velocity, Color.red);
-		Debug.DrawRay(transform.position, desired, Color.green);
+		// Debug.DrawRay(transform.position, steering, Color.blue);
+		// Debug.DrawRay(transform.position, rb.velocity, Color.red);
+		// Debug.DrawRay(transform.position, desired, Color.green);
 	}
 
 
