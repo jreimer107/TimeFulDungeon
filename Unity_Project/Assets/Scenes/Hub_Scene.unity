@@ -890,6 +890,14 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1630242196, guid: 919447006cd75ed4a955468b341003e0, type: 3}
+      propertyPath: freeze
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1630242196, guid: 919447006cd75ed4a955468b341003e0, type: 3}
+      propertyPath: drawDesired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1630242196, guid: 919447006cd75ed4a955468b341003e0, type: 3}
       propertyPath: maxAcceleration
       value: 20
       objectReference: {fileID: 0}
@@ -1120,10 +1128,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d0d1f55737eaad419e0b887bb876117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxInterestRange: 30
+  maxInterestRange: 10
   resolution: 12
   mapIncrementCount: 10
   wallCheckRange: 2
+  interestCalculationMode: 0
 --- !u!1 &1717197420
 GameObject:
   m_ObjectHideFlags: 0

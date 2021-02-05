@@ -9,6 +9,11 @@ public class MovementController : MonoBehaviour {
 	[SerializeField] private float maxSpeed = 10f;
 	[SerializeField] private float maxAcceleration = 10f;
 	[SerializeField] private float approachDistance = 10f;
+	[SerializeField] private bool drawSteering = false;
+	[SerializeField] private bool drawVelocity = false;
+	[SerializeField] private bool drawDesired = false;
+	[SerializeField] private bool freeze = false;
+
 	
 	/// <summary>
 	/// Controls what type of movement is used. Players use manual.
@@ -115,22 +120,34 @@ public class MovementController : MonoBehaviour {
 	public void AutomatedMovement(Vector2 _) {
 		// Steer towards our target
 		// Vector2 desired = SteeringBehaviors.Arrive(target, transform.position, maxSpeed, approachDistance);
-		Vector2 target = SteeringBehaviors.Follow(path.ToArray(), rb.velocity, transform.position, maxSpeed, approachDistance);
-		if (target != Vector2.zero && target != waypoint) {
-			// Debug.Log("Target:" + target);
-			contextSteering.RemoveInterest(waypoint);
-			contextSteering.AddInterest(target);
-			waypoint = target;
-		}
+		// Vector2 target = SteeringBehaviors.Follow(path.ToArray(), rb.velocity, transform.position, maxSpeed, approachDistance);
+		// if (target != Vector2.zero && target != waypoint) {
+		// 	// Debug.Log("Target:" + target);
+		// 	contextSteering.RemoveInterest(waypoint);
+		// 	contextSteering.AddInterest(target);
+		// 	waypoint = target;
+		// }
+		contextSteering.ClearDangers();
+		contextSteering.ClearInterests();
+		contextSteering.AddDanger(Player.instance.transform.position);
+		// contextSteering.AddInterest(transform.position + Player.instance.transform.position);
 		Vector2 contextResult = contextSteering.direction;
 		// Vector2 desired = SteeringBehaviors.Seek(contextResult, transform.position, maxSpeed);
 		Vector2 desired = contextResult * maxSpeed;
 		// Debug.Log("Desired: " + desired);
 		steering = Vector2.ClampMagnitude(desired - rb.velocity, maxAcceleration);
-
-		// Debug.DrawRay(transform.position, steering, Color.blue);
-		// Debug.DrawRay(transform.position, rb.velocity, Color.red);
-		// Debug.DrawRay(transform.position, desired, Color.green);
+		if (freeze) {
+			steering = Vector2.zero;
+		}
+		if (drawSteering) {
+			Debug.DrawRay(transform.position, steering, Color.blue);
+		}
+		if (drawVelocity) {
+			Debug.DrawRay(transform.position, rb.velocity, Color.red);
+		}
+		if (drawDesired) {
+			Debug.DrawRay(transform.position, desired, Color.green);
+		}
 	}
 
 
