@@ -2,9 +2,10 @@ using UnityEngine;
 using VoraUtils;
 using UnityEditor;
 using System.Collections.Generic;
+using System;
 
 public class ContextSteering : MonoBehaviour {
-    private enum InterestCalulationMode { distanceBased, dotProduct, dotProductPositive }
+    private enum InterestCalulationMode { distanceBased, dotProduct, dotProductPositive, dotProductOffset }
 
     // Configuration variables
     [SerializeField] private float maxInterestRange = 30f;
@@ -12,7 +13,7 @@ public class ContextSteering : MonoBehaviour {
     [SerializeField] private int mapIncrementCount = 10;
     [SerializeField] private float wallCheckRange = 1f;
     [SerializeField] private InterestCalulationMode interestCalculationMode = 0;
-
+    [SerializeField] private float panicSeconds = 3;
 
     // Cached values calculated from configuration
     private float arcWidthRadians;
@@ -21,15 +22,19 @@ public class ContextSteering : MonoBehaviour {
     private Vector2[] mapVectors;
 
     // Lists modified by public add/remove functions, translated into maps
-    private HashSet<Vector2> interestPositions;
-    private HashSet<Transform> interestTransforms;
-    private HashSet<Vector2> dangerPositions;
-    private HashSet<Transform> dangerTransforms;
+    private HashSet<Vector2> interestPositions = new HashSet<Vector2>();
+    private HashSet<Transform> interestTransforms = new HashSet<Transform>();
+    private HashSet<Vector2> dangerPositions = new HashSet<Vector2>();
+    private HashSet<Transform> dangerTransforms = new HashSet<Transform>();
     
     // Scalar maps resulting from input lists
     private float[] interestMap;
     private float[] dangerMap;
     private float[] obstacleMap;
+
+    // State
+    private bool panicing = false;
+    private float panicFrameCount = 0;
 
     // Output vector
     public Vector2 direction { get; private set; }
@@ -65,22 +70,31 @@ public class ContextSteering : MonoBehaviour {
         interestMap = new float[resolution];
         dangerMap = new float[resolution];
         obstacleMap = new float[resolution];
-        interestPositions = new HashSet<Vector2>();
-        interestTransforms = new HashSet<Transform>();
-        dangerPositions = new HashSet<Vector2>();
-        dangerTransforms = new HashSet<Transform>();
     }
 
     private void Update() {
+        if (Input.GetKeyDown(KeyCode.B)) {
+            Debug.Log("Debug!");
+        }
         ClearMaps();
         CreateMapsFromLists();
         AvoidWalls();
         RoundMapsToIncrements();
-        this.direction = CalculateSumInterest();
         if (IsCornered()) {
+            panicing = true;
+            panicFrameCount = panicSeconds;
+        }
+        else if (panicFrameCount > 0) {
+            panicFrameCount -= Time.deltaTime;
+        }
+        else {
+            panicing = false;
+        }
+        if (panicing) {
             Debug.Log("Is cornered!");
             Panic();
         }
+        this.direction = (direction + 0.1f * CalculateSumInterest()).normalized;
     }
 
     private void OnDrawGizmos() {
@@ -118,6 +132,7 @@ public class ContextSteering : MonoBehaviour {
     private float ScaleDesirability(float distance, float desirability) {
         // Linear scale. Distance of zero has 100% modifier. Distance of max or larger has 0% modifier.
         // TODO: Agents maintain their interest distance when this is not capped at 0.
+        // float distanceModifier = 1 - (distance / (float) maxInterestRange);
         float distanceModifier = Mathf.Max(1 - (distance / (float) maxInterestRange), 0);
         float normalizedDesirability = desirability * distanceModifier;
         return normalizedDesirability;
@@ -187,6 +202,9 @@ public class ContextSteering : MonoBehaviour {
                 case InterestCalulationMode.dotProductPositive:
                     desirability = Mathf.Max(Vector2.Dot(mapVectors[i], targetVector), 0);
                     break;
+                case InterestCalulationMode.dotProductOffset:
+                    desirability = (Vector2.Dot(mapVectors[i], targetVector) + 1) / 2;
+                    break;
                 default:
                     break;
             }
@@ -244,7 +262,7 @@ public class ContextSteering : MonoBehaviour {
         Vector2 interestVector = Vector2.zero;
         for (int i = 0; i < resolution; i++) {
             // Ignore any interests in direction of higher danger
-            if (dangerMap[i] > lowestDanger || obstacleMap[i] > 0) {
+            if (obstacleMap[i] > 0 || dangerMap[i] > lowestDanger) {
                 // Sum vectors to create sum interest
                 interestMap[i] = 0;
             }
@@ -284,9 +302,17 @@ public class ContextSteering : MonoBehaviour {
     }
 
     public bool IsCornered() {
+        // Find lowest danger in dangermap
+        float lowestDanger = float.MaxValue;
+        foreach (float danger in dangerMap) {
+            if (danger < lowestDanger) {
+                lowestDanger = danger;
+            }
+        }
+
         int badDirections = 0;
         for (int i = 0; i < resolution; i++) {
-            if (obstacleMap[i] > 0 || dangerMap[i] > 0) {
+            if (obstacleMap[i] > 0 || dangerMap[i] > lowestDanger) {
                 badDirections++;
             }
         }
@@ -297,17 +323,26 @@ public class ContextSteering : MonoBehaviour {
     }
 
     public void Panic() {
-        Vector2 panicVector = Vector2.zero;
-        for (int i = 0; i < resolution; i++) {
-            // if (obstacleMap[i] == 0) {
-            //     interestMap[i] += 3;
-            // }
-            panicVector -= obstacleMap[i] * mapVectors[i];
-        }
+        // Vector2 panicVector = Vector2.zero;
+        // for (int i = 0; i < resolution; i++) {
+        //     // if (obstacleMap[i] == 0) {
+        //     //     interestMap[i] += 3;
+        //     // }
+        //     panicVector -= obstacleMap[i] * mapVectors[i];
+        // }
 
+        // for (int i = 0; i < resolution; i++) {
+        //     float dot = Vector2.Dot(panicVector.normalized, mapVectors[i]);
+        //     interestMap[i] += 1 - Mathf.Abs(dot - 0.65f);
+        // }
         for (int i = 0; i < resolution; i++) {
-            float dot = Vector2.Dot(panicVector.normalized, mapVectors[i]);
-            interestMap[i] += 1 - Mathf.Abs(dot - 0.65f);
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, mapVectors[i], 25, wallsLayerMask);
+            float distance = 25;
+            if (hit.collider) {
+                distance = Vector2.Distance(transform.position, hit.centroid);
+            }
+            float normalizedDistance = distance / 25;
+            interestMap[i] += normalizedDistance;
         }
     }
 }

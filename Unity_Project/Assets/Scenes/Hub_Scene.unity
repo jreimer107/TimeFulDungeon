@@ -1133,6 +1133,7 @@ MonoBehaviour:
   mapIncrementCount: 10
   wallCheckRange: 2
   interestCalculationMode: 0
+  panicSeconds: 3
 --- !u!1 &1717197420
 GameObject:
   m_ObjectHideFlags: 0
