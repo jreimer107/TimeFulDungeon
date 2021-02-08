@@ -5,14 +5,12 @@ using System.Collections.Generic;
 using System;
 
 public class ContextSteering : MonoBehaviour {
-    private enum InterestCalulationMode { distanceBased, dotProduct, dotProductPositive, dotProductOffset }
-
     // Configuration variables
     [SerializeField] private float maxInterestRange = 30f;
     [SerializeField] private int resolution = 12;
     [SerializeField] private int mapIncrementCount = 10;
-    [SerializeField] private float wallCheckRange = 1f;
-    [SerializeField] private InterestCalulationMode interestCalculationMode = 0;
+    [SerializeField] private float wallCheckRange = 30f;
+    [SerializeField] private float wallAvoidRange = 1f;
     [SerializeField] private float panicSeconds = 3;
 
     // Cached values calculated from configuration
@@ -29,7 +27,6 @@ public class ContextSteering : MonoBehaviour {
     
     // Scalar maps resulting from input lists
     private float[] interestMap;
-    private float[] dangerMap;
     private float[] obstacleMap;
 
     // State
@@ -68,7 +65,6 @@ public class ContextSteering : MonoBehaviour {
             mapVectors[i] = GetVectorForMapSlot(i);
         }
         interestMap = new float[resolution];
-        dangerMap = new float[resolution];
         obstacleMap = new float[resolution];
     }
 
@@ -78,9 +74,8 @@ public class ContextSteering : MonoBehaviour {
         }
         ClearMaps();
         CreateMapsFromLists();
-        AvoidWalls();
-        RoundMapsToIncrements();
-        if (IsCornered()) {
+        bool cornered = AvoidWalls();
+        if (cornered) {
             panicing = true;
             panicFrameCount = panicSeconds;
         }
@@ -91,10 +86,9 @@ public class ContextSteering : MonoBehaviour {
             panicing = false;
         }
         if (panicing) {
-            Debug.Log("Is cornered!");
             Panic();
         }
-        this.direction = (direction + 0.1f * CalculateSumInterest()).normalized;
+        direction = Vector2.MoveTowards(direction, CalculateSumInterest(), 0.05f);
     }
 
     private void OnDrawGizmos() {
@@ -105,30 +99,46 @@ public class ContextSteering : MonoBehaviour {
             for (int i = 0; i < resolution; i++) {
                 Vector2 start = position + mapVectors[i] / 2;
                 float desirability;
-                if (obstacleMap[i] > 0) {
+                if (obstacleMap[i] < wallAvoidRange) {
                     desirability = obstacleMap[i] * 0.1f;    
                     Gizmos.color = Color.cyan;
                 }
                 else {
-                    desirability = interestMap[i] - dangerMap[i];
+                    desirability = interestMap[i];
                     Gizmos.color = desirability < 0 ? Color.red : Color.green;
                 }
                 Vector2 desireVector = 2 * mapVectors[i] * Mathf.Abs(desirability);
                 Gizmos.DrawLine(start, start + desireVector);
-                // if (dangerMap[i] > interestMap[i]) {
-                //     Gizmos.color = Color.red;
-                //     Vector2 dangerVector = 2 * mapVectors[i] * dangerMap[i];
-                //     Gizmos.DrawLine(start, start + dangerVector);
-                // }
-                // else if (interestMap[i] > 0) {
-                //     Gizmos.color = Color.green;
-                //     Vector2 interestVector = 2 * mapVectors[i] * interestMap[i];
-                //     Gizmos.DrawLine(start, start + interestVector);
-                // }
             }
         }
     }
 
+    /// <summary>
+    /// Shortcut for a for loop for each direction.
+    /// </summary>
+    /// <param name="callback">A function that will be called for each direction. Expects no return.</param>
+    private void ForEachInterest(Action<int, float> callback) {
+        for (int i = 0; i < resolution; i++) {
+            callback(i, interestMap[i]);
+        }
+    }
+    
+    /// <summary>
+    /// Shortcut for a for loop for each direction.
+    /// </summary>
+    /// <param name="callback">A function that will be called for each direction. Returned floats will be assigned to the interest map.</param>
+    private void ForEachInterest(Func<int, float, float> callback) {
+        for (int i = 0; i < resolution; i++) {
+            interestMap[i] = callback(i, interestMap[i]);
+        }
+    }
+
+    /// <summary>
+    /// Used to reduce desirability for far-away targets.
+    /// </summary>
+    /// <param name="distance">Our distance to the target.</param>
+    /// <param name="desirability">How much we'd like to go to that target.</param>
+    /// <returns></returns>
     private float ScaleDesirability(float distance, float desirability) {
         // Linear scale. Distance of zero has 100% modifier. Distance of max or larger has 0% modifier.
         // TODO: Agents maintain their interest distance when this is not capped at 0.
@@ -142,11 +152,10 @@ public class ContextSteering : MonoBehaviour {
     /// Resets the maps to arrays of 0.
     /// </summary>
     private void ClearMaps() {
-        for (int i = 0; i < resolution; i++) {
+        ForEachInterest((i, interest) => {
             interestMap[i] = 0;
-            dangerMap[i] = 0;
-            obstacleMap[i] = 0;
-        }
+            obstacleMap[i] = wallCheckRange;
+        });
     }
 
     /// <summary>
@@ -154,63 +163,46 @@ public class ContextSteering : MonoBehaviour {
     /// </summary>
     private void CreateMapsFromLists() {
         foreach (Vector2 interest in interestPositions) {
-            AddInterestOrDanger(interest, interestMap);
+            AddToMap(interest, false);
         }
         foreach (Transform interest in interestTransforms) {
-            AddInterestOrDanger(interest.position, interestMap);
+            AddToMap(interest.position, false);
         }
         foreach (Vector2 danger in dangerPositions) {
-            AddInterestOrDanger(danger, dangerMap);
+            // AddInterestOrDanger(danger, dangerMap);
+            AddToMap(danger, true);
         }
         foreach (Transform danger in dangerTransforms) {
-            AddInterestOrDanger(danger.position, dangerMap);
+            AddToMap(danger.position, true);
         }
     }
 
     /// <summary>
-    /// Adds a specified interest or danger to the given map.
-    /// Calculates a ring of points with distance equal to the target's. Find's each point's desirability,
-    /// and scales them all based on distance to the target.
+    /// Takes a target and adds it to the interst map using the desirability function.
     /// </summary>
-    /// <param name="target">The point in space we are interested in.</param>
-    /// <param name="map">The map to modify.</param>
-    private void AddInterestOrDanger(Vector2 target, float[] map) {
-        // Create a circle of points with equal distance as the target, and cal
+    /// <param name="target">The position of our target.</param>
+    /// <param name="isDanger">Wether we'd like to move towards or away from that target.</param>
+    private void AddToMap(Vector2 target, bool isDanger) {
+        Func<Vector2, Vector2, float> getDesirability = GetDesirabilityFunc(isDanger);
         float distance = Vector2.Distance(target, transform.position);
         Vector2 targetVector = (target - (Vector2) transform.position).normalized;
-        for (int i = 0; i < resolution; i++) {
-            float desirability = 0;
-            switch (interestCalculationMode) {
-                case InterestCalulationMode.distanceBased:
-                    // // Find a point represented by this slot of the interest map
-                    Vector2 interestPoint = mapVectors[i] * distance;
+        ForEachInterest((i, interest) => {
+            float desirability = getDesirability(mapVectors[i], targetVector);
+            return interest + ScaleDesirability(distance, desirability);
+        });
+    }
 
-                    // // Get its distance from the actual target
-                    float interestDistance = Vector2.Distance(target, interestPoint + (Vector2) transform.position);
-
-                    // // Any points that are further away than we are are not of interest
-                    if (interestDistance > distance) {
-                        interestDistance *= -1;
-                    }
-
-                    // // Its desirability is 1 when the distance is zero, and zero when the distance is infinity.
-                    desirability = 1 / (interestDistance + 1);
-                    break;
-                case InterestCalulationMode.dotProduct:
-                    desirability = Vector2.Dot(mapVectors[i], targetVector);
-                    break;
-                case InterestCalulationMode.dotProductPositive:
-                    desirability = Mathf.Max(Vector2.Dot(mapVectors[i], targetVector), 0);
-                    break;
-                case InterestCalulationMode.dotProductOffset:
-                    desirability = (Vector2.Dot(mapVectors[i], targetVector) + 1) / 2;
-                    break;
-                default:
-                    break;
-            }
-
-            // Further reduce the desirability based on our distance to the target
-            map[i] += ScaleDesirability(distance, desirability);
+    /// <summary>
+    /// Used to control how the agent determines its interest. Override this for custom behavior.
+    /// </summary>
+    /// <param name="isDanger">Wether we'd like to move towards or away from our target.</param>
+    /// <returns>A function that will be called to get the interest in a given direction.</returns>
+    private Func<Vector2, Vector2, float> GetDesirabilityFunc(bool isDanger) {
+        if (isDanger) {
+            return ShapingFunctions.AnywhereButThere;
+        }
+        else {
+            return (Vector2 to, Vector2 from) => ShapingFunctions.PositiveOffset(to, from);
         }
     }
 
@@ -227,122 +219,62 @@ public class ContextSteering : MonoBehaviour {
     }
 
     /// <summary>
-    /// Converts each of the maps to uniform increments.
-    /// </summary>
-    private void RoundMapsToIncrements() {
-        for (int i = 0; i < resolution; i++) {
-            // interestMap[i] = Utils.RoundToIncrement(interestMap[i], incrementSize);
-            if (dangerMap[i] < 0) {
-                interestMap[i] -= dangerMap[i];
-                dangerMap[i] = 0;
-            }
-            else {
-                interestMap[(i + resolution / 2) % resolution] += dangerMap[i];
-            }
-            dangerMap[i] = Utils.RoundToIncrement(dangerMap[i], incrementSize);
-        }
-    }
-
-    /// <summary>
     /// Finds a sum interest based on the interest and danger maps.
     /// Ignores any interests in the same direction as high danger.
     /// Converts all remaining interest scalars to vectors and sums them.
     /// </summary>
     /// <returns>The normalized sum of the interest vectors.</returns>
     private Vector2 CalculateSumInterest() {
-        // Find lowest danger in dangermap
-        float lowestDanger = float.MaxValue;
-        foreach (float danger in dangerMap) {
-            if (danger < lowestDanger) {
-                lowestDanger = danger;
-            }
-        }
-
-        // Sum the interest vectors together to find the true interest direction.
-        Vector2 interestVector = Vector2.zero;
-        for (int i = 0; i < resolution; i++) {
-            // Ignore any interests in direction of higher danger
-            if (obstacleMap[i] > 0 || dangerMap[i] > lowestDanger) {
-                // Sum vectors to create sum interest
-                interestMap[i] = 0;
-            }
-        }
+        // Ignore any interests with nearby walls
+        ForEachInterest((i, interest) => {
+            return obstacleMap[i] < wallAvoidRange ? 0 : interest;
+        });
 
         int highestInterestIndex = 0;
         float highestInterest = float.MinValue;
-        for (int i = 0; i < resolution; i++) {
-            float interest = interestMap[i] - dangerMap[i];
+        ForEachInterest((i, interest) => {
             if (interest > highestInterest) {
                 highestInterest = interest;
                 highestInterestIndex = i;
             }
-        }
+        });
 
+        Vector2 interestVector = Vector2.zero;
         for (int i = highestInterestIndex - 2; i <= highestInterestIndex + 2; i++) {
             int index = (i % resolution + resolution) % resolution;
             interestVector += mapVectors[index] * interestMap[index];
         }
-
-        // for (int i = 0; i < resolution; i++) {
-        //     interestVector += mapVectors[i] * (interestMap[i] - dangerMap[i]);
-        // }
         return interestVector.normalized;
     }
 
-    private void AvoidWalls() {
-        for (int i = 0; i < resolution; i++) {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, mapVectors[i], wallCheckRange, wallsLayerMask);
-            if (hit.collider) {
-                // Debug.DrawLine(transform.position, (Vector2) transform.position + mapVectors[i] * wallCheckRange, Color.cyan);
-                // AddInterestOrDanger(hit.centroid, obstacleMap);
-                obstacleMap[i] = ScaleDesirability(Vector2.Distance(hit.centroid, transform.position), 1);
-                // interestMap[i] = 0;
-            }
-        }
-    }
-
-    public bool IsCornered() {
-        // Find lowest danger in dangermap
-        float lowestDanger = float.MaxValue;
-        foreach (float danger in dangerMap) {
-            if (danger < lowestDanger) {
-                lowestDanger = danger;
-            }
-        }
-
+    /// <summary>
+    /// Checks if their are walls within the wallcheck range, and assigns the distance to the obstacle map.
+    /// Also checks to see if the agent is cornered or surrounded, and returns a boolean.
+    /// </summary>
+    /// <returns>True if the agent is cornered or surrounded, false otherwise.</returns>
+    private bool AvoidWalls() {
         int badDirections = 0;
-        for (int i = 0; i < resolution; i++) {
-            if (obstacleMap[i] > 0 || dangerMap[i] > lowestDanger) {
+        ForEachInterest((i, interest) => {
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, mapVectors[i], wallCheckRange, wallsLayerMask);
+            float wallDistance = wallCheckRange;
+            if (hit.collider) {
+                wallDistance = hit.distance;
+                obstacleMap[i] = wallDistance;
+            }
+            if (wallDistance <= wallAvoidRange || interest < 0) {
                 badDirections++;
             }
-        }
-        if (badDirections >= resolution * 0.8f) {
-            return true;
-        }
-        return false;
+        });
+        return badDirections >= resolution * 0.8f;
     }
 
-    public void Panic() {
-        // Vector2 panicVector = Vector2.zero;
-        // for (int i = 0; i < resolution; i++) {
-        //     // if (obstacleMap[i] == 0) {
-        //     //     interestMap[i] += 3;
-        //     // }
-        //     panicVector -= obstacleMap[i] * mapVectors[i];
-        // }
-
-        // for (int i = 0; i < resolution; i++) {
-        //     float dot = Vector2.Dot(panicVector.normalized, mapVectors[i]);
-        //     interestMap[i] += 1 - Mathf.Abs(dot - 0.65f);
-        // }
-        for (int i = 0; i < resolution; i++) {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, mapVectors[i], 25, wallsLayerMask);
-            float distance = 25;
-            if (hit.collider) {
-                distance = Vector2.Distance(transform.position, hit.centroid);
-            }
-            float normalizedDistance = distance / 25;
-            interestMap[i] += normalizedDistance;
-        }
+    /// <summary>
+    /// Increases interest based on how far away walls are.
+    /// </summary>
+    private void Panic() {
+        ForEachInterest((i, interest) => {
+            float normalizedDistance = obstacleMap[i] / wallCheckRange * 0.5f;
+            return interest + normalizedDistance;
+        });
     }
 }

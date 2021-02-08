@@ -1131,8 +1131,8 @@ MonoBehaviour:
   maxInterestRange: 10
   resolution: 12
   mapIncrementCount: 10
-  wallCheckRange: 2
-  interestCalculationMode: 0
+  wallCheckRange: 25
+  wallAvoidRange: 2
   panicSeconds: 3
 --- !u!1 &1717197420
 GameObject:

@@ -32,4 +32,15 @@ public static class Extensions {
 	public static Vector2 Project(this Vector2 target, Vector2 source) {
 		return target * source.magnitude * Vector2.Angle(target, source);
 	}
+
+	public static Vector2 Rotate(this Vector2 v, float delta) {
+        return new Vector2(
+            v.x * Mathf.Cos(delta) - v.y * Mathf.Sin(delta),
+            v.x * Mathf.Sin(delta) + v.y * Mathf.Cos(delta)
+        );
+    }
+}
+
+public static class ExtensionMethods {
+	
 }
