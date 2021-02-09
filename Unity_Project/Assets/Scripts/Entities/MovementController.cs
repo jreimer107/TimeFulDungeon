@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using Unity.Entities;
-using Unity.Mathematics;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(Animator), typeof(Rigidbody2D))]
@@ -67,9 +65,9 @@ public class MovementController : MonoBehaviour {
 	private void Update() {
 		// Update animation
 		if (hasHorizontalAnimation)
-			animator.SetFloat("Horizontal", rb.velocity.x);
+			animator.SetFloat("Horizontal", Mathf.Abs(rb.velocity.x));
 		if (hasVerticalAnimation)
-			animator.SetFloat("Vertical", rb.velocity.y);
+			animator.SetFloat("Vertical", Mathf.Abs(rb.velocity.y));
 
 		
 		if (automatedMovement && destination != default(Vector2) && path.Count != 0) {
@@ -79,9 +77,9 @@ public class MovementController : MonoBehaviour {
 
 		//If input is moving the player right and player is facing left
 		if (spriteRenderer != null) {
-			if (rb.velocity.x > 0 && !facingRight) {
+			if (rb.velocity.x < 0 && !facingRight) {
 				Flip();
-			} else if (rb.velocity.x < 0 && facingRight) {
+			} else if (rb.velocity.x > 0 && facingRight) {
 				Flip();
 			}
 		}

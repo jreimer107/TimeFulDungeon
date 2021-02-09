@@ -91,6 +91,7 @@ public class ContextSteering : MonoBehaviour {
         direction = Vector2.MoveTowards(direction, CalculateSumInterest(), 0.05f);
     }
 
+#if UNITY_EDITOR
     private void OnDrawGizmos() {
         if (EditorApplication.isPlaying) {
             Vector2 position = transform.position;
@@ -112,6 +113,7 @@ public class ContextSteering : MonoBehaviour {
             }
         }
     }
+#endif
 
     /// <summary>
     /// Shortcut for a for loop for each direction.
