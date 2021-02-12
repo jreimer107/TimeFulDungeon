@@ -157,11 +157,11 @@ public class MovementController : MonoBehaviour {
 		this.destination = destination;
 		this.start = transform.position;
 		GetUpdatedPath();
-		Debug.Log("Destination: " + destination);
-		Debug.Log("Path:");
-		foreach(Vector2 waypoint in path) {
-			Debug.Log(waypoint);
-		}
+		// Debug.Log("Destination: " + destination);
+		// Debug.Log("Path:");
+		// foreach(Vector2 waypoint in path) {
+		// 	Debug.Log(waypoint);
+		// }
 	}
 
 	private void GetUpdatedPath() {

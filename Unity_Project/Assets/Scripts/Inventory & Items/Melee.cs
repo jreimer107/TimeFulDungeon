@@ -24,6 +24,19 @@ public class Melee : Equipment {
 		this.cooldown = copy.cooldown;
 	}
 
+    public override void Equip(Animator animator, EdgeCollider2D hitbox) {
+        base.Equip(animator, hitbox);
+		hitbox.points = new Vector2[] { new Vector2(0, 0), new Vector2(this.range, 0) };
+		float animationTime = this.actionClip.length;
+		float numUpdates = this.arc / this.speed;
+		float moveTime = numUpdates * Time.fixedDeltaTime;
+		float speedMultiplier = animationTime / moveTime;
+		Debug.Log("Setting speed to " + speedMultiplier);
+		animator.SetFloat("speed", speedMultiplier);
+    }
+
+    
+
 	public override string GetTooltipText() {
 		return
 			$"<size=32>{name}</size>\n" +

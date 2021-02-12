@@ -66,12 +66,22 @@ public class HoldingPoint : MonoBehaviour {
 		}
 
 		// Check for attacking
-		if (inHand != null && inHand.type == EquipType.Melee && !attacking && Input.GetButton("Fire1") && !EventSystem.current.IsPointerOverGameObject() && !ClickAndDrag.instance.active) {
+		if (inHand != null && !attacking && Input.GetButton("Fire1") && !EventSystem.current.IsPointerOverGameObject() && !ClickAndDrag.instance.active) {
 			attacking = true;
-			hitbox.enabled = true;
 			animator.SetBool("action", true);
-			startSwingAngle = angle;
-			angle += (inHand as Melee).arc / 2;
+			if (inHand.type == EquipType.Melee && !attacking) {
+				hitbox.enabled = true;
+				startSwingAngle = angle;
+				angle += (inHand as Melee).arc / 2;
+			}
+			else if (inHand.type == EquipType.Ranged) {
+				Debug.Log("Shooting!");
+			}
+		}
+
+		if (inHand != null && inHand.type == EquipType.Ranged && attacking && !Input.GetButton("Fire1") && !EventSystem.current.IsPointerOverGameObject() && !ClickAndDrag.instance.active) {
+			attacking = false;
+			animator.SetBool("action", false);
 		}
 	}
 
@@ -82,6 +92,8 @@ public class HoldingPoint : MonoBehaviour {
 			RotateToMouse();
 		} else {
 			if (!inHand || inHand.type != EquipType.Melee) {
+				RotateToMouse();
+				SetPosition();
 				return;
 			}
 			angle -= (inHand as Melee).speed;
@@ -105,6 +117,7 @@ public class HoldingPoint : MonoBehaviour {
 		float xpos = Mathf.Cos(Mathf.Deg2Rad * angle) * radius;
 		float ypos = Mathf.Sin(Mathf.Deg2Rad * angle) * radius;
 		transform.localPosition = new Vector3(xpos, ypos, 0);
+		spriteRenderer.flipY = xpos < 0;
 	}
 
 	/// <summary>
@@ -171,26 +184,7 @@ public class HoldingPoint : MonoBehaviour {
 			animatorOverrideController["action"] = inHand.actionClip;
 
 			//Set animation speed
-			switch (inHand.type) {
-				case EquipType.Melee:
-					hitbox.points = new Vector2[] { new Vector2(0, 0), new Vector2((inHand as Melee).range, 0) };
-					float animationTime = inHand.actionClip.length;
-					float numUpdates = (inHand as Melee).arc / (inHand as Melee).speed;
-					float moveTime = numUpdates * Time.fixedDeltaTime;
-					float speedMultiplier = animationTime / moveTime;
-					// Debug.Log("Setting speed to " + speedMultiplier);
-					animator.SetFloat("speed", speedMultiplier);
-					break;
-				case EquipType.Ranged:
-					Debug.Log("Swap rendered to ranged.");
-					break;
-				case EquipType.Shield:
-					Debug.Log("Swap rendered to shield.");
-					break;
-				default:
-					Debug.Log("Wtf have you given me.");
-					break;
-			}
+			inHand.Equip(this.animator, this.hitbox);
 		} else {
 			spriteRenderer.sprite = null;
 			animatorOverrideController["idle"] = null;
