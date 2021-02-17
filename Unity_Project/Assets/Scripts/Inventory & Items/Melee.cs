@@ -1,18 +1,25 @@
 ﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Melee", menuName = "Interactables/Melee")]
-public class Melee : Equipment {
+public class Melee : Weapon {
 	public float arc;
-	public int damage;
-	public int range;
-	public int speed;
-	public int cooldown;
 
-	public Melee(string name, Sprite sprite, int damage, float arc, int range, int speed, int cooldown) : base(name, 1, "random melee", sprite, EquipType.Melee) {
+	/// <summary>
+	/// Create a Melee equipment item.
+	/// </summary>
+	/// <param name="name">The name of the melee weapon.</param>
+	/// <param name="sprite">A stationary image of the weapon, will be used for inventory.</param>
+	/// <param name="damage">How much damage the weapon does per hit.</param>
+	/// <param name="arc">How far the weapon swings from side to side.</param>
+	/// <param name="range">How long the weapon is, i.e. its reach.</param>
+	/// <param name="rate">How many times per second the weapon can attack.</param>
+	/// <param name="cooldown">How long the player must wait in between strikes.</param>
+	/// <returns></returns>
+	public Melee(string name, Sprite sprite, int damage, float arc, int range, int rate, int cooldown) : base(name, sprite, damage, range, rate, cooldown, EquipType.Melee) {
 		this.damage = damage;
 		this.arc = arc;
 		this.range = range;
-		this.speed = speed;
+		this.rate = rate;
 		this.cooldown = cooldown;
 	}
 
@@ -20,22 +27,20 @@ public class Melee : Equipment {
 		this.damage = copy.damage;
 		this.arc = copy.arc;
 		this.range = copy.range;
-		this.speed = copy.speed;
+		this.rate = copy.rate;
 		this.cooldown = copy.cooldown;
 	}
 
-    public override void Equip(Animator animator, EdgeCollider2D hitbox) {
-        base.Equip(animator, hitbox);
+	public override void Equip(Animator animator, EdgeCollider2D hitbox) {
+		base.Equip(animator, hitbox);
 		hitbox.points = new Vector2[] { new Vector2(0, 0), new Vector2(this.range, 0) };
-		float animationTime = this.actionClip.length;
-		float numUpdates = this.arc / this.speed;
-		float moveTime = numUpdates * Time.fixedDeltaTime;
-		float speedMultiplier = animationTime / moveTime;
-		Debug.Log("Setting speed to " + speedMultiplier);
-		animator.SetFloat("speed", speedMultiplier);
-    }
+	}
 
-    
+	public float DeltaAngle {
+		get {
+			return this.arc * this.rate * Time.fixedDeltaTime;
+		}
+	}
 
 	public override string GetTooltipText() {
 		return
@@ -43,7 +48,7 @@ public class Melee : Equipment {
 			(description != "" ? $"{description}\n" : "") +
 			$"{damage} dmg\n" +
 			$"{arc}\u00b0 arc\n" +
-			$"{speed}\u00b0/sec\n" +
+			$"{rate}\u00b0/sec\n" +
 			$"{range}m range\n" +
 			$"{cooldown}s cooldown\n" + 
 			(redText != "" ? $"<color=red>{redText}</color>" : "");

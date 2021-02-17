@@ -10,17 +10,20 @@ public class Item : ScriptableObject, IEquatable<Item> {
 	public Sprite sprite;
 	public bool stackable;
 	public int count;
+	public float cooldown;
 	public bool autoPickup;
 	public AnimationClip idleClip;
 	public AnimationClip actionClip;
+	public AudioClip useSound;
 
-	public Item(string name, int ID, string description, Sprite sprite, bool stackable, int count, bool autoPickup, string redText = "") {
+	public Item(string name, int ID, string description, Sprite sprite, bool stackable, int count, float cooldown, bool autoPickup, string redText = "") {
 		this.name = name;
 		this.ID = ID;
 		this.description = description;
 		this.sprite = sprite;
 		this.stackable = stackable;
 		this.count = count;
+		this.cooldown = cooldown;
 		this.autoPickup = autoPickup;
 	}
 
@@ -41,6 +44,7 @@ public class Item : ScriptableObject, IEquatable<Item> {
 		this.sprite = copy.sprite;
 		this.stackable = copy.stackable;
 		this.count = copy.count;
+		this.cooldown = copy.cooldown;
 	}
 
 	public virtual Item Clone() => new Item(this);

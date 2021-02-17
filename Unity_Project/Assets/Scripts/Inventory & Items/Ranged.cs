@@ -1,11 +1,12 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Ranged", menuName = "Interactables/Ranged")]
-public class Ranged : Equipment {
+public class Ranged : Weapon {
 	public Sprite projectile;
-	public int damage, rate, speed, penetrate;
+	public int speed, penetrate;
 
-	public Ranged(string name, Sprite sprite, Sprite projectile, int damage, int rate, int speed, int penetrate) : base(name, 2, "random ranged", sprite, EquipType.Ranged) {
+	public Ranged(string name, Sprite sprite, Sprite projectile, int damage, int range, int rate, float cooldown, int speed, int penetrate) : 
+		base(name, sprite, damage, range, rate, cooldown, EquipType.Ranged) {
 		this.projectile = projectile;
 		this.damage = damage;
 		this.rate = rate;
@@ -19,12 +20,9 @@ public class Ranged : Equipment {
 
 	public override void Equip(Animator animator, EdgeCollider2D hitbox) {
 		base.Equip(animator, hitbox);
-		float animationTime = this.actionClip.length;
-		float cycleTime = this.rate / 60f; // Rounds per minute -> seconds
-		if (animationTime > cycleTime) {
-			Debug.Log("Setting speed to " + animationTime / cycleTime);
-			animator.SetFloat("speed", animationTime / cycleTime);
-		}	
+		if (animator.speed > 1) {
+			animator.speed = 1;
+		}
 		Debug.Log("Swap rendered to ranged.");
 	}
 }

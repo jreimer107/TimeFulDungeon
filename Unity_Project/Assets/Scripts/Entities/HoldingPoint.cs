@@ -25,6 +25,9 @@ public class HoldingPoint : MonoBehaviour {
 	public Animator animator;
 	public AnimatorOverrideController animatorOverrideController;
 	public AnimationClip testIdleClip, testAttackClip;
+	public AnimationEvent startEvent;
+	public AudioSource audioSource;
+	public AudioClip soundEffect;
 
 	#region Singleton
 	public static HoldingPoint instance;
@@ -48,6 +51,9 @@ public class HoldingPoint : MonoBehaviour {
 		animator = GetComponent<Animator>();
 		animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
 		animator.runtimeAnimatorController = animatorOverrideController;
+		startEvent = new AnimationEvent();
+		audioSource = GetComponent<AudioSource>();
+		
 
 		player.onStaminaEmptyCallback += ExhaustedUnshield;
 	}
@@ -69,7 +75,7 @@ public class HoldingPoint : MonoBehaviour {
 		if (inHand != null && !attacking && Input.GetButton("Fire1") && !EventSystem.current.IsPointerOverGameObject() && !ClickAndDrag.instance.active) {
 			attacking = true;
 			animator.SetBool("action", true);
-			if (inHand.type == EquipType.Melee && !attacking) {
+			if (inHand.type == EquipType.Melee) {
 				hitbox.enabled = true;
 				startSwingAngle = angle;
 				angle += (inHand as Melee).arc / 2;
@@ -96,7 +102,7 @@ public class HoldingPoint : MonoBehaviour {
 				SetPosition();
 				return;
 			}
-			angle -= (inHand as Melee).speed;
+			angle -= (inHand as Melee).DeltaAngle;
 			if (angle <= startSwingAngle - (inHand as Melee).arc / 2) {
 				// Debug.Log("Attack ending");
 				attacking = false;
@@ -117,7 +123,10 @@ public class HoldingPoint : MonoBehaviour {
 		float xpos = Mathf.Cos(Mathf.Deg2Rad * angle) * radius;
 		float ypos = Mathf.Sin(Mathf.Deg2Rad * angle) * radius;
 		transform.localPosition = new Vector3(xpos, ypos, 0);
-		spriteRenderer.flipY = xpos < 0;
+
+		// Flip the sprite if on left side, but only we're not melee attacking - this messes up animations
+		spriteRenderer.flipY = (inHand.type != EquipType.Melee || !attacking) ? xpos < 0 : false;
+
 	}
 
 	/// <summary>
@@ -181,8 +190,9 @@ public class HoldingPoint : MonoBehaviour {
 		if (inHand != null) {
 			spriteRenderer.sprite = inHand.sprite;
 			animatorOverrideController["idle"] = inHand.idleClip;
+			// inHand.actionClip.AddEvent(startEvent);
 			animatorOverrideController["action"] = inHand.actionClip;
-
+			// soundEffect = inHand.soundEffect;
 			//Set animation speed
 			inHand.Equip(this.animator, this.hitbox);
 		} else {
