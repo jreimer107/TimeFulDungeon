@@ -13,15 +13,15 @@ public class HoldingPoint : MonoBehaviour {
 	[Range(0, 5)] [SerializeField] private float radius = 1;
 
 	private bool attacking = false;
-	private float angle = 0.0f;
+	public float angle = 0.0f;
 	private float startSwingAngle;
 
 	public Equipment inHand = null;
 	private EquipType currentWeaponType = EquipType.Melee;
 	private bool shieldToggleBuffer = false;
 
-	private SpriteRenderer spriteRenderer;
-	private EdgeCollider2D hitbox;
+	public SpriteRenderer spriteRenderer;
+	public EdgeCollider2D hitbox;
 	public Animator animator;
 	public AnimatorOverrideController animatorOverrideController;
 	public AnimationClip testIdleClip, testAttackClip;
@@ -36,13 +36,7 @@ public class HoldingPoint : MonoBehaviour {
 			Debug.LogWarning("More than one instance of holding point detected.");
 		}
 		instance = this;
-	}
-	#endregion
 
-	private void Start() {
-		player = Player.instance;
-		equipmentManager = EquipmentManager.instance;
-		equipmentManager.onEquipmentChangedCallback += UpdateRendered;
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		hitbox = GetComponent<EdgeCollider2D>();
 		hitbox.enabled = false;
@@ -53,9 +47,14 @@ public class HoldingPoint : MonoBehaviour {
 		animator.runtimeAnimatorController = animatorOverrideController;
 		startEvent = new AnimationEvent();
 		audioSource = GetComponent<AudioSource>();
-		
+	}
+	#endregion
 
+	private void Start() {
+		player = Player.instance;
 		player.onStaminaEmptyCallback += ExhaustedUnshield;
+		equipmentManager = EquipmentManager.instance;
+		equipmentManager.onEquipmentChangedCallback += UpdateRendered;
 	}
 
 	private void Update() {
@@ -63,6 +62,11 @@ public class HoldingPoint : MonoBehaviour {
 		if (Input.GetButtonDown("Swap Weapon")) {
 			Debug.Log("Swap inhand");
 			ToggleWeapon();
+
+			// Activate if holding button down while swapping
+			if (inHand != null && Input.GetButton("Fire1") && !EventSystem.current.IsPointerOverGameObject() && !ClickAndDrag.instance.active) {
+				inHand.Activate();
+			}
 		}
 
 		// If not attacking and shield is buffered, shield and consume the buffer
@@ -71,43 +75,23 @@ public class HoldingPoint : MonoBehaviour {
 			ToggleShield();
 		}
 
-		// Check for attacking
-		if (inHand != null && !attacking && Input.GetButton("Fire1") && !EventSystem.current.IsPointerOverGameObject() && !ClickAndDrag.instance.active) {
-			attacking = true;
-			animator.SetBool("action", true);
-			if (inHand.type == EquipType.Melee) {
-				hitbox.enabled = true;
-				startSwingAngle = angle;
-				angle += (inHand as Melee).arc / 2;
+		// Check for button press or release
+		if (inHand != null) {
+			if (Input.GetButtonDown("Fire1") && !EventSystem.current.IsPointerOverGameObject() && !ClickAndDrag.instance.active) {
+				inHand.Activate();
 			}
-			else if (inHand.type == EquipType.Ranged) {
-				Debug.Log("Shooting!");
+			else if (Input.GetButtonUp("Fire1") && !EventSystem.current.IsPointerOverGameObject() && !ClickAndDrag.instance.active) {
+				inHand.Deactivate();
 			}
-		}
-
-		if (inHand != null && inHand.type == EquipType.Ranged && attacking && !Input.GetButton("Fire1") && !EventSystem.current.IsPointerOverGameObject() && !ClickAndDrag.instance.active) {
-			attacking = false;
-			animator.SetBool("action", false);
 		}
 	}
 
 	// Update is called once per frame
 	private void FixedUpdate() {
 		// If attacking, swing. Else rotate to mouse.
-		if (!attacking) {
-			RotateToMouse();
-		} else {
-			if (!inHand || inHand.type != EquipType.Melee) {
-				RotateToMouse();
-				SetPosition();
-				return;
-			}
-			angle -= (inHand as Melee).DeltaAngle;
-			if (angle <= startSwingAngle - (inHand as Melee).arc / 2) {
-				// Debug.Log("Attack ending");
-				attacking = false;
-				hitbox.enabled = false;
-				animator.SetBool("action", false);
+		if (inHand) {
+			attacking = inHand.ControlHoldingPoint();
+			if (!attacking) {
 				RotateToMouse();
 			}
 		}
@@ -115,7 +99,7 @@ public class HoldingPoint : MonoBehaviour {
 		SetPosition();
 	}
 
-	private void SetPosition() {
+	public void SetPosition() {
 		//Assign the angle as the rotation of the held object
 		transform.localEulerAngles = new Vector3(0, 0, angle);
 
@@ -133,7 +117,7 @@ public class HoldingPoint : MonoBehaviour {
 	/// Rotates the hand object to be between the player and the mouse pointer.
 	/// </summary>
 	/// <returns></returns>
-	private void RotateToMouse() {
+	public void RotateToMouse() {
 		Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition) - player.transform.position;
 
 		//Determine angle of mouse
@@ -194,7 +178,7 @@ public class HoldingPoint : MonoBehaviour {
 			animatorOverrideController["action"] = inHand.actionClip;
 			// soundEffect = inHand.soundEffect;
 			//Set animation speed
-			inHand.Equip(this.animator, this.hitbox);
+			inHand.Equip(this.animator, this.audioSource, this.hitbox);
 		} else {
 			spriteRenderer.sprite = null;
 			animatorOverrideController["idle"] = null;

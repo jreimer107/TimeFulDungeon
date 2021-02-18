@@ -5,6 +5,8 @@ public class Ranged : Weapon {
 	public Sprite projectile;
 	public int speed, penetrate;
 
+	private float shootTimer;
+
 	public Ranged(string name, Sprite sprite, Sprite projectile, int damage, int range, int rate, float cooldown, int speed, int penetrate) : 
 		base(name, sprite, damage, range, rate, cooldown, EquipType.Ranged) {
 		this.projectile = projectile;
@@ -18,13 +20,30 @@ public class Ranged : Weapon {
 		return new Projectile(this.damage, this.speed, this.projectile, this.penetrate);
 	}
 
-	public override void Equip(Animator animator, EdgeCollider2D hitbox) {
-		base.Equip(animator, hitbox);
+	public override void Equip(Animator animator, AudioSource audio, EdgeCollider2D hitbox) {
+		base.Equip(animator, audio, hitbox);
 		if (animator.speed > 1) {
 			animator.speed = 1;
 		}
+		shootTimer = 0;
 		Debug.Log("Swap rendered to ranged.");
 	}
+
+    public override bool ControlHoldingPoint() {
+        base.ControlHoldingPoint();
+		return false;
+    }
+
+    public override void ActionStart() {
+        base.ActionStart();
+		shootTimer = 0;
+		fire();
+    }
+
+    public override bool CheckIfActionDone() {
+		shootTimer += Time.fixedDeltaTime;
+		return shootTimer > 1f / (float) rate;
+    }
 }
 
 public class Projectile : MonoBehaviour {

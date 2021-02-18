@@ -4,6 +4,8 @@
 public class Melee : Weapon {
 	public float arc;
 
+	private float endSwingAngle;
+	
 	/// <summary>
 	/// Create a Melee equipment item.
 	/// </summary>
@@ -31,15 +33,35 @@ public class Melee : Weapon {
 		this.cooldown = copy.cooldown;
 	}
 
-	public override void Equip(Animator animator, EdgeCollider2D hitbox) {
-		base.Equip(animator, hitbox);
-		hitbox.points = new Vector2[] { new Vector2(0, 0), new Vector2(this.range, 0) };
+	public override void Equip(Animator animator, AudioSource audio, EdgeCollider2D hitbox) {
+		base.Equip(animator, audio, hitbox);
+		holdingPoint.hitbox.points = new Vector2[] { new Vector2(0, 0), new Vector2(this.range, 0) };
 	}
 
 	public float DeltaAngle {
 		get {
 			return this.arc * this.rate * Time.fixedDeltaTime;
 		}
+	}
+
+	/// <summary>
+	/// Start attacking.
+	/// </summary>
+	public override void Activate() {
+		base.Activate();
+		holdingPoint.hitbox.enabled = true;
+	}
+
+	public override void ActionStart() {
+		base.ActionStart();
+		holdingPoint.RotateToMouse();
+		endSwingAngle = holdingPoint.angle - arc / 2;
+		holdingPoint.angle += arc / 2;
+	}
+
+	public override bool CheckIfActionDone() {
+		holdingPoint.angle -= DeltaAngle;
+		return holdingPoint.angle < endSwingAngle;
 	}
 
 	public override string GetTooltipText() {

@@ -14,7 +14,7 @@ public class Item : ScriptableObject, IEquatable<Item> {
 	public bool autoPickup;
 	public AnimationClip idleClip;
 	public AnimationClip actionClip;
-	public AudioClip useSound;
+	public AudioClip soundEffect;
 
 	public Item(string name, int ID, string description, Sprite sprite, bool stackable, int count, float cooldown, bool autoPickup, string redText = "") {
 		this.name = name;
