@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Unity.Collections;
 using Unity.Mathematics;
-using Unity.Entities;
+// using Unity.Entities;
 using System.Collections.Generic;
 using VoraUtils;
 using System.Linq;
@@ -22,8 +22,6 @@ public class PathfindingGrid : MonoBehaviour {
 	public int width { get { return grid.width; } }
 	public int height { get { return grid.height; } }
 
-	private EntityManager entityManager;
-
 	#region Singleton
 	public static PathfindingGrid Instance;
 	private void Awake() {
@@ -38,7 +36,6 @@ public class PathfindingGrid : MonoBehaviour {
 	// Start is called before the first frame update
 	void Start() {
 		grid = new WorldGrid<bool>(gridWidth, gridHeight, cellSize);
-		entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 		pathfinding = new Pathfinding<Coordinate>();
 	}
 
@@ -109,20 +106,6 @@ public class PathfindingGrid : MonoBehaviour {
 	public void GetXY(Vector2 worldPosition, out int x, out int y) => grid.GetXY(worldPosition, out x, out y);
 	public Vector2 GetWorldPosition(Vector2Int xy) => grid.GetWorldPosition(xy.x, xy.y, true);
 	public Vector2 GetWorldPosition(int2 xy) => grid.GetWorldPosition(xy.x, xy.y, true);
-
-	public void RequestPath(Entity entity, Vector2 start, Vector2 end) {
-		if (entity == null) {
-			Debug.LogWarning("Pathfinding Grid RequestPath: Null entity!");
-			return;
-		}
-		Vector2Int startInt = GetXY(start);
-		Vector2Int endInt = GetXY(end);
-		entityManager.AddComponentData(entity, new PathfindingParams
-		{
-			start = new int2(startInt.x, startInt.y),
-			end = new int2(endInt.x, endInt.y)
-		});
-	}
 
 	public List<Vector2> RequestPath(Vector2 start, Vector2 end) {
 		Coordinate startCoord = new Coordinate(GetXY(start));
