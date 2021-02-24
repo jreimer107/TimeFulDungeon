@@ -70,9 +70,11 @@ public class MovementController : MonoBehaviour {
 			animator.SetFloat("Vertical", Mathf.Abs(rb.velocity.y));
 
 		
-		if (automatedMovement && destination != default(Vector2) && path.Count != 0) {
-			GetUpdatedPath();
-			AutomatedMovement(waypoint);
+		if (automatedMovement) {
+			AutomatedMovement();
+			if (destination != default(Vector2) && path.Count != 0) {
+				GetUpdatedPath();
+			}
 		}
 
 		//If input is moving the player right and player is facing left
@@ -83,12 +85,6 @@ public class MovementController : MonoBehaviour {
 				Flip();
 			}
 		}
-
-		// if (automatedMovement && path != null) {
-		// 	for (int i = 0; i < path.Count - 1; i++) {
-		// 		Debug.DrawLine(path[i], path[i+1], Color.magenta);
-		// 	}
-		// }
 	}
 
 	private void FixedUpdate() {
@@ -115,7 +111,7 @@ public class MovementController : MonoBehaviour {
 		rb.velocity = Vector2.SmoothDamp(rb.velocity, targetVelocity, ref velocity, 1 / maxAcceleration);
 	}
 
-	public void AutomatedMovement(Vector2 _) {
+	public void AutomatedMovement() {
 		// Steer towards our target
 		// Vector2 desired = SteeringBehaviors.Arrive(target, transform.position, maxSpeed, approachDistance);
 		// Vector2 target = SteeringBehaviors.Follow(path.ToArray(), rb.velocity, transform.position, maxSpeed, approachDistance);
@@ -127,7 +123,7 @@ public class MovementController : MonoBehaviour {
 		// }
 		contextSteering.ClearDangers();
 		contextSteering.ClearInterests();
-		contextSteering.AddDanger(Player.instance.transform.position);
+		contextSteering.AddInterest(Player.instance.transform.position);
 		// contextSteering.AddInterest(transform.position + Player.instance.transform.position);
 		Vector2 contextResult = contextSteering.direction;
 		// Vector2 desired = SteeringBehaviors.Seek(contextResult, transform.position, maxSpeed);

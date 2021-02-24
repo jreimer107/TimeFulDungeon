@@ -23,7 +23,7 @@ public class Equipment : Item {
 		EquipmentManager.instance.Equip(this);
 	}
 
-	public virtual void Equip(Animator animator, AudioSource audio, EdgeCollider2D hitbox) {
+	public virtual void Equip() {
 		this.holdingPoint = HoldingPoint.instance;
 		activated = false;
 	}

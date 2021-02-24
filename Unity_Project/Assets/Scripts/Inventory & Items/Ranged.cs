@@ -16,14 +16,15 @@ public class Ranged : Weapon {
 		this.penetrate = penetrate;
 	}
 
-	public Projectile fire() {
-		return new Projectile(this.damage, this.speed, this.projectile, this.penetrate);
+	public void fire() {
+		holdingPoint.particles.Play();
+		// return new Projectile(this.damage, this.speed, this.projectile, this.penetrate);
 	}
 
-	public override void Equip(Animator animator, AudioSource audio, EdgeCollider2D hitbox) {
-		base.Equip(animator, audio, hitbox);
-		if (animator.speed > 1) {
-			animator.speed = 1;
+	public override void Equip() {
+		base.Equip();
+		if (holdingPoint.animator.speed < 1) {
+			holdingPoint.animator.speed = 1;
 		}
 		shootTimer = 0;
 		Debug.Log("Swap rendered to ranged.");

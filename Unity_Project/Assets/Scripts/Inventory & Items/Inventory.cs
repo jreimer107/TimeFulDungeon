@@ -5,6 +5,8 @@ public class Inventory : MonoBehaviour {
 	public int maxSlots;
 	public int enabledSlots;
 
+	[SerializeField] private EquipmentManager equipmentManager;
+
 	public List<Item> Bag;
 
 	#region Singleton
@@ -36,6 +38,11 @@ public class Inventory : MonoBehaviour {
 				}
 			}
 		}
+
+		if (newItem is Equipment equipment && !equipmentManager.GetEquipment(equipment.type)) {
+			return true;
+		}
+
 		return false;
 	}
 
@@ -44,21 +51,25 @@ public class Inventory : MonoBehaviour {
 		//If item is stackable, check if we already have some
 		if (newItem.stackable) {
 			foreach (Item item in Bag) {
-				if (item.ID == newItem.ID) {
+				if (item == newItem) {
 					item.count += newItem.count;
-					if (onItemChangedCallback != null)
-						onItemChangedCallback.Invoke();
+					onItemChangedCallback?.Invoke();
 					return true;
 				}
 			}
+		}
+
+		// If the item is equipment that we don't have, equip it
+		if (newItem is Equipment equipment && !equipmentManager.GetEquipment(equipment.type)) {
+			equipmentManager.Equip(equipment);
+			return true;
 		}
 
 		//If we have space, add item in new slot
 		if (HasSpace) {
 			Bag.Add(newItem);
 			Debug.Log("Added new item to inventory.");
-			if (onItemChangedCallback != null)
-				onItemChangedCallback.Invoke();
+			onItemChangedCallback?.Invoke();
 			return true;
 		}
 
@@ -68,8 +79,7 @@ public class Inventory : MonoBehaviour {
 
 	public void Remove(Item item) {
 		Bag.Remove(item);
-		if (onItemChangedCallback != null)
-			onItemChangedCallback.Invoke();
+		onItemChangedCallback?.Invoke();
 	}
 
 	//Swaps the position of two items within the inventory.
@@ -82,15 +92,13 @@ public class Inventory : MonoBehaviour {
 		Item temp = Bag[to];
 		Bag[to] = Bag[from];
 		Bag[from] = temp;
-		if (onItemChangedCallback != null)
-			onItemChangedCallback.Invoke();
+		onItemChangedCallback?.Invoke();
 	}
 
 	//Swaps an item inside the inventory for one outside.
 	public void SwapOut(Item newItem, Item oldItem) {
 		Bag[Bag.IndexOf(oldItem)] = newItem;
-		if (onItemChangedCallback != null)
-			onItemChangedCallback.Invoke();
+		onItemChangedCallback?.Invoke();
 	}
 
 	public bool HasSpace {

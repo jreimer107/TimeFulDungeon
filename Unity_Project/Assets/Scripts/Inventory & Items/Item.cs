@@ -34,7 +34,15 @@ public class Item : ScriptableObject, IEquatable<Item> {
 
 	public void RemoveFromInventory() => Inventory.instance.Remove(this);
 
-	public bool Equals(Item other) => this.ID == other.ID;
+    public override int GetHashCode() => base.GetHashCode();
+	public bool Equals(Item other) => !ReferenceEquals(other, null) && this.ID == other.ID;
+
+	public override bool Equals(object other) => other is Item item && this.Equals(item);
+	public static bool operator ==(Item a, Item b) => ReferenceEquals(a, b) || a.Equals(b);
+	public static bool operator !=(Item a, Item b) => !ReferenceEquals(a, null) && !a.Equals(b);
+	public static bool operator !(Item a) => ReferenceEquals(a, null);
+	public static bool operator true(Item a) => !ReferenceEquals(a, null);
+	public static bool operator false(Item a) => ReferenceEquals(a, null);
 
 	protected Item(Item copy) {
 		this.name = copy.name;

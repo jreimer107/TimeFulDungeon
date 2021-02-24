@@ -20,12 +20,12 @@ public class Weapon : Equipment {
         this.rate = copy.rate;
     }
 
-    public override void Equip(Animator animator, AudioSource audio, EdgeCollider2D hitbox) {
-        base.Equip(animator, audio, hitbox);
+    public override void Equip() {
+        base.Equip();
         float animationTime = this.actionClip.length;
 		float speedMultiplier = animationTime * rate;
 		Debug.Log("Setting speed to " + speedMultiplier);
-		animator.speed = speedMultiplier;
+		holdingPoint.animator.speed = speedMultiplier;
         attacking = false;
         holdingPoint.audioSource.clip = this.soundEffect;
     }

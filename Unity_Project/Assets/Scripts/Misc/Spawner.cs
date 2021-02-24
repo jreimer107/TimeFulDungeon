@@ -16,7 +16,7 @@ public class Spawner : MonoBehaviour
     private IEnumerator ItermittentSpawn() {
         float delay = 2.5f;
         while (true) {
-            GameObject enemy = Instantiate(enemyPrefab, (Vector2)(player.transform.position + Random.insideUnitSphere * 50), Quaternion.identity);
+            GameObject enemy = Instantiate(enemyPrefab, (Vector2)(player.transform.position + Random.insideUnitSphere * 20), Quaternion.identity);
             // enemy.GetComponent<AIDestinationSetter>().target = player.transform;
             yield return new WaitForSeconds(delay);
             delay *= 0.95f;

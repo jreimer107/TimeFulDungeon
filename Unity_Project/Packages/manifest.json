@@ -2,7 +2,6 @@
   "dependencies": {
     "com.unity.2d.common": "4.0.2",
     "com.unity.2d.sprite": "1.0.0",
-    "com.unity.2d.spriteshape": "5.1.0",
     "com.unity.2d.tilemap": "1.0.0",
     "com.unity.2d.tilemap.extras": "1.6.3-preview",
     "com.unity.analytics": "3.5.3",
@@ -12,7 +11,7 @@
     "com.unity.ide.vscode": "1.2.3",
     "com.unity.render-pipelines.universal": "10.2.2",
     "com.unity.test-framework": "1.1.19",
-    "com.unity.textmeshpro": "3.0.1",
+    "com.unity.textmeshpro": "3.0.4",
     "com.unity.timeline": "1.2.14",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",

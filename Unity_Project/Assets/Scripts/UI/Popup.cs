@@ -12,7 +12,7 @@ public class Popup : MonoBehaviour {
 	/// <param name="color">The color of the text.</param>
 	public static void CreateDamagePopup(string text, Vector3 position, Color color) {
 		if (!popupPrefab) {
-			popupPrefab = Resources.Load<GameObject>("Prefabs/Damage Popup");
+			popupPrefab = Resources.Load<GameObject>("Prefabs/Popup");
 		}
 		Popup damagePopup = Instantiate(popupPrefab).GetComponent<Popup>();
 		damagePopup.SetUp(text, position, color);
@@ -31,8 +31,7 @@ public class Popup : MonoBehaviour {
 		textMeshPro = GetComponentInChildren<TextMeshProUGUI>();
 		rectTransform = GetComponent<RectTransform>();
 
-		LeanTween.moveY(gameObject, -25f, 0.15f).setOnComplete(() => {});
-		Destroy(gameObject, animator.GetCurrentAnimatorStateInfo(0).length);
+		Destroy(gameObject, 1f);
 	}
 
 	/// <summary>
@@ -47,5 +46,8 @@ public class Popup : MonoBehaviour {
 		rectTransform.anchoredPosition = new Vector2(
 			worldPointPosition.x + Random.Range(-randomXRange, randomXRange),
 			worldPointPosition.y + yOffset + Random.Range(-randomYRange, randomYRange));
+		
+
+		LeanTween.moveY(rectTransform, rectTransform.anchoredPosition.y - 1f, 0.15f);
 	}
 }

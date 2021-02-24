@@ -12,7 +12,7 @@ public class HoldingPoint : MonoBehaviour {
 	private EquipmentManager equipmentManager;
 	[Range(0, 5)] [SerializeField] private float radius = 1;
 
-	private bool attacking = false;
+	private bool controlledByInHand = false;
 	public float angle = 0.0f;
 	private float startSwingAngle;
 
@@ -28,6 +28,8 @@ public class HoldingPoint : MonoBehaviour {
 	public AnimationEvent startEvent;
 	public AudioSource audioSource;
 	public AudioClip soundEffect;
+
+	public ParticleSystem particles;
 
 	#region Singleton
 	public static HoldingPoint instance;
@@ -71,7 +73,7 @@ public class HoldingPoint : MonoBehaviour {
 
 		// If not attacking and shield is buffered, shield and consume the buffer
 		shieldToggleBuffer = !player.exhausted && (Input.GetButtonDown("Shield") || Input.GetButtonUp("Shield"));
-		if (shieldToggleBuffer && !attacking) {
+		if (shieldToggleBuffer && !controlledByInHand) {
 			ToggleShield();
 		}
 
@@ -80,7 +82,7 @@ public class HoldingPoint : MonoBehaviour {
 			if (Input.GetButtonDown("Fire1") && !EventSystem.current.IsPointerOverGameObject() && !ClickAndDrag.instance.active) {
 				inHand.Activate();
 			}
-			else if (Input.GetButtonUp("Fire1") && !EventSystem.current.IsPointerOverGameObject() && !ClickAndDrag.instance.active) {
+			else if (Input.GetButtonUp("Fire1")) {
 				inHand.Deactivate();
 			}
 		}
@@ -88,12 +90,14 @@ public class HoldingPoint : MonoBehaviour {
 
 	// Update is called once per frame
 	private void FixedUpdate() {
-		// If attacking, swing. Else rotate to mouse.
+		// If we have a weapon, see if it is controlling our position
 		if (inHand) {
-			attacking = inHand.ControlHoldingPoint();
-			if (!attacking) {
-				RotateToMouse();
-			}
+			controlledByInHand = inHand.ControlHoldingPoint();
+		}
+
+		// If the weapon 
+		if (!controlledByInHand) {
+			RotateToMouse();
 		}
 
 		SetPosition();
@@ -109,7 +113,7 @@ public class HoldingPoint : MonoBehaviour {
 		transform.localPosition = new Vector3(xpos, ypos, 0);
 
 		// Flip the sprite if on left side, but only we're not melee attacking - this messes up animations
-		spriteRenderer.flipY = (inHand.type != EquipType.Melee || !attacking) ? xpos < 0 : false;
+		spriteRenderer.flipY = (inHand && (inHand.type != EquipType.Melee) || !controlledByInHand) ? xpos < 0 : false;
 
 	}
 
@@ -171,18 +175,24 @@ public class HoldingPoint : MonoBehaviour {
 	/// </summary>
 	private void SwapRendered() {
 		Debug.Log("In hand: " + inHand);
-		if (inHand != null) {
+		// spriteRenderer.sprite = inHand?.sprite;
+		// animatorOverrideController["idle"] = inHand?.idleClip;
+		// animatorOverrideController["action"] = inHand?.actionClip;
+		// inHand?.Equip();
+		if (inHand) {
 			spriteRenderer.sprite = inHand.sprite;
 			animatorOverrideController["idle"] = inHand.idleClip;
 			// inHand.actionClip.AddEvent(startEvent);
 			animatorOverrideController["action"] = inHand.actionClip;
 			// soundEffect = inHand.soundEffect;
 			//Set animation speed
-			inHand.Equip(this.animator, this.audioSource, this.hitbox);
+			inHand.Equip();
+			spriteRenderer.enabled = true;
 		} else {
 			spriteRenderer.sprite = null;
 			animatorOverrideController["idle"] = null;
 			animatorOverrideController["action"] = null;
+			spriteRenderer.enabled = false;
 		}
 	}
 
