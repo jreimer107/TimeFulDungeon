@@ -28,6 +28,7 @@ public class MovementController : MonoBehaviour {
 	private Vector2 waypoint;
 	private Vector2 destination;
 	private Vector2 start;
+	private Vector2 spawn;
 
 	private List<Vector2> path;
 
@@ -42,8 +43,11 @@ public class MovementController : MonoBehaviour {
 	// Steering module
 	private ContextSteering contextSteering;
 
+	public AnimationCurve plot = new AnimationCurve();
+
 	private void Start() {
 		waypoint = Vector2.zero;
+		spawn = transform.position;
 
 		contextSteering = GetComponent<ContextSteering>();
 
@@ -111,6 +115,8 @@ public class MovementController : MonoBehaviour {
 		rb.velocity = Vector2.SmoothDamp(rb.velocity, targetVelocity, ref velocity, 1 / maxAcceleration);
 	}
 
+	float lastAdjust = 0f;
+	Vector2 wanderInterest = Vector2.right;
 	public void AutomatedMovement() {
 		// Steer towards our target
 		// Vector2 desired = SteeringBehaviors.Arrive(target, transform.position, maxSpeed, approachDistance);
@@ -123,7 +129,9 @@ public class MovementController : MonoBehaviour {
 		// }
 		contextSteering.ClearDangers();
 		contextSteering.ClearInterests();
-		contextSteering.AddInterest(Player.instance.transform.position);
+		// Vector2 wanderInterest = SteeringBehaviors.Wander(rb.velocity, transform.position, spawn, ref lastAdjust);
+		SteeringBehaviors.Wander(rb.velocity, transform.position, spawn, ref wanderInterest);
+		contextSteering.AddInterest((Vector2) transform.position + wanderInterest);
 		// contextSteering.AddInterest(transform.position + Player.instance.transform.position);
 		Vector2 contextResult = contextSteering.direction;
 		// Vector2 desired = SteeringBehaviors.Seek(contextResult, transform.position, maxSpeed);

@@ -46,6 +46,17 @@ namespace VoraUtils {
 			return 14 * math.min(xDistance, yDistance) + 10 * remainder;
 		}
 
+		/// <summary>
+		/// Checks to see if two points are further apart than a given distance, but in an efficient way.
+		/// </summary>
+		/// <param name="here">Start of distance to compare.</param>
+		/// <param name="there">End of distance to compare.</param>
+		/// <param name="compareDistance">How long the distance between the two vectors should be.</param>
+		/// <returns>A float. Negative if distance is smaller than the given, 0 if equal, and positive if larger.</returns>
+		public static float SimpleDistanceCheck(Vector2 here, Vector2 there, float compareDistance) {
+			return Mathf.Pow(compareDistance, 2) - (there - here).sqrMagnitude;
+		}
+
 		public static bool PointInBox(Vector2Int point, Vector2Int box) => PointInBox(point.x, point.y, box.x, box.y);
 		public static bool PointInBox(int2 point, int2 box) => PointInBox(point.x, point.y, box.x, box.y);
 		public static bool PointInBox(int pointX, int pointY, int boxX, int boxY) {
