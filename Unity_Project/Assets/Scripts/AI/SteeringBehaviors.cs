@@ -1,6 +1,5 @@
 using UnityEngine;
 using VoraUtils;
-using NoiseTest;
 
 public static class SteeringBehaviors
 {
@@ -81,48 +80,5 @@ public static class SteeringBehaviors
             Vector2 avoidanceForce = prediction;
         }
         return Vector2.zero;
-    }
-
-    public static Vector2 Wander(Vector2 velocity, Vector2 position, Vector2 spawn, ref float lastAdjust) {
-        OpenSimplexNoise noise = new OpenSimplexNoise();
-        float directionAdjust = lastAdjust;
-        if (Random.value < 0.01f) {
-            directionAdjust = (float) noise.Evaluate(position.x, position.y) * 100f;
-            lastAdjust = directionAdjust;
-        }
-        Vector2 spawnDirection = spawn - position;
-        float squaredDistance = spawnDirection.sqrMagnitude;
-        if (squaredDistance > 16) {
-            float spawnAngle = Vector2.SignedAngle(Vector2.right, spawnDirection);
-            float velocityAngle = Vector2.SignedAngle(Vector2.right, velocity);
-            float spawnAdjust = spawnAngle - velocityAngle;
-            float directionWeight = 2 / (squaredDistance + 1);
-            directionAdjust *= directionWeight;
-            spawnAdjust *= 1 - directionWeight;
-            directionAdjust += spawnAdjust;
-        }
-        directionAdjust *= Mathf.Deg2Rad;
-        Vector2 wanderDirection = velocity.Rotate(directionAdjust);
-        Debug.DrawLine(position, (position + wanderDirection.normalized * 3), Color.red);
-        return wanderDirection;
-    }
-
-    public static void Wander(Vector2 velocity, Vector2 position, Vector2 spawn, ref Vector2 wander) {
-        Debug.DrawLine(position, (position + wander * 3), Color.red);
-        if (Random.value > 0.01f) {
-            return;
-        }
-        OpenSimplexNoise noise = new OpenSimplexNoise();
-        float angleDelta = (float) noise.Evaluate(position.x, position.y) * 100f * Mathf.Deg2Rad;
-        Vector2 newWander = wander.Rotate(angleDelta);
-        Debug.DrawLine(position, position + newWander * 3, Color.magenta, 0.5f);
-
-        Vector2 spawnDirection = spawn - position;
-        float squaredDistance = spawnDirection.sqrMagnitude;
-        if (squaredDistance > 4) {
-            float weight = 10 / (squaredDistance + 9);
-            newWander = wander * weight + spawnDirection.normalized * (1 - weight);
-        }
-        wander = newWander;
     }
 }

@@ -42,14 +42,14 @@ public class MovementController : MonoBehaviour {
 
 	// Steering module
 	private ContextSteering contextSteering;
-
-	public AnimationCurve plot = new AnimationCurve();
+	private WanderModule wanderModule;
 
 	private void Start() {
 		waypoint = Vector2.zero;
 		spawn = transform.position;
 
 		contextSteering = GetComponent<ContextSteering>();
+		wanderModule = GetComponent<WanderModule>();
 
 		rb = GetComponent<Rigidbody2D>();
 		spriteRenderer = GetComponent<SpriteRenderer>();
@@ -129,8 +129,7 @@ public class MovementController : MonoBehaviour {
 		// }
 		contextSteering.ClearDangers();
 		contextSteering.ClearInterests();
-		// Vector2 wanderInterest = SteeringBehaviors.Wander(rb.velocity, transform.position, spawn, ref lastAdjust);
-		SteeringBehaviors.Wander(rb.velocity, transform.position, spawn, ref wanderInterest);
+		wanderInterest = wanderModule.WanderDirection;
 		contextSteering.AddInterest((Vector2) transform.position + wanderInterest);
 		// contextSteering.AddInterest(transform.position + Player.instance.transform.position);
 		Vector2 contextResult = contextSteering.direction;
