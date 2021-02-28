@@ -186,7 +186,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnAdjustStart: 2
-  directionChangeInverval: 20
+  spawnAdjustLimit: 50
+  directionChangeInverval: 100
 --- !u!1001 &239139374
 PrefabInstance:
   m_ObjectHideFlags: 0
