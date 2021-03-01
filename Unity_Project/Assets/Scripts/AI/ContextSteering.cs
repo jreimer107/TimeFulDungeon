@@ -56,7 +56,7 @@ public class ContextSteering : MonoBehaviour {
         dangerTransforms.Clear();
     }
 
-    private void Awake() {
+    private void Start() {
         arcWidthRadians = 2 * Mathf.PI / resolution;
         incrementSize = 1 / (float) mapIncrementCount;
         wallsLayerMask = LayerMask.GetMask("Obstacle");

@@ -130,13 +130,13 @@ public class MovementController : MonoBehaviour {
 		contextSteering.ClearDangers();
 		contextSteering.ClearInterests();
 		wanderInterest = wanderModule.WanderDirection;
-		contextSteering.AddInterest((Vector2) transform.position + wanderInterest);
+		if (wanderInterest != Vector2.zero) {
+			contextSteering.AddInterest((Vector2) transform.position + wanderInterest);
+		}
 		// contextSteering.AddInterest(transform.position + Player.instance.transform.position);
 		Vector2 contextResult = contextSteering.direction;
 		// Vector2 desired = SteeringBehaviors.Seek(contextResult, transform.position, maxSpeed);
-		Vector2 desired = contextResult * maxSpeed;
-		// Debug.Log("Desired: " + desired);
-		steering = Vector2.ClampMagnitude(desired - rb.velocity, maxAcceleration);
+		steering = SteeringBehaviors.CalculateSteeringAcceleration(rb, contextResult, maxSpeed, maxAcceleration);
 		if (freeze) {
 			steering = Vector2.zero;
 		}
@@ -147,7 +147,7 @@ public class MovementController : MonoBehaviour {
 			Debug.DrawRay(transform.position, rb.velocity, Color.red);
 		}
 		if (drawDesired) {
-			Debug.DrawRay(transform.position, desired, Color.green);
+			Debug.DrawRay(transform.position, contextResult, Color.green);
 		}
 	}
 

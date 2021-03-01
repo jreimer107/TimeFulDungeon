@@ -187,28 +187,13 @@ public class Floor {
 		int room_y = rng.Next(gencfg.FloorHeight - 1);
 		int room_w, room_h;
 		do {
-			room_w = (int)Gauss(gencfg.RoomSizeMean, gencfg.RoomSizeDeviation);
+			room_w = (int)Utils.Gauss(gencfg.RoomSizeMean, gencfg.RoomSizeDeviation);
 		} while (room_w < gencfg.RoomSizeMin);
 		do {
-			room_h = (int)Gauss(gencfg.RoomSizeMean, gencfg.RoomSizeDeviation);
+			room_h = (int)Utils.Gauss(gencfg.RoomSizeMean, gencfg.RoomSizeDeviation);
 		} while (room_h < gencfg.RoomSizeMin);
 
 		return new Room(room_x, room_y, room_w, room_h);
-	}
-
-
-	//Generates random doubles based on the mean and deviation fed in.
-	//Also I have no idea how it works.
-	public double Gauss(double mean, double deviation) {
-		double x1, x2, w;
-		do {
-			x1 = rng.NextDouble() * 2 - 1;
-			x2 = rng.NextDouble() * 2 - 1;
-			w = x1 * x1 + x2 * x2;
-		} while (w < 0 || w > 1);
-
-		w = Math.Sqrt(-2 * Math.Log(w) / w);
-		return mean + deviation * x1 * w;
 	}
 
 	public bool IsTileOfType(Coordinate pos, TileType type) {

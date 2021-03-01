@@ -5,7 +5,12 @@ public static class SteeringBehaviors
 {
     public static void Steer(Rigidbody2D rb, Vector2 acceleration, float maxVelocity) {
         rb.velocity = Vector2.ClampMagnitude(rb.velocity + acceleration * Time.fixedDeltaTime, maxVelocity);
-        // rb.velocity += Vector2.ClampMagnitude(rb.velocity + acceleration, maxVelocity);
+    }
+
+    public static Vector2 CalculateSteeringAcceleration(Rigidbody2D rigidbody, Vector2 desiredDirection, float maxVelocity, float maxAcceleration) {
+        Vector2 desiredVelocity = desiredDirection * maxVelocity;
+        Vector2 steeringAcceleration = Vector2.ClampMagnitude(desiredVelocity - rigidbody.velocity, maxAcceleration) / (rigidbody.mass / 2);
+        return steeringAcceleration;
     }
     
     public static Vector2 Seek(Vector2 target, Vector2 position, float maxSpeed) {

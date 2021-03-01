@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Mathematics;
 using TMPro;
+using Random = UnityEngine.Random;
 
 namespace VoraUtils {
 	public static class Utils {
@@ -37,14 +36,6 @@ namespace VoraUtils {
 			return textMeshPro;
 		}
 
-		public static float Distance(int2 a, int2 b) => Mathf.Sqrt(Mathf.Pow(a.x - b.x, 2) + Mathf.Pow(a.y - b.y, 2));
-
-		public static int SimpleDistance(int2 a, int2 b) {
-			int xDistance = math.abs(a.x - b.x);
-			int yDistance = math.abs(a.y - b.y);
-			int remainder = math.abs(xDistance - yDistance);
-			return 14 * math.min(xDistance, yDistance) + 10 * remainder;
-		}
 
 		/// <summary>
 		/// Checks to see if two points are further apart than a given distance, but in an efficient way.
@@ -69,7 +60,6 @@ namespace VoraUtils {
 		}
 
 		public static bool PointInBox(Vector2Int point, Vector2Int box) => PointInBox(point.x, point.y, box.x, box.y);
-		public static bool PointInBox(int2 point, int2 box) => PointInBox(point.x, point.y, box.x, box.y);
 		public static bool PointInBox(int pointX, int pointY, int boxX, int boxY) {
 			return
 				pointX >= 0 &&
@@ -83,8 +73,8 @@ namespace VoraUtils {
 		public static string GetRandomText() {
 			string abc = "abcdefghijklmnopqrstuvwxyz\n\n\n\nABCDEFGHIJKLMNOPQRSTUVWXYZ\t\t\t";
 			string text = "";
-			for (int i = 0; i < UnityEngine.Random.Range(20, 100); i++) {
-				text += abc[UnityEngine.Random.Range(0, abc.Length)];
+			for (int i = 0; i < Random.Range(20, 100); i++) {
+				text += abc[Random.Range(0, abc.Length)];
 			}
 			return text;
 		}
@@ -120,6 +110,18 @@ namespace VoraUtils {
 			return Mathf.Round(value / incrementSize) * incrementSize;
 		}
 
+		public static float Gauss(float mean, float deviation) {
+			float x1, x2, w;
+			do {
+				x1 = Random.value * 2 - 1;
+				x2 = Random.value * 2 - 1;
+				w = x1 * x1 + x2 * x2;
+			} while (w < 0 || w > 1);
+
+			w = Mathf.Sqrt(-2 * Mathf.Log(w) / w);
+			return mean + deviation * x1 * w;
+		}
+
 		/// <summary>
 		/// Removes unnecessary positions from A Star result.
 		/// This version uses a matrix of acceptable paths to determine which path points are skippable.
@@ -139,7 +141,7 @@ namespace VoraUtils {
 				Vector2Int turn = path[turnIndex];
 
 				// Find the first node after a turn
-				while (curr.x == turn.x || curr.y == turn.y || math.abs(turn.x - curr.x) == math.abs(turn.y - curr.y)) {
+				while (curr.x == turn.x || curr.y == turn.y || Mathf.Abs(turn.x - curr.x) == Mathf.Abs(turn.y - curr.y)) {
 					if (turnIndex == 0) {
 						// Debug.Log("Turn finder reached end of path.");
 						curr = end;
@@ -161,7 +163,7 @@ namespace VoraUtils {
 					// Debug.Log($"Possible waypoint is {turn}, {delta} away, slope of {slope}");
 					Vector2Int delta = turn - curr;
 					float slope = delta.y / delta.x;
-					if (math.abs(slope) >= 1) {
+					if (Mathf.Abs(slope) >= 1) {
 						// If slope > 1, path crosses at least one y border for each x.
 						// So for each y crossed, check that the positions left or right walkable, based on where the entity is
 						// Debug.LogFormat("Slope > 1: {0}", slope);
@@ -171,7 +173,7 @@ namespace VoraUtils {
 						while (y != delta.y) {
 							// Get the exact and rounded x coordinates
 							xf = (float)y / slope;
-							x = (int)math.trunc(xf);
+							x = Mathf.FloorToInt(xf);
 							test.x = curr.x + x;
 							test.y = curr.y + y;
 
@@ -198,7 +200,7 @@ namespace VoraUtils {
 						while (x != delta.x) {
 							// Get the exact and rounded y coordinates
 							yf = x * slope;
-							y = (int)math.trunc(yf);
+							y = Mathf.FloorToInt(yf);
 							test.x = curr.x + x;
 							test.y = curr.y + y;
 

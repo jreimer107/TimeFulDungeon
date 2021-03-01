@@ -1,5 +1,7 @@
 using UnityEngine;
+using System.Collections;
 using NoiseTest;
+using VoraUtils;
 
 /// <summary>
 /// Controls NPCs when they don't need to be doing anything.
@@ -20,6 +22,13 @@ public class WanderModule : MonoBehaviour {
 	[SerializeField] [Min(0)] private float spawnAdjustLimit = 8;
 	[Tooltip("How many frames in between wander turn updates. More frames makes smoother turns.")]
 	[SerializeField] [Min(1)] private int directionChangeInverval = 20; 
+	[Tooltip("Adjusts how extreme the wander turns are. Less than 1 for smoother, greater than for sharper.")]
+	[SerializeField] [Min(0)] private float turnSpeedModifier = 1;
+
+	[SerializeField] private float pauseDurationMean = 5f;
+	[SerializeField] private float pauseDurationDeviation = 1f;
+	[SerializeField] private float pauseIntervalMean = 5f;
+	[SerializeField] private float pauseIntervalDeviation = 1f;
 
 	private int frameCount = 0;
 	private float turnAmount = 0;
@@ -32,9 +41,10 @@ public class WanderModule : MonoBehaviour {
 	private void Start() {
 		noise = new OpenSimplexNoise();
 		rigidbody = GetComponent<Rigidbody2D>();
-		WanderDirection = new Vector2(Random.value, Random.value);
+		WanderDirection = Random.insideUnitCircle;
 		spawn = transform.position;
 		CalculateSpawnAdjustSlope();
+		StartCoroutine(Pause());
 	}
 
 	private void OnValidate() {
@@ -46,7 +56,7 @@ public class WanderModule : MonoBehaviour {
 		frameCount++;
 		if (frameCount >= directionChangeInverval) {
 			frameCount = 0;
-			turnAmount = (float) noise.Evaluate(transform.position.x, transform.position.y) * Mathf.Deg2Rad;
+			turnAmount = (float) noise.Evaluate(transform.position.x, transform.position.y) * Mathf.Deg2Rad * turnSpeedModifier;
 		}
 
 		// Turn our desired direction
@@ -63,6 +73,23 @@ public class WanderModule : MonoBehaviour {
 
 		WanderDirection = newWanderDirection;
 		Debug.DrawLine(transform.position, (Vector2) transform.position + WanderDirection, Color.red);
+	}
+
+	private IEnumerator Pause() {
+		while (this.enabled) {
+			float nextPauseTime = Random.Range(pauseIntervalMean - pauseIntervalDeviation, pauseIntervalMean + pauseIntervalDeviation);
+			Utils.Gauss(pauseIntervalMean, pauseIntervalDeviation);
+			Debug.Log($"Next pause in {nextPauseTime} seconds");
+			yield return new WaitForSeconds(nextPauseTime);
+			this.enabled = false;
+			float pauseDuration = Random.Range(pauseDurationMean - pauseDurationDeviation, pauseDurationMean + pauseDurationDeviation);
+			Debug.Log($"Pausing for {pauseDuration} seconds");
+			Vector2 wanderDirectionTemp = WanderDirection;
+			WanderDirection = Vector2.zero;
+			yield return new WaitForSeconds(pauseDuration);
+			WanderDirection = wanderDirectionTemp;
+			this.enabled = true;
+		}
 	}
 
 	/// <summary>
