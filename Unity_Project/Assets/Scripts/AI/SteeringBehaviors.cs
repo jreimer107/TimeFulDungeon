@@ -3,12 +3,12 @@ using VoraUtils;
 
 public static class SteeringBehaviors
 {
-    public static void Steer(Rigidbody2D rb, Vector2 acceleration, float maxVelocity) {
-        rb.velocity = Vector2.ClampMagnitude(rb.velocity + acceleration * Time.fixedDeltaTime, maxVelocity);
+    public static void Steer(Rigidbody2D rb, Vector2 acceleration, float maxSpeed) {
+        rb.velocity = Vector2.ClampMagnitude(rb.velocity + acceleration * Time.fixedDeltaTime, maxSpeed);
     }
 
-    public static Vector2 CalculateSteeringAcceleration(Rigidbody2D rigidbody, Vector2 desiredDirection, float maxVelocity, float maxAcceleration) {
-        Vector2 desiredVelocity = desiredDirection * maxVelocity;
+    public static Vector2 CalculateSteeringAcceleration(Rigidbody2D rigidbody, Vector2 desiredDirection, float maxSpeed, float maxAcceleration) {
+        Vector2 desiredVelocity = desiredDirection * maxSpeed;
         Vector2 steeringAcceleration = Vector2.ClampMagnitude(desiredVelocity - rigidbody.velocity, maxAcceleration) / (rigidbody.mass / 2);
         return steeringAcceleration;
     }

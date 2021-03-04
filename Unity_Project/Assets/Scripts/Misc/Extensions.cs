@@ -39,8 +39,30 @@ public static class Extensions {
             v.x * Mathf.Sin(delta) + v.y * Mathf.Cos(delta)
         );
     }
-}
 
-public static class ExtensionMethods {
-	
+	public static bool IsZero(this Vector2 vector) => vector == Vector2.zero;
+
+	public static Vector2 Position2D(this Transform transform) => transform.position;
+
+	/// <summary>
+	/// Checks to see if two points are further apart than a given distance, but in an efficient way.
+	/// </summary>
+	/// <param name="here">Start of distance to compare.</param>
+	/// <param name="there">End of distance to compare.</param>
+	/// <param name="compareDistance">How long the distance between the two vectors should be.</param>
+	/// <returns>A float. Negative if distance is smaller than the given, 0 if equal, and positive if larger.</returns>
+	public static float LazyDistanceCheck(this Vector2 here, Vector2 there, float compareDistance) {
+		return LazyDistanceCheck(there - here, compareDistance);
+	}
+
+
+	/// <summary>
+	/// Checks to see if two points are further apart than a given distance, but in an efficient way.
+	/// </summary>
+	/// <param name="distanceVector">Vector representing the distance between two points.</param>
+	/// <param name="compareDistance">How long the distance between the two vectors should be.</param>
+	/// <returns>A float. Negative if distance is smaller than the given, 0 if equal, and positive if larger.</returns>
+	public static float LazyDistanceCheck(this Vector2 distanceVector, float compareDistance) {
+		return distanceVector.sqrMagnitude - Mathf.Pow(compareDistance, 2);
+	}
 }

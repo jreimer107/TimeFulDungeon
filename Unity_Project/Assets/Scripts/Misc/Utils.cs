@@ -36,29 +36,6 @@ namespace VoraUtils {
 			return textMeshPro;
 		}
 
-
-		/// <summary>
-		/// Checks to see if two points are further apart than a given distance, but in an efficient way.
-		/// </summary>
-		/// <param name="here">Start of distance to compare.</param>
-		/// <param name="there">End of distance to compare.</param>
-		/// <param name="compareDistance">How long the distance between the two vectors should be.</param>
-		/// <returns>A float. Negative if distance is smaller than the given, 0 if equal, and positive if larger.</returns>
-		public static float LazyDistanceCheck(Vector2 here, Vector2 there, float compareDistance) {
-			return LazyDistanceCheck(there - here, compareDistance);
-		}
-
-
-		/// <summary>
-		/// Checks to see if two points are further apart than a given distance, but in an efficient way.
-		/// </summary>
-		/// <param name="distanceVector">Vector representing the distance between two points.</param>
-		/// <param name="compareDistance">How long the distance between the two vectors should be.</param>
-		/// <returns>A float. Negative if distance is smaller than the given, 0 if equal, and positive if larger.</returns>
-		public static float LazyDistanceCheck(Vector2 distanceVector, float compareDistance) {
-			return Mathf.Pow(compareDistance, 2) - distanceVector.sqrMagnitude;
-		}
-
 		public static bool PointInBox(Vector2Int point, Vector2Int box) => PointInBox(point.x, point.y, box.x, box.y);
 		public static bool PointInBox(int pointX, int pointY, int boxX, int boxY) {
 			return

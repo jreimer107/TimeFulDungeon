@@ -5,25 +5,46 @@ using System.Collections.Generic;
 using System;
 
 public class ContextSteering : MonoBehaviour {
-    // Configuration variables
+    #region Configuration Variables
     [SerializeField] private float maxInterestRange = 30f;
     [SerializeField] private int resolution = 12;
     [SerializeField] private int mapIncrementCount = 10;
     [SerializeField] private float wallCheckRange = 30f;
     [SerializeField] private float wallAvoidRange = 1f;
     [SerializeField] private float panicSeconds = 3;
+    [SerializeField] private LayerMask obstacleMask;
+    #endregion
+
+    #region Private Variables
+    private struct Interest {
+        private Transform transform;
+        private Vector2 vector2;
+        
+        public Vector2 position { get => transform == null ? vector2 : (Vector2) transform.position; }
+        public bool isDanger;
+
+        public Interest(Transform transform, bool isDanger) {
+            this.transform = transform;
+            this.vector2 = Vector2.zero;
+            this.isDanger = isDanger;
+        }
+
+        public Interest(Vector2 vector2, bool isDanger) {
+            this.transform = null;
+            this.vector2 = vector2;
+            this.isDanger = isDanger;
+        }
+
+        public static implicit operator Vector2(Interest i) => i.position;
+    }
 
     // Cached values calculated from configuration
     private float arcWidthRadians;
     private float incrementSize;
-    private LayerMask wallsLayerMask; 
     private Vector2[] mapVectors;
 
     // Lists modified by public add/remove functions, translated into maps
-    private HashSet<Vector2> interestPositions = new HashSet<Vector2>();
-    private HashSet<Transform> interestTransforms = new HashSet<Transform>();
-    private HashSet<Vector2> dangerPositions = new HashSet<Vector2>();
-    private HashSet<Transform> dangerTransforms = new HashSet<Transform>();
+    private HashSet<Interest> interestList = new HashSet<Interest>();
     
     // Scalar maps resulting from input lists
     private float[] interestMap;
@@ -32,34 +53,50 @@ public class ContextSteering : MonoBehaviour {
     // State
     private bool panicing = false;
     private float panicFrameCount = 0;
+    #endregion
 
-    // Output vector
+    #region Public Variables
+    /// <summary>
+    /// Output vector of context steerning.
+    /// </summary>
     public Vector2 direction { get; private set; }
 
+    /// <summary>
+    /// When there is nothing to move towards, move in this direction.
+    /// </summary>
+    [HideInInspector] public Vector2 defaultDirection = Vector2.zero;
+    #endregion
+
+    #region Public Methods
     // Input API. Helpers to modify input lists.
-    public void AddInterest(Vector2 interest) => interestPositions.Add(interest);
-    public void AddInterest(Transform interest) => interestTransforms.Add(interest);
-    public void AddDanger(Vector2 danger) => dangerPositions.Add(danger);
-    public void AddDanger(Transform danger) => dangerTransforms.Add(danger);
-    public void RemoveInterest(Vector2 interest) => interestPositions.Remove(interest);
-    public void RemoveInterest(Transform interest) => interestTransforms.Remove(interest);
-    public void RemoveDanger(Vector2 danger) => dangerPositions.Remove(danger);
-    public void RemoveDanger(Transform danger) => dangerTransforms.Remove(danger);
+    public void AddInterest(Vector2 interest, bool isDanger = false) => interestList.Add(new Interest(interest, isDanger));
+    public void AddInterest(Transform interest, bool isDanger = false) => interestList.Add(new Interest(interest, isDanger));
+    public void RemoveInterest(Vector2 interest) => interestList.RemoveWhere(x => x == interest);
+    public void RemoveInterest(Transform interest) => interestList.RemoveWhere(x => x == (Vector2) interest.position);
 
     public void ClearInterests() {
-        interestPositions.Clear();
-        interestTransforms.Clear();
+        interestList.Clear();
     }
 
-    public void ClearDangers() {
-        dangerPositions.Clear();
-        dangerTransforms.Clear();
+    /// <summary>
+    /// Checks if we have any interests or dangers that are in range.
+    /// </summary>
+    /// <returns>True if any interests in range, false otherwise.</returns>
+    public bool HasNoInterestsOrDangers() {
+        Vector2 ourPosition = transform.position;
+        foreach (Vector2 interest in interestList) {
+            if (ourPosition.LazyDistanceCheck(interest, maxInterestRange) < 0) {
+                return false;
+            }
+        }
+        return true;
     }
+    #endregion
 
+    #region Unity Methods
     private void Start() {
         arcWidthRadians = 2 * Mathf.PI / resolution;
         incrementSize = 1 / (float) mapIncrementCount;
-        wallsLayerMask = LayerMask.GetMask("Obstacle");
         mapVectors = new Vector2[resolution];
         for (int i = 0; i < resolution; i++) {
             mapVectors[i] = GetVectorForMapSlot(i);
@@ -68,10 +105,7 @@ public class ContextSteering : MonoBehaviour {
         obstacleMap = new float[resolution];
     }
 
-    private void Update() {
-        if (Input.GetKeyDown(KeyCode.B)) {
-            Debug.Log("Debug!");
-        }
+    private void LateUpdate() {
         ClearMaps();
         CreateMapsFromLists();
         bool cornered = AvoidWalls();
@@ -114,7 +148,9 @@ public class ContextSteering : MonoBehaviour {
         }
     }
 #endif
+    #endregion
 
+    #region Private Methods
     /// <summary>
     /// Shortcut for a for loop for each direction.
     /// </summary>
@@ -164,18 +200,16 @@ public class ContextSteering : MonoBehaviour {
     /// Converts the input lists into maps.
     /// </summary>
     private void CreateMapsFromLists() {
-        foreach (Vector2 interest in interestPositions) {
-            AddToMap(interest, false);
+        Vector2 ourPosition = transform.position;
+        bool interestAddedToMap = false;
+        foreach (Interest interest in interestList) {
+            if (ourPosition.LazyDistanceCheck(interest.position, maxInterestRange) < 0) {
+                AddToMap(interest.position, interest.isDanger);
+                interestAddedToMap = true;
+            }
         }
-        foreach (Transform interest in interestTransforms) {
-            AddToMap(interest.position, false);
-        }
-        foreach (Vector2 danger in dangerPositions) {
-            // AddInterestOrDanger(danger, dangerMap);
-            AddToMap(danger, true);
-        }
-        foreach (Transform danger in dangerTransforms) {
-            AddToMap(danger.position, true);
+        if (!interestAddedToMap && !defaultDirection.IsZero()) {
+            AddToMap(defaultDirection + transform.Position2D(), false);
         }
     }
 
@@ -257,7 +291,7 @@ public class ContextSteering : MonoBehaviour {
     private bool AvoidWalls() {
         int badDirections = 0;
         ForEachInterest((i, interest) => {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, mapVectors[i], wallCheckRange, wallsLayerMask);
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, mapVectors[i], wallCheckRange, obstacleMask);
             float wallDistance = wallCheckRange;
             if (hit.collider) {
                 wallDistance = hit.distance;
@@ -279,4 +313,5 @@ public class ContextSteering : MonoBehaviour {
             return interest + normalizedDistance;
         });
     }
+    #endregion
 }

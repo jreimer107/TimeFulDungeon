@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 [RequireComponent(typeof(Animator), typeof(Rigidbody2D))]
 public class MovementController : MonoBehaviour {
-	// Movement configuration
+	#region Configuration fields
 	[SerializeField] private float maxSpeed = 10f;
 	[SerializeField] private float maxAcceleration = 10f;
 	[SerializeField] private float approachDistance = 10f;
@@ -11,18 +11,13 @@ public class MovementController : MonoBehaviour {
 	[SerializeField] private bool drawVelocity = false;
 	[SerializeField] private bool drawDesired = false;
 	[SerializeField] private bool freeze = false;
-
+	[SerializeField] private bool drawPath = false;
+	#endregion
 	
-	/// <summary>
-	/// Controls what type of movement is used. Players use manual.
-	/// </summary>
-	public bool automatedMovement = true;
-	
+	#region  Private fields
 	// Controls where we are going, used by both modes
-	private Vector2 steering;
-	
-	// Manual pathfinding reference
-	private Vector2 velocity;
+	private Vector2 desiredDirection;
+	private bool wandering = false;
 
 	// Automatic pathfinding variables
 	private Vector2 waypoint;
@@ -38,12 +33,41 @@ public class MovementController : MonoBehaviour {
 	private Animator animator;
 	private bool hasVerticalAnimation;
 	private bool hasHorizontalAnimation;
-	private bool facingRight;
+	private bool facingRight { get => spriteRenderer.flipX; set => spriteRenderer.flipX = value; }
 
 	// Steering module
 	private ContextSteering contextSteering;
 	private WanderModule wanderModule;
+	#endregion
 
+	#region Public fields	
+	/// <summary>
+	/// Controls what type of movement is used. Players use manual.
+	/// </summary>
+	public bool automatedMovement = true;
+	#endregion
+
+	#region Public Methods
+	/// <summary>
+	/// Sets a direction to travel towards.
+	/// </summary>
+	/// <param name="desiredDirection">Direction from self to travel towards.</param>
+	public void SetDesiredDirection(Vector2 desiredDirection) {
+		this.desiredDirection = desiredDirection;
+	}
+
+	/// <summary>
+	/// Sets a position to travel to. Entity will pathfind its way there.
+	/// </summary>
+	/// <param name="destination">Vector2 destination to travel to.</param>
+	public void Travel(Vector2 destination) {
+		this.destination = destination;
+		this.start = transform.position;
+		GetUpdatedPath();
+	}
+	#endregion
+
+	#region Unity methods
 	private void Start() {
 		waypoint = Vector2.zero;
 		spawn = transform.position;
@@ -82,42 +106,41 @@ public class MovementController : MonoBehaviour {
 		}
 
 		//If input is moving the player right and player is facing left
-		if (spriteRenderer != null) {
-			if (rb.velocity.x < 0 && !facingRight) {
-				Flip();
-			} else if (rb.velocity.x > 0 && facingRight) {
-				Flip();
-			}
+		if (spriteRenderer && desiredDirection.x != 0 && (desiredDirection.x < 0 ^ facingRight)) {
+			Flip();
 		}
-	}
 
-	private void FixedUpdate() {
-		if (automatedMovement) {
-			SteeringBehaviors.Steer(rb, steering, maxSpeed);
+		// Adjust our velocity
+		Move(Time.deltaTime);
+	}
+	#endregion
+
+	#region Private methods
+	private void Move(float deltaTime) {
+		float calculatedMaxSpeed = maxSpeed;
+		if (wandering && !wanderModule.outsideWanderLimit) {
+			calculatedMaxSpeed = 0.5f;
 		}
-		else {
-			ManualMovement();
+		Vector2 desiredVelocity = desiredDirection * calculatedMaxSpeed;
+        Vector2 acceleration = Vector2.ClampMagnitude(desiredVelocity - rb.velocity, maxAcceleration) / (rb.mass / 2);
+		
+		if (freeze) {
+			desiredDirection = Vector2.zero;
 		}
+		if (drawSteering) {
+			Debug.DrawRay(transform.position, acceleration, Color.blue);
+		}
+		if (drawVelocity) {
+			Debug.DrawRay(transform.position, rb.velocity, Color.red);
+		}
+		if (drawDesired) {
+			Debug.DrawRay(transform.position, desiredDirection, Color.green);
+		}
+		
+		rb.velocity = Vector2.ClampMagnitude(rb.velocity + acceleration * deltaTime, maxSpeed);
 	}
 
-	private void OnDrawGizmos() {
-		// Gizmos.DrawSphere(waypoint, 0.2f);
-	}
-
-	public void SetManualMoveDirection(float horizontal, float vertical) {
-		steering = new Vector2(horizontal, vertical) * maxSpeed;
-	}
-
-	private void ManualMovement() {
-		//Move player by finding target velocity
-		Vector2 targetVelocity = steering * Time.fixedDeltaTime * 10f;
-		//And then smoothing it out and applying it to the character
-		rb.velocity = Vector2.SmoothDamp(rb.velocity, targetVelocity, ref velocity, 1 / maxAcceleration);
-	}
-
-	float lastAdjust = 0f;
-	Vector2 wanderInterest = Vector2.right;
-	public void AutomatedMovement() {
+	private void AutomatedMovement() {
 		// Steer towards our target
 		// Vector2 desired = SteeringBehaviors.Arrive(target, transform.position, maxSpeed, approachDistance);
 		// Vector2 target = SteeringBehaviors.Follow(path.ToArray(), rb.velocity, transform.position, maxSpeed, approachDistance);
@@ -127,56 +150,35 @@ public class MovementController : MonoBehaviour {
 		// 	contextSteering.AddInterest(target);
 		// 	waypoint = target;
 		// }
-		contextSteering.ClearDangers();
-		contextSteering.ClearInterests();
-		wanderInterest = wanderModule.WanderDirection;
-		if (wanderInterest != Vector2.zero) {
-			contextSteering.AddInterest((Vector2) transform.position + wanderInterest);
-		}
-		// contextSteering.AddInterest(transform.position + Player.instance.transform.position);
-		Vector2 contextResult = contextSteering.direction;
-		// Vector2 desired = SteeringBehaviors.Seek(contextResult, transform.position, maxSpeed);
-		steering = SteeringBehaviors.CalculateSteeringAcceleration(rb, contextResult, maxSpeed, maxAcceleration);
-		if (freeze) {
-			steering = Vector2.zero;
-		}
-		if (drawSteering) {
-			Debug.DrawRay(transform.position, steering, Color.blue);
-		}
-		if (drawVelocity) {
-			Debug.DrawRay(transform.position, rb.velocity, Color.red);
-		}
-		if (drawDesired) {
-			Debug.DrawRay(transform.position, contextResult, Color.green);
-		}
-	}
-
-
-	/// <summary>
-	/// Sets a position to travel to. Entity will pathfind its way there.
-	/// </summary>
-	/// <param name="destination">Vector2 destination to travel to.</param>
-	public void Travel(Vector2 destination) {
-		this.destination = destination;
-		this.start = transform.position;
-		GetUpdatedPath();
-		// Debug.Log("Destination: " + destination);
-		// Debug.Log("Path:");
-		// foreach(Vector2 waypoint in path) {
-		// 	Debug.Log(waypoint);
+		float calculatedMaxSpeed = maxSpeed;
+		contextSteering.AddInterest(Player.instance.transform);
+		// if (Vector2.Distance((Vector2) Player.instance.transform.position, transform.position) < 10) {
 		// }
+		// else {
+		// 	contextSteering.RemoveInterest(Player.instance.transform);
+		// }
+		wandering = contextSteering.HasNoInterestsOrDangers();
+		if (wandering) {
+			wanderModule.enabled = true;
+			contextSteering.defaultDirection = wanderModule.WanderDirection;
+		}
+		else {
+			wanderModule.enabled = false;
+			contextSteering.defaultDirection = Vector2.zero;
+		}
+		
+		desiredDirection = contextSteering.direction;
 	}
 
 	private void GetUpdatedPath() {
 		if (destination != default(Vector2)) {
 			path = PathfindingGrid.Instance.RequestPath(transform.position, destination);
-			// currentWaypoint = 0;
 		}
 	}
 
 	private void Flip() {
 		facingRight = !facingRight;
-		spriteRenderer.flipX = !spriteRenderer.flipX;
 	}
+	#endregion
 }
 

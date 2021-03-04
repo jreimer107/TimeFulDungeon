@@ -11,11 +11,7 @@ using VoraUtils;
 /// a tendency to go back to spawn if too far away.
 /// </summary>
 public class WanderModule : MonoBehaviour {
-	/// <summary>
-	/// Where the NPC should wander towards.
-	/// </summary>
-	public  Vector2 WanderDirection { get; private set; }
-
+	#region Configuration Fields
 	[Tooltip("Distance from spawn when the entity will start to be guided back towards it.")]
 	[SerializeField] [Min(0)] private float spawnAdjustStart = 2;
 	[Tooltip("Distance from spawn past which the entity will head straight back to its spawn.")]
@@ -29,21 +25,44 @@ public class WanderModule : MonoBehaviour {
 	[SerializeField] private float pauseDurationDeviation = 1f;
 	[SerializeField] private float pauseIntervalMean = 5f;
 	[SerializeField] private float pauseIntervalDeviation = 1f;
+	[SerializeField] private bool debug = false;
+	#endregion
 
+	#region Private Fields
 	private int frameCount = 0;
 	private float turnAmount = 0;
+	private bool isPausing = false;
 	
+	private Vector2 rawWanderDirection;
+	private Vector2 adjustedWanderDirection;
 	private OpenSimplexNoise noise;
 	private new Rigidbody2D rigidbody;
 	private Vector2 spawn;
 	private float spawnAdjustSlope;
+	#endregion
 
-	private void Start() {
+	#region Public Fields
+	/// <summary>
+	/// Where the NPC should wander towards.
+	/// </summary>
+	public  Vector2 WanderDirection { get => isPausing ? Vector2.zero : adjustedWanderDirection; }
+
+	/// <summary>
+	/// Whether the agent is outside the furthest limit it should get while wandering.
+	/// </summary>
+	public bool outsideWanderLimit { get => spawn.LazyDistanceCheck(transform.position, spawnAdjustLimit) > 0; }
+	#endregion
+
+	#region Unity Methods
+	private void Awake() {
 		noise = new OpenSimplexNoise();
 		rigidbody = GetComponent<Rigidbody2D>();
-		WanderDirection = Random.insideUnitCircle;
+		rawWanderDirection = Random.insideUnitCircle;
 		spawn = transform.position;
 		CalculateSpawnAdjustSlope();
+	}
+
+	private void OnEnable() {
 		StartCoroutine(Pause());
 	}
 
@@ -54,41 +73,57 @@ public class WanderModule : MonoBehaviour {
 	private void Update() {
 		// Only change our wander turning every so often to smooth turns
 		frameCount++;
+
 		if (frameCount >= directionChangeInverval) {
 			frameCount = 0;
 			turnAmount = (float) noise.Evaluate(transform.position.x, transform.position.y) * Mathf.Deg2Rad * turnSpeedModifier;
 		}
 
-		// Turn our desired direction
-		Vector2 newWanderDirection = WanderDirection.Rotate(turnAmount);
+        // Turn our desired direction
+        rawWanderDirection = rawWanderDirection.Rotate(turnAmount);
 
 		// Check if we are too far from spawn, and weight going back if we are
 		Vector2 spawnDirection = spawn - (Vector2) transform.position;
 		float spawnDistance = spawnDirection.magnitude;
+		adjustedWanderDirection = rawWanderDirection;
 		if (spawnDistance > spawnAdjustStart) {
-			float weight = (spawnDistance - spawnAdjustStart) * spawnAdjustSlope;
-			newWanderDirection = newWanderDirection * (1 - weight) + spawnDirection.normalized * weight;
-			newWanderDirection.Normalize();
+			float weight = Mathf.Min((spawnDistance - spawnAdjustStart) * spawnAdjustSlope, 1);
+			adjustedWanderDirection = rawWanderDirection * (1 - weight) + spawnDirection.normalized * weight;
+			adjustedWanderDirection.Normalize();
 		}
 
-		WanderDirection = newWanderDirection;
-		Debug.DrawLine(transform.position, (Vector2) transform.position + WanderDirection, Color.red);
+        Debug.DrawLine(transform.position, (Vector2)transform.position + this.rawWanderDirection, Color.red);
 	}
+	#endregion
 
+	#region Private Methods
+	/// <summary>
+	/// Coroutine that pauses movement at random intervals and for random lengths of time.
+	/// </summary>
+	/// <returns></returns>
 	private IEnumerator Pause() {
+		// Pause on start to try and eliminate syncing with other enemies
+		isPausing = true;
+		float pauseDuration = Random.Range(0, pauseDurationMean + pauseDurationDeviation);
+		if (debug) Debug.Log($"Start pause for {pauseDuration} seconds");
+		yield return new WaitForSeconds(pauseDuration);
+
+		// Cycle pausing until this disabled
 		while (this.enabled) {
+			// Calculate when next pause will be, wander for that amount of time
+			isPausing = false;
 			float nextPauseTime = Random.Range(pauseIntervalMean - pauseIntervalDeviation, pauseIntervalMean + pauseIntervalDeviation);
-			Utils.Gauss(pauseIntervalMean, pauseIntervalDeviation);
-			Debug.Log($"Next pause in {nextPauseTime} seconds");
+			if (debug) Debug.Log($"Next pause in {nextPauseTime} seconds");
 			yield return new WaitForSeconds(nextPauseTime);
-			this.enabled = false;
-			float pauseDuration = Random.Range(pauseDurationMean - pauseDurationDeviation, pauseDurationMean + pauseDurationDeviation);
-			Debug.Log($"Pausing for {pauseDuration} seconds");
-			Vector2 wanderDirectionTemp = WanderDirection;
-			WanderDirection = Vector2.zero;
+
+			// Pause for a random amount of time
+			if (outsideWanderLimit) {
+				continue;
+			}
+			isPausing = true;
+			pauseDuration = Random.Range(pauseDurationMean - pauseDurationDeviation, pauseDurationMean + pauseDurationDeviation);
+			if (debug) Debug.Log($"Pausing for {pauseDuration} seconds");
 			yield return new WaitForSeconds(pauseDuration);
-			WanderDirection = wanderDirectionTemp;
-			this.enabled = true;
 		}
 	}
 
@@ -108,4 +143,5 @@ public class WanderModule : MonoBehaviour {
 			spawnAdjustSlope = 0.5f / (spawnAdjustLimit - spawnAdjustStart);
 		}
 	}
+	#endregion
 }

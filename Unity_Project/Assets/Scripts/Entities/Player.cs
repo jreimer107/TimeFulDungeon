@@ -47,8 +47,8 @@ public class Player : MonoBehaviour {
 	// Update is called once per frame
 	private void Update() {
 		//Get input from player
-		controller.SetManualMoveDirection(
-			Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")
+		controller.SetDesiredDirection(
+			new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
 		);
 
 		if (Input.GetKeyDown(KeyCode.G)) {
