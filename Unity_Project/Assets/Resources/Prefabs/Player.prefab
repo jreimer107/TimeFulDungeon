@@ -590,10 +590,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4678304027998024}
   - component: {fileID: 50221540651525296}
-  - component: {fileID: 212350261414658562}
   - component: {fileID: 61384762267509882}
-  - component: {fileID: 114452477805542484}
+  - component: {fileID: 212350261414658562}
   - component: {fileID: 1366395371}
+  - component: {fileID: 114452477805542484}
   - component: {fileID: 787340086}
   - component: {fileID: 787340087}
   m_Layer: 9
@@ -641,6 +641,32 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!61 &61384762267509882
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1127876373250036}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.02000001, y: -0.28024435}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.65625, y: 0.96875}
+    newSize: {x: 0.65625, y: 0.96875}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.6, y: 0.3834672}
+  m_EdgeRadius: 0
 --- !u!212 &212350261414658562
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -693,50 +719,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 1
---- !u!61 &61384762267509882
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1127876373250036}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0.02000001, y: -0.28024435}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.65625, y: 0.96875}
-    newSize: {x: 0.65625, y: 0.96875}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.6, y: 0.3834672}
-  m_EdgeRadius: 0
---- !u!114 &114452477805542484
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1127876373250036}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 143e8a240834d4544aeb77b5d034ca91, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 10
-  maxHealth: 10
-  stamina: 100
-  maxStamina: 100
-  staminaRegen: 10
-  exhausted: 0
 --- !u!95 &1366395371
 Animator:
   serializedVersion: 3
@@ -756,6 +738,24 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &114452477805542484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1127876373250036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 143e8a240834d4544aeb77b5d034ca91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 10
+  maxHealth: 10
+  stamina: 100
+  maxStamina: 100
+  staminaRegen: 10
+  exhausted: 0
 --- !u!114 &787340086
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -816,6 +816,7 @@ MonoBehaviour:
   drawVelocity: 0
   drawDesired: 0
   freeze: 0
+  drawPath: 0
   automatedMovement: 1
 --- !u!1 &9016681147245168838
 GameObject:
@@ -866,11 +867,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radius: 0.75
+  angle: 0
   inHand: {fileID: 11400000, guid: 990e8d2bd1f14b14db0fa4dc50e3c596, type: 2}
+  spriteRenderer: {fileID: 0}
+  hitbox: {fileID: 0}
   animator: {fileID: 0}
   animatorOverrideController: {fileID: 0}
   testIdleClip: {fileID: 7400000, guid: 9b136b77d79c84540a3caa85dfeb706d, type: 2}
   testAttackClip: {fileID: 7400000, guid: 43a94df92163b5c4d9af8b466fd38293, type: 2}
+  audioSource: {fileID: 0}
+  soundEffect: {fileID: 0}
+  particles: {fileID: 0}
 --- !u!212 &9016681147245168835
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -36,7 +36,6 @@ public class WanderModule : MonoBehaviour {
 	private Vector2 rawWanderDirection;
 	private Vector2 adjustedWanderDirection;
 	private OpenSimplexNoise noise;
-	private new Rigidbody2D rigidbody;
 	private Vector2 spawn;
 	private float spawnAdjustSlope;
 	#endregion
@@ -56,7 +55,6 @@ public class WanderModule : MonoBehaviour {
 	#region Unity Methods
 	private void Awake() {
 		noise = new OpenSimplexNoise();
-		rigidbody = GetComponent<Rigidbody2D>();
 		rawWanderDirection = Random.insideUnitCircle;
 		spawn = transform.position;
 		CalculateSpawnAdjustSlope();

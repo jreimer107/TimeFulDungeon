@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(Animator), typeof(Rigidbody2D))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class MovementController : MonoBehaviour {
 	#region Configuration fields
 	[SerializeField] private float maxSpeed = 10f;
@@ -24,20 +24,15 @@ public class MovementController : MonoBehaviour {
 	private Vector2 destination;
 	private Vector2 start;
 	private Vector2 spawn;
-
 	private List<Vector2> path;
 
-	// Physics and animation
+	// Physics
 	private Rigidbody2D rb;
-	private SpriteRenderer spriteRenderer;
-	private Animator animator;
-	private bool hasVerticalAnimation;
-	private bool hasHorizontalAnimation;
-	private bool facingRight { get => spriteRenderer.flipX; set => spriteRenderer.flipX = value; }
 
 	// Steering module
 	private ContextSteering contextSteering;
 	private WanderModule wanderModule;
+	private AnimationModule animationModule;
 	#endregion
 
 	#region Public fields	
@@ -74,40 +69,18 @@ public class MovementController : MonoBehaviour {
 
 		contextSteering = GetComponent<ContextSteering>();
 		wanderModule = GetComponent<WanderModule>();
+		animationModule = GetComponent<AnimationModule>();
+		animationModule.GetDesiredVelocity = () => desiredDirection * rb.velocity.magnitude;
 
 		rb = GetComponent<Rigidbody2D>();
-		spriteRenderer = GetComponent<SpriteRenderer>();
-		animator = GetComponent<Animator>();
-		foreach (AnimatorControllerParameter parameter in animator.parameters) {
-			if (parameter.name == "Horizontal") {
-				hasHorizontalAnimation = true;
-			} else if (parameter.name == "Vertical") {
-				hasVerticalAnimation = true;
-			}
-			if (hasHorizontalAnimation && hasVerticalAnimation) {
-				break;
-			}
-		}
 	}
 
 	private void Update() {
-		// Update animation
-		if (hasHorizontalAnimation)
-			animator.SetFloat("Horizontal", Mathf.Abs(rb.velocity.x));
-		if (hasVerticalAnimation)
-			animator.SetFloat("Vertical", Mathf.Abs(rb.velocity.y));
-
-		
 		if (automatedMovement) {
 			AutomatedMovement();
 			if (destination != default(Vector2) && path.Count != 0) {
 				GetUpdatedPath();
 			}
-		}
-
-		//If input is moving the player right and player is facing left
-		if (spriteRenderer && desiredDirection.x != 0 && (desiredDirection.x < 0 ^ facingRight)) {
-			Flip();
 		}
 
 		// Adjust our velocity
@@ -174,10 +147,6 @@ public class MovementController : MonoBehaviour {
 		if (destination != default(Vector2)) {
 			path = PathfindingGrid.Instance.RequestPath(transform.position, destination);
 		}
-	}
-
-	private void Flip() {
-		facingRight = !facingRight;
 	}
 	#endregion
 }
