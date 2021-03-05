@@ -6,7 +6,7 @@ public class BulletParticle : MonoBehaviour
         other.TryGetComponent(out Enemy enemy);
         enemy?.TakeDamage(1);
         if (enemy) {
-            Popup.CreateDamagePopup("1", enemy.transform.position, Color.yellow);
+            Popup.CreatePopup("1", enemy.transform.position, Color.yellow);
         }
     }
 }

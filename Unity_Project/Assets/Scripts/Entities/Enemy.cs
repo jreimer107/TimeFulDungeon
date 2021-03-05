@@ -41,7 +41,7 @@ public class Enemy : MonoBehaviour {
 			Debug.Log("Taking damage");;
 			int damage = (HoldingPoint.instance.inHand as Melee).damage;
 			TakeDamage(damage);
-			Popup.CreateDamagePopup(damage.ToString(), transform.position, Color.yellow);
+			Popup.CreatePopup(damage.ToString(), transform.position, Color.yellow);
 		}
 	}
 

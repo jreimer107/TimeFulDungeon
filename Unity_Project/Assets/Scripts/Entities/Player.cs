@@ -90,7 +90,7 @@ public class Player : MonoBehaviour {
 
 	public void Damage(int damage) {
 		health = Math.Max(0, health - damage);
-		Popup.CreateDamagePopup(damage.ToString(), transform.position, Color.red);
+		Popup.CreatePopup(damage.ToString(), transform.position, Color.red);
 		onHealthChangedCallback.Invoke();
 		if (health == 0)
 			Die();
