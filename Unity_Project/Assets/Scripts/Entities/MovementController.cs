@@ -70,7 +70,7 @@ public class MovementController : MonoBehaviour {
 		contextSteering = GetComponent<ContextSteering>();
 		wanderModule = GetComponent<WanderModule>();
 		animationModule = GetComponent<AnimationModule>();
-		animationModule.GetDesiredVelocity = () => desiredDirection * rb.velocity.magnitude;
+		animationModule.getDesiredVelocity = () => desiredDirection * rb.velocity.magnitude;
 
 		rb = GetComponent<Rigidbody2D>();
 	}

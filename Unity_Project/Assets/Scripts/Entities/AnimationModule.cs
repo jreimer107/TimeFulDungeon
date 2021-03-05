@@ -8,29 +8,37 @@ public class AnimationModule : MonoBehaviour {
 	private Animator animator;
 	private bool hasVerticalAnimation;
 	private bool hasHorizontalAnimation;
-	private bool facingRight { get => spriteRenderer.flipX; set => spriteRenderer.flipX = value; }
+	private bool FacingRight { get => spriteRenderer.flipX; set => spriteRenderer.flipX = value; }
 	#endregion
 
 	#region Public fields
 	/// <summary>
 	/// Input. Determines what animation plays. Assign at creation.
 	/// </summary>
-	[HideInInspector] public Func<Vector2> GetDesiredVelocity = () => {
+	public Func<Vector2> getDesiredVelocity = () => {
 		Debug.LogWarning("No velocity getter given to AnimationModule!");
 		return Vector2.zero;
 	};
+
+	private static readonly int Horizontal = Animator.StringToHash("Horizontal");
+	private static readonly int Vertical = Animator.StringToHash("Vertical");
+
 	#endregion
 
 	#region Unity methods
 	private void Start() {
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		animator = GetComponent<Animator>();
-		foreach (AnimatorControllerParameter parameter in animator.parameters) {
-			if (parameter.name == "Horizontal") {
-				hasHorizontalAnimation = true;
-			} else if (parameter.name == "Vertical") {
-				hasVerticalAnimation = true;
+		foreach (var parameter in animator.parameters)  {
+			switch (parameter.name)  {
+				case "Horizontal":
+					hasHorizontalAnimation = true;
+					break;
+				case "Vertical":
+					hasVerticalAnimation = true;
+					break;
 			}
+
 			if (hasHorizontalAnimation && hasVerticalAnimation) {
 				break;
 			}
@@ -39,15 +47,15 @@ public class AnimationModule : MonoBehaviour {
 
 	private void Update() {
 		// Update 
-		Vector2 desiredVelocity = GetDesiredVelocity();
+		var desiredVelocity = getDesiredVelocity();
 		if (hasHorizontalAnimation)
-			animator.SetFloat("Horizontal", Mathf.Abs(desiredVelocity.x));
+			animator.SetFloat(Horizontal, Mathf.Abs(desiredVelocity.x));
 		if (hasVerticalAnimation)
-			animator.SetFloat("Vertical", Mathf.Abs(desiredVelocity.y));
+			animator.SetFloat(Vertical, Mathf.Abs(desiredVelocity.y));
 
 		// Flip animation based on intended direction
-		if (desiredVelocity.x != 0 && (desiredVelocity.x < 0 ^ facingRight)) {
-			facingRight = !facingRight;
+		if (desiredVelocity.x != 0 && (desiredVelocity.x < 0 ^ FacingRight)) {
+			FacingRight = !FacingRight;
 		}
 	}
 	#endregion
