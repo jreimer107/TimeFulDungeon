@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TimefulDungeon.Core;
 using UnityEngine;
 public class Spawner : MonoBehaviour
 {

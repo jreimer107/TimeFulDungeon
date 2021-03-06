@@ -1,3 +1,5 @@
+using TimefulDungeon.Core;
+using TimefulDungeon.UI;
 using UnityEngine;
 
 public class BulletParticle : MonoBehaviour

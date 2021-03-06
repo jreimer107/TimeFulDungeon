@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using TimefulDungeon;
+using TimefulDungeon.Core;
+using TimefulDungeon.UI;
+using UnityEngine;
 
 public class Enemy : MonoBehaviour {
 	public int health;

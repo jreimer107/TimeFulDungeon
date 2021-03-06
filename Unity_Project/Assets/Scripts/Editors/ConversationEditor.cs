@@ -2,6 +2,9 @@
 using UnityEditor;
 using UnityEngine;
 using System;
+using TimefulDungeon.AI;
+using TimefulDungeon.Core;
+using TimefulDungeon.UI;
 
 /// <summary>
 /// Custom inspector for the conversation scriptable object.
