@@ -1,209 +1,199 @@
-﻿using TimefulDungeon.Core;
+﻿using System.Collections;
+using TimefulDungeon.Core;
 using TimefulDungeon.UI;
 using UnityEngine;
-using VoraUtils;
+using UnityEngine.Serialization;
 
-//Simple GameObject wrapper for item class. Item contains all functional aspects of the item.
-//This simply a dropped object that, when picked up, gives the player the attached item.
-// [RequireComponent(typeof(SpriteRenderer), typeof(MovementController))]
 namespace TimefulDungeon {
-	public class Pickup : MonoBehaviour {
-		public Item item;
-		private static Transform player;
+    //Simple GameObject wrapper for item class. Item contains all functional aspects of the item.
+    //This simply a dropped object that, when picked up, gives the player the attached item.
+    [RequireComponent(typeof(SpriteRenderer), typeof(Rigidbody2D))]
+    public class Pickup : MonoBehaviour {
+        // Resources
+        private static Pickup pickupPrefab;
+        private static PhysicsMaterial2D pickupMaterial;
+        
+        // Dependencies
+        private static Tooltip tooltip;
+        private static Inventory inventory;
+        
+        // The item we contain
+        public Item item;
+        public Vector2 spawnVelocity = Vector2.zero;
 
-		[SerializeField] private float smoothTime = 0.05f;
-		[SerializeField] private float maxSpeed = 7;
-		[SerializeField] private float pickupDistance = 0.75f;
-		[SerializeField] private float shrinkDistance = 2f;
-		[Range(0, 1)] [SerializeField] private float minShrinkScale = 0.5f;
-		[SerializeField] private float mergeRadius = 0.1f;
+        // Movement and shrinking parameters
+        [SerializeField] private float smoothTime = 0.05f;
+        [SerializeField] private float maxSpeed = 7;
+        [SerializeField] private float shrinkDistance = 2f;
+        [Range(0, 1)] [SerializeField] private float minShrinkScale = 0.5f;
 
-		private Transform target = null;
-		private Vector2 velocity = Vector2.zero;
-		private float distanceToTarget = float.MaxValue;
+        // Radii to execute pickup and merge 
+        [SerializeField] private float pickupDistance = 0.75f;
+        [SerializeField] private float mergeRadius = 0.1f;
 
-		private bool beingPickedUp = false;
-		private bool beingDropped = false;
-		private bool beingMerged = false;
+        // Discard velocity parameters, presets feel nice
+        [SerializeField] private float minPushVelocity = 10f;
+        [SerializeField] private float maxPushVelocity = 30f;
+        
+        // State
+        private Transform target;
+        private bool pickUpDisabled;
+        private bool beingMerged;
+        private bool beingPickedUp;
+        private Vector2 velocity = Vector2.zero;
 
-		//Need these references as GetComponent is too slow.
-		private SpriteRenderer spriteRenderer;
-		private PolygonCollider2D collisionCollider;
-		private CircleCollider2D triggerCollider;
-		// private MovementController movementController;
+        // References to own components
+        private PolygonCollider2D hitbox;
+        private CircleCollider2D triggerCollider;
+        private SpriteRenderer spriteRenderer;
+        private new Rigidbody2D rigidbody;
+        private float distanceToTarget = float.MaxValue;
+        
 
-		//Discard velocity parameters, presets feel nice
-		[SerializeField] private float discardVelocityScaler = 5;
-		[SerializeField] private float discardMinVelocity = 10f;
-		[SerializeField] private float discardMaxVelocity = 30f;
+        private void Awake() {
+            // Get own references
+            spriteRenderer = GetComponent<SpriteRenderer>();
+            triggerCollider = GetComponent<CircleCollider2D>();
+            rigidbody = GetComponent<Rigidbody2D>();
 
-		// Tooltip timer
-		private Tooltip tooltip;
+            pickupPrefab ??= Resources.Load<Pickup>("Prefabs/Pickup");
+            pickupMaterial ??= Resources.Load<PhysicsMaterial2D>("Materials/PickupMaterial");
+        }
 
-		public static Pickup SpawnPickup(Item item, Vector2 position) {
-			if (!item) {
-				Debug.LogWarning("Null item in pickup!");
-				return null;
-			}
+        private void Start() {
+            // Get dependencies
+            tooltip ??= Tooltip.instance;
+            inventory ??= Player.instance.Inventory;
 
-			Pickup pickup = Instantiate(
-				Resources.Load<GameObject>("Prefabs/Pickup"),
-				position,
-				Quaternion.identity
-			).GetComponent<Pickup>();
-			pickup.SetItem(item);
-			Debug.Log("Pickup spawned;");
-			return pickup;
-		}
+            // Set sprite and create the hitbox
+            spriteRenderer.sprite = item.sprite;
+            hitbox = gameObject.AddComponent<PolygonCollider2D>();
+            hitbox.sharedMaterial = pickupMaterial;
+            
+            // Push the pickup
+            if (spawnVelocity != Vector2.zero) {
+                rigidbody.velocity = spawnVelocity.ClampMagnitude(minPushVelocity, maxPushVelocity);
+            }
+            
+            // Disable picking up for a bit to allow for discarding
+            StartCoroutine(TemporarilyDisablePickup());
+        }
 
-		public static void DiscardPickup(Item item) {
-			if (!player) {
-				player = Player.instance.transform;
-			}
-			SpawnPickup(item, player.transform.position)?.Discard();
-		}
+        private void Update() {
+            //If we have a targetPosition, scale size based on distance to it.
+            if (!target) return;
+            distanceToTarget = Vector2.Distance(target.position, transform.position);
+            
+            // Check if we can merge or pickup
+            if (beingMerged && distanceToTarget <= mergeRadius) {
+                // Merges destroy instantly, as they cannot fail
+                Destroy(gameObject);
+            }
+            else if (beingPickedUp && distanceToTarget < pickupDistance) {
+                // Pickups can fail, so undo picking up if it does
+                if (inventory.AddItem(item)) {
+                    Debug.Log("Item picked up by player");
+                    Destroy(gameObject);
+                }
+                else {
+                    target = null;
+                }
+            }
 
+            // Scale size by distance
+            if (!target || distanceToTarget >= shrinkDistance) {
+                transform.localScale = Vector3.one;
+            }
+            //Normalize scale to be within set min scale and 1 between range of shrink and pickup
+            else {
+                var newScale =
+                    (distanceToTarget - pickupDistance) / (shrinkDistance - pickupDistance) * (1 - minShrinkScale) +
+                    minShrinkScale;
+                transform.localScale = Vector2.one * newScale;
+            }
+        }
 
-		private void Awake() {
-			// Get own references
-			spriteRenderer = GetComponent<SpriteRenderer>();
-			triggerCollider = GetComponentInChildren<CircleCollider2D>();
-			// movementController = GetComponent<MovementController>();
+        private void FixedUpdate() {
+            if (!target) return;
+            //MoveTowards for linear movement, SmoothDamp for smoothed movement.
+            // transform.position = Vector2.MoveTowards(transform.position, target.transform.position, maxSpeed * Time.fixedDeltaTime);
+            transform.position = Vector2.SmoothDamp(transform.position, target.transform.position, ref velocity,
+                smoothTime, maxSpeed, Time.fixedDeltaTime);
+        }
 
-			// Preconstructed item, not created by SpawnPickup
-			if (item && !collisionCollider) {
-				SetItem(item);
-			}
-		}
+        private void OnTriggerEnter2D(Collider2D other) {
+            Debug.Log("Trigger enter: " + other.name, gameObject);
+            // Player entered pickup range, begin pick up
+            if (other.CompareTag("Player")) {
+                if (pickUpDisabled || !inventory.CanAdd(item)) return;
+                Debug.Log("Pickup check passed!");
+                beingPickedUp = true;
+                target = other.transform;
+            }
+            // We are stackable and can stack with nearby pickup, begin merge
+            else if (item.stackable && other.CompareTag("Pickup")) {
+                var otherPickup = other.GetComponent<Pickup>();
+                if (item != otherPickup.item) return;
+                target = other.transform;
+                Debug.Log("Target position set to " + target.transform.position);
+                //Item with greater ID gets destroyed to avoid race conditions
+                if (transform.GetInstanceID() > target.GetInstanceID()) {
+                    beingMerged = true;
+                    hitbox.enabled = false;
+                    triggerCollider.enabled = false;
+                }
+                else {
+                    item.count += otherPickup.item.count;
+                    Debug.Log("Incrementing item count to " + item.count);
+                }
+            }
+        }
 
-		//Called before first frame update
-		private void Start() {
-			// Get other's references
-			if (!tooltip) {
-				tooltip = Tooltip.instance;
-			}
-			if (!player) {
-				player = Player.instance.transform;
-			}
-		}
+        private void OnTriggerExit2D(Collider2D other) {
+            if (other.CompareTag("Player")) {
+                Debug.Log("Exited pickup radius, picking up re-enabled.", gameObject);
+                beingPickedUp = false;
+            }
 
-		// Update is called once per frame
-		private void Update() {
-			//If we have a targetPosition, scale size based on distance to it.
-			if (target) {
-				distanceToTarget = Vector2.Distance(target.position, transform.position);
+            target = null;
+            transform.localScale = Vector3.one;
+        }
 
-				// Check if we can merge or pickup
-				if (beingMerged && distanceToTarget <= mergeRadius) {
-					// Merges destroy instantly, as they cannot fail
-					Destroy(gameObject);
-				} else if (beingPickedUp && distanceToTarget < pickupDistance) {
-					// Pickups can fail, so undo picking up if it does
-					if (Inventory.instance.Add(item)) {
-						Debug.Log("Item picked up by player");
-						Destroy(gameObject);
-					} else {
-						target = null;
-					}
-				}
+        #region Static methods
+        /// <summary>
+        /// Creates a pickup of the given item at the given position.
+        /// </summary>
+        /// <param name="item">The item the pickup contains.</param>
+        /// <param name="position">Where the pickup should spawn.</param>
+        /// <param name="velocity">When instantiated, this velocity is applied. Clamped by parameters.</param>
+        public static void Create(Item item, Vector2 position, Vector2 velocity) {
+            if (!item) {
+                Debug.LogWarning("Null item in pickup!");
+                return;
+            }
 
-				// Scale size by distance
-				if (!target || distanceToTarget >= shrinkDistance) {
-					transform.localScale = Vector3.one;
-				} else {
-					//Normalize scale to be within set min scale and 1 between range of shrink and pickup
-					float newScale = (distanceToTarget - pickupDistance) / (shrinkDistance - pickupDistance) * (1 - minShrinkScale) + minShrinkScale;
-					transform.localScale = Vector2.one * newScale;
-				}
-			}
-		}
+            var pickup = Instantiate(pickupPrefab, position, Quaternion.identity);
+            pickup.item = item;
+            pickup.spawnVelocity = velocity;
 
-		private void FixedUpdate() {
-			if (target) {
-				//MoveTowards for linar movement, smoothdamp for smoothed movement.
-				// transform.position = Vector2.MoveTowards(transform.position, player.transform.position, maxSpeed * Time.fixedDeltaTime);
-				transform.position = Vector2.SmoothDamp(transform.position, target.transform.position, ref velocity, smoothTime, maxSpeed, Time.fixedDeltaTime);
-				distanceToTarget = Vector2.Distance(target.transform.position, transform.position);
-			}
-		}
+            Debug.Log("Pickup spawned;");
+        }
+        #endregion
 
-		//This should only be run once after instantiation
-		private void SetItem(Item item) {
-			this.item = item;
-			spriteRenderer.sprite = item.sprite;
+        private IEnumerator TemporarilyDisablePickup() {
+            pickUpDisabled = true;
+            yield return new WaitForSeconds(2f);
+            pickUpDisabled = false;
+        }
 
-			//Now that we have a sprite, create the collision collider
-			collisionCollider = GetComponent<PolygonCollider2D>();
-			if (collisionCollider == null) {
-				collisionCollider = gameObject.AddComponent<PolygonCollider2D>();
-				collisionCollider.sharedMaterial = (PhysicsMaterial2D)Resources.Load("Materials/PickupMaterial");
-			}
-		}
+        #region TooltipHover
+        private void OnMouseEnter() {
+            tooltip.ShowTextOnDelay(item.GetTooltipText(), 300);
+        }
 
-		private void Discard() {
-			Debug.Log("Discard called.");
-			beingDropped = true;
-
-			//Shoot pickup towards mouse location, not too slow or fast
-			Vector2 mousePos = Utils.GetMouseWorldPosition3D() - player.transform.position;
-
-			//First scale the vector up. If too large clamp it, if too small set it to a minimum
-			Vector2 push = mousePos * discardVelocityScaler;
-			if (push.magnitude > discardMaxVelocity) {
-				push = Vector2.ClampMagnitude(push, discardMaxVelocity);
-			} else if (push.magnitude < discardMinVelocity) {
-				push = push.normalized * discardMinVelocity;
-			}
-			// GetComponent<MovementController>().Push(push);
-			GetComponent<Rigidbody2D>().velocity = push;
-			// Debug.Log(push);
-		}
-
-		private void OnTriggerEnter2D(Collider2D other) {
-			if (other.CompareTag("Player")) {
-				if (!beingDropped && Inventory.instance.CanAdd(item)) {
-					Debug.Log("Pickup check passed!");
-					beingPickedUp = true;
-					target = player;
-				}
-			} else if (item.stackable && other.CompareTag("Pickup")) {
-				//Merge nearby items of same type
-				Pickup other_pickup = other.GetComponentInParent<Pickup>();
-				if (item == other_pickup.item) {
-					target = other.transform;
-					Debug.Log("Target position set to " + target.transform.position);
-					//Item with greater ID gets destroyed to avoid race conditions
-					if (transform.GetInstanceID() > target.GetInstanceID()) {
-						beingMerged = true;
-						collisionCollider.enabled = false;
-						triggerCollider.enabled = false;
-					} else {
-						item.count += other_pickup.item.count;
-						Debug.Log("Incrementing item count to " + item.count);
-					}
-				}
-			}
-		}
-
-		private void OnTriggerExit2D(Collider2D other) {
-			if (other.CompareTag("Player")) {
-				Debug.Log("Exited pickup raidus, picking up reenabled.");
-				beingPickedUp = false;
-				beingDropped = false;
-			}
-			target = null;
-			// movementController.SetMoveDirection(0, 0);
-			transform.localScale = Vector3.one;
-		}
-
-		#region TooltipHover
-		private void OnMouseEnter() {
-			tooltip.ShowTextOnDelay(item.GetTooltipText(), 300);
-		}
-
-		private void OnMouseExit() {
-			tooltip.Hide();
-		}
-		#endregion
-	}
+        private void OnMouseExit() {
+            tooltip.Hide();
+        }
+        #endregion
+    }
 }

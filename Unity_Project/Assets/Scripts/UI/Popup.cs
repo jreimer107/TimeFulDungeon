@@ -20,7 +20,7 @@ namespace TimefulDungeon.UI {
         /// <param name="color">The color of the text.</param>
         public static void CreatePopup(string text, Vector2 position, Color color) {
             popupPrefab ??= Resources.Load<Popup>("Prefabs/Popup");
-        
+
             var popup = Instantiate(popupPrefab);
             popup.text = text;
             popup.worldPointPosition = position;

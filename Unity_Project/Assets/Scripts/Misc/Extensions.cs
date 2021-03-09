@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using  Unity.Mathematics;
 
 public static class Extensions {
 	public static int Clamp(this int value, int inclusiveMin,
@@ -40,6 +39,23 @@ public static class Extensions {
         );
     }
 
+	public static Vector2 MinClamp(this Vector2 v, float floor) {
+		return v.SmallerThan(floor) ? v.normalized * floor : v;
+	}
+
+	public static Vector2 ClampMagnitude(this Vector2 v, float floor = float.MinValue, float ceiling = float.MaxValue) {
+		var sqMag = v.sqrMagnitude;
+		floor *= floor;
+		ceiling *= ceiling;
+		if (sqMag < floor) {
+			return v.normalized * floor;
+		}
+		if (sqMag > ceiling) {
+			return v.normalized * ceiling;
+		}
+		return v;
+	}
+
 	public static bool IsZero(this Vector2 vector) => vector == Vector2.zero;
 
 	public static Vector2 Position2D(this Transform transform) => transform.position;
@@ -64,5 +80,35 @@ public static class Extensions {
 	/// <returns>A float. Negative if distance is smaller than the given, 0 if equal, and positive if larger.</returns>
 	public static float LazyDistanceCheck(this Vector2 distanceVector, float compareDistance) {
 		return distanceVector.sqrMagnitude - Mathf.Pow(compareDistance, 2);
+	}
+
+	public static bool LargerThan(this Vector2 distanceVector, float compareDistance) {
+		return LazyDistanceCheck(distanceVector, compareDistance) > 0;
+	}
+	
+	/// <summary>
+	/// Checks if two Vector2 positions are farther than the given distance.
+	/// </summary>
+	/// <param name="here">First position.</param>
+	/// <param name="there">Second position.</param>
+	/// <param name="compareDistance">Distance to compare.</param>
+	/// <returns>True if the positions are farther apart than the given distance. False otherwise.</returns>
+	public static bool FartherThan(this Vector2 here, Vector2 there, float compareDistance) {
+		return LazyDistanceCheck(here, there, compareDistance) > 0;
+	}
+
+	public static bool SmallerThan(this Vector2 distanceVector, float compareDistance) {
+		return LazyDistanceCheck(distanceVector, compareDistance) < 0;
+	}
+
+	/// <summary>
+	/// Checks if two Vector2 positions are closer than the given distance.
+	/// </summary>
+	/// <param name="here">First position.</param>
+	/// <param name="there">Second position.</param>
+	/// <param name="compareDistance">Distance to compare.</param>
+	/// <returns>True if the positions are closer together than the given distance. False otherwise.</returns>
+	public static bool CloserThan(this Vector2 here, Vector2 there, float compareDistance) {
+		return LazyDistanceCheck(here, there, compareDistance) < 0;
 	}
 }

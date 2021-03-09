@@ -4,119 +4,111 @@ using UnityEngine;
 using VoraUtils;
 
 namespace TimefulDungeon.AI {
-	public class WorldGrid<T> {
-		public int width { private set; get; }
-		public int height { private set; get; }
-		public float cellSize { private set; get; }
-		public bool debug = false;
-		private Vector2 originPosition;
-		private T[,] gridArray;
+    public class WorldGrid<T> {
+        public delegate T CreateGridObject(WorldGrid<T> worldGrid, int x, int y);
 
-		public event EventHandler<OnGridChangedEventArgs> OnGridChange;
-		public class OnGridChangedEventArgs : EventArgs {
-			public int x;
-			public int y;
-		}
+        public bool debug = false;
+        private readonly T[,] gridArray;
+        private readonly Vector2 originPosition;
 
-		public T this[int x, int y] {
-			get { return Get(x, y); }
-			set { Set(x, y, value); }
-		}
+        public WorldGrid(int width, int height, float cellSize, Vector2 originPosition = default,
+            CreateGridObject createObject = null, bool debug = false) {
+            Width = width;
+            Height = height;
+            this.CellSize = cellSize;
+            this.originPosition = originPosition;
+            gridArray = new T[width, height];
 
-		public T this[Vector2Int a] {
-			get { return gridArray[a.x, a.y]; }
-			set { gridArray[a.x, a.y] = value; }
-		}
+            if (createObject != null)
+                for (var x = 0; x < width; x++)
+                for (var y = 0; y < height; y++)
+                    gridArray[x, y] = createObject(this, x, y);
 
-		public delegate T CreateGridObject(WorldGrid<T> worldGrid, int x, int y);
+            if (debug) ShowDebug();
+        }
 
-		public WorldGrid(int width, int height, float cellSize, Vector2 originPosition = default(Vector2), CreateGridObject createObject = null, bool debug = false) {
-			this.width = width;
-			this.height = height;
-			this.cellSize = cellSize;
-			this.originPosition = originPosition;
-			gridArray = new T[width, height];
+        public int Width { get; }
+        public int Height { get; }
+        public float CellSize { get; }
 
-			if (createObject != null) {
-				for (int x = 0; x < width; x++) {
-					for (int y = 0; y < height; y++) {
-						gridArray[x, y] = createObject(this, x, y);
-					}
-				}
-			}
+        public T this[int x, int y] {
+            get => Get(x, y);
+            set => Set(x, y, value);
+        }
 
-			if (debug) {
-				ShowDebug();
-			}
-		}
+        public T this[Vector2Int a] {
+            get => gridArray[a.x, a.y];
+            set => gridArray[a.x, a.y] = value;
+        }
 
-		public void ShowDebug() {
-			Debug.Log("Debug drawing!");
-			TextMeshPro[,] debugTextArray = new TextMeshPro[width, height];
-			for (int x = 0; x < width; x++) {
-				for (int y = 0; y < height; y++) {
-					debugTextArray[x, y] = Utils.CreateWorldText(gridArray[x, y]?.ToString() + 
-					                                             $"\n({x}, {y})", null, GetWorldPosition(x, y) + new Vector2(cellSize, cellSize) * 0.5f, 4, Color.white, TextAnchor.MiddleCenter);
-					debugTextArray[x, y].fontSize = 2;
-					Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x, y + 1), Color.white, 100f);
-					Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x + 1, y), Color.white, 100f);
-				}
-			}
-			Debug.DrawLine(GetWorldPosition(0, height), GetWorldPosition(width, height), Color.white, 100f);
-			Debug.DrawLine(GetWorldPosition(width, 0), GetWorldPosition(width, height), Color.white, 100f);
-			OnGridChange += (object sender, OnGridChangedEventArgs eventArgs) => {
-				debugTextArray[eventArgs.x, eventArgs.y].text = gridArray[eventArgs.x, eventArgs.y]?.ToString();// + $"\n({eventArgs.x}, {eventArgs.y})";
-			};
-		}
+        public event EventHandler<OnGridChangedEventArgs> OnGridChange;
 
-		public T[,] GetGrid() => gridArray;
+        public void ShowDebug() {
+            Debug.Log("Debug drawing!");
+            var debugTextArray = new TextMeshPro[Width, Height];
+            for (var x = 0; x < Width; x++)
+            for (var y = 0; y < Height; y++) {
+                debugTextArray[x, y] = Utils.CreateWorldText(gridArray[x, y] +
+                                                             $"\n({x}, {y})", null,
+                    GetWorldPosition(x, y) + new Vector2(CellSize, CellSize) * 0.5f, 4, Color.white,
+                    TextAnchor.MiddleCenter);
+                debugTextArray[x, y].fontSize = 2;
+                Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x, y + 1), Color.white, 100f);
+                Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x + 1, y), Color.white, 100f);
+            }
 
-		public Vector2 GetWorldPosition(int x, int y, bool center = false) {
-			Vector2 ret = new Vector2(x, y) * cellSize + originPosition;
-			return center ? ret + Vector2.one * cellSize / 2 : ret;
-		}
+            Debug.DrawLine(GetWorldPosition(0, Height), GetWorldPosition(Width, Height), Color.white, 100f);
+            Debug.DrawLine(GetWorldPosition(Width, 0), GetWorldPosition(Width, Height), Color.white, 100f);
+            OnGridChange += (sender, eventArgs) => {
+                debugTextArray[eventArgs.x, eventArgs.y].text =
+                    gridArray[eventArgs.x, eventArgs.y]?.ToString();
+            };
+        }
 
-		public void GetXY(Vector2 worldPosition, out int x, out int y) {
-			x = Mathf.FloorToInt((worldPosition - originPosition).x / cellSize);
-			y = Mathf.FloorToInt((worldPosition - originPosition).y / cellSize);
-		}
+        public Vector2 GetWorldPosition(int x, int y, bool center = false) {
+            var ret = new Vector2(x, y) * CellSize + originPosition;
+            return center ? ret + Vector2.one * CellSize / 2 : ret;
+        }
 
-		public Vector2Int GetXY(Vector2 worldPosition) {
-			return new Vector2Int(
-				Mathf.FloorToInt((worldPosition - originPosition).x / cellSize),
-				Mathf.FloorToInt((worldPosition - originPosition).y / cellSize)
-			);
-		}
+        public void GetXY(Vector2 worldPosition, out int x, out int y) {
+            x = Mathf.FloorToInt((worldPosition - originPosition).x / CellSize);
+            y = Mathf.FloorToInt((worldPosition - originPosition).y / CellSize);
+        }
 
-		public void Set(int x, int y, T value) {
-			if (x >= 0 && y >= 0 && x < width && y < height) {
-				gridArray[x, y] = value;
-				TriggerGridObjectChanged(x, y);
-			}
-		}
+        public Vector2Int GetXY(Vector2 worldPosition) {
+            return new Vector2Int(
+                Mathf.FloorToInt((worldPosition - originPosition).x / CellSize),
+                Mathf.FloorToInt((worldPosition - originPosition).y / CellSize)
+            );
+        }
 
-		public void TriggerGridObjectChanged(int x, int y) {
-			if (OnGridChange != null) OnGridChange(this, new OnGridChangedEventArgs { x = x, y = y });
-		}
+        public void Set(int x, int y, T value) {
+            if (x < 0 || y < 0 || x >= Width || y >= Height) return;
+            gridArray[x, y] = value;
+            TriggerGridObjectChanged(x, y);
+        }
 
-		public void Set(Vector2 worldPositon, T value) {
-			int x, y;
-			GetXY(worldPositon, out x, out y);
-			Set(x, y, value);
-		}
+        private void TriggerGridObjectChanged(int x, int y) {
+            OnGridChange?.Invoke(this, new OnGridChangedEventArgs {x = x, y = y});
+        }
 
-		public T Get(int x, int y) {
-			if (Utils.PointInBox(x, y, width, height)) {
-				return gridArray[x, y];
-			}
-			return default(T);
-		}
+        public void Set(Vector2 worldPositon, T value) {
+            GetXY(worldPositon, out var x, out var y);
+            Set(x, y, value);
+        }
 
-		public T Get(Vector2 worldPositon) {
-			int x, y;
-			GetXY(worldPositon, out x, out y);
-			return Get(x, y);
-		}
+        public T Get(int x, int y) {
+            return Utils.PointInBox(x, y, Width, Height) ? gridArray[x, y] : default;
+        }
 
-	}
+        public T Get(Vector2 worldPositon) {
+            GetXY(worldPositon, out var x, out var y);
+            return Get(x, y);
+        }
+
+        public class OnGridChangedEventArgs : EventArgs {
+            public int x;
+            public int y;
+        }
+    }
 }

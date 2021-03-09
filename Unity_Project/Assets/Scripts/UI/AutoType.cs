@@ -4,57 +4,49 @@ using TMPro;
 using UnityEngine;
 
 namespace TimefulDungeon.UI {
-	[RequireComponent(typeof(AudioSource))]
-	public class AutoType : MonoBehaviour {
-		[Range(0, 0.2f)] public float letterPause = 0.05f;
-	
-		[SerializeField] private TMP_Text textObj = null;
-		private string content = null;
-		private Action onDoneCallback;
+    [RequireComponent(typeof(AudioSource))]
+    public class AutoType : MonoBehaviour {
+        [Range(0, 0.2f)] public float letterPause = 0.05f;
 
-		[SerializeField] private AudioClip sound = null;
-		private AudioSource audioSource;
+        [SerializeField] private TMP_Text textObj;
 
-		private Coroutine typer;
-		public bool done { get; private set; } = true;
+        [SerializeField] private AudioClip sound;
+        private AudioSource audioSource;
+        private string content;
+        private Action onDoneCallback;
 
-		private void Start() {
-			audioSource = GetComponent<AudioSource>();
-			// textObj.text = "";
-			// done = false;
-		}
+        private Coroutine typer;
+        public bool Done { get; private set; } = true;
 
-		public void PrintMessage(string content = null, Action onDone = null) {
-			if (content != null) {
-				this.content = content;
-			} else {
-				this.content = textObj.text;
-			}
-			textObj.text = "";
-			onDoneCallback = onDone;
-			done = false;
-			typer = StartCoroutine(TypeText());
-		}
+        private void Start() {
+            audioSource = GetComponent<AudioSource>();
+        }
 
-		private IEnumerator TypeText() {
-			foreach (char letter in content.ToCharArray()) {
-				textObj.text += letter;
-				if (sound) {
-					audioSource.PlayOneShot(sound);
-				}
-				yield return new WaitForSeconds(letterPause);
-			}
-			done = true;
-			onDoneCallback?.Invoke();
-		}
+        public void PrintMessage(string text = null, Action onDone = null) {
+            content = text ?? textObj.text;
+            textObj.text = "";
+            onDoneCallback = onDone;
+            Done = false;
+            typer = StartCoroutine(TypeText());
+        }
 
-		public void SkipToEnd() {
-			if (typer != null) {
-				StopCoroutine(typer);
-				textObj.text = content;
-				done = true;
-				onDoneCallback?.Invoke();
-			}
-		}
-	}
+        private IEnumerator TypeText() {
+            foreach (var letter in content) {
+                textObj.text += letter;
+                if (sound) audioSource.PlayOneShot(sound);
+                yield return new WaitForSeconds(letterPause);
+            }
+
+            Done = true;
+            onDoneCallback?.Invoke();
+        }
+
+        public void SkipToEnd() {
+            if (typer == null) return;
+            StopCoroutine(typer);
+            textObj.text = content;
+            Done = true;
+            onDoneCallback?.Invoke();
+        }
+    }
 }

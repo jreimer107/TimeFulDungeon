@@ -20,10 +20,10 @@ TagManager:
   - Enemies
   - Player
   - Pickup
-  - 
+  - Pickup Merge
   - Uninteractable
-  - Hand
-  - Damageable
+  - 
+  - 
   - Obstacle
   - 
   - 

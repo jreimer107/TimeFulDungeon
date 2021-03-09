@@ -3,57 +3,56 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace TimefulDungeon.UI {
-	public class ConversationManager : MonoBehaviour {
-		[SerializeField] private GameObject conversationPanel = null;
-		private AutoType conversationTyper;
-		private Conversation currentConversation;
-		private Queue<Conversation> conversations;
+    public class ConversationManager : MonoBehaviour {
+        [SerializeField] private GameObject conversationPanel;
 
-		public Conversation testConversation;
+        public Conversation testConversation;
+        private Queue<Conversation> conversations;
+        private AutoType conversationTyper;
+        private Conversation currentConversation;
 
-		#region Singleton
-		public static ConversationManager instance;
-		private void Awake() {
-			if (instance != null) {
-				Debug.LogWarning("Multiple instances of ConversationManager detected");
-			}
-			instance = this;
-		}
-		#endregion
+        private void Start() {
+            conversations = new Queue<Conversation>();
+            conversationTyper = conversationPanel.GetComponent<AutoType>();
+            conversationPanel.SetActive(false);
+            StartConversation(testConversation);
+        }
 
-		private void Start() {
-			conversations = new Queue<Conversation>();
-			conversationTyper = conversationPanel.GetComponent<AutoType>();
-			conversationPanel.SetActive(false);
-			StartConversation(testConversation);
-		}
+        private void Update() {
+            if (conversations.Count != 0 && !currentConversation) {
+                currentConversation = conversations.Dequeue();
+                StartCoroutine(PlayConversation());
+            }
 
-		public void StartConversation(Conversation conversation) {
-			conversations.Enqueue(conversation);
-		}
+            if (currentConversation && Input.GetKeyDown(KeyCode.E)) conversationTyper.SkipToEnd();
+        }
 
-		private IEnumerator PlayConversation() {
-			conversationPanel.SetActive(true);
-			yield return new WaitUntil(() => conversationTyper.done);
-			foreach (Conversation.Page section in currentConversation) {
-				conversationTyper.PrintMessage(section.content);
-				yield return new WaitUntil(() => conversationTyper.done);
-				yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
-			}
-			currentConversation = null;
-			conversationPanel.SetActive(false);
-		}
+        public void StartConversation(Conversation conversation) {
+            conversations.Enqueue(conversation);
+        }
 
-		// Update is called once per frame
-		private void Update() {
-			if (conversations.Count != 0 && !currentConversation) {
-				currentConversation = conversations.Dequeue();
-				StartCoroutine(PlayConversation());
-			}
+        private IEnumerator PlayConversation() {
+            conversationPanel.SetActive(true);
+            yield return new WaitUntil(() => conversationTyper.Done);
+            foreach (var section in currentConversation) {
+                conversationTyper.PrintMessage(section.content);
+                yield return new WaitUntil(() => conversationTyper.Done);
+                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
+            }
 
-			if (currentConversation && Input.GetKeyDown(KeyCode.E)) {
-				conversationTyper.SkipToEnd();
-			}
-		}
-	}
+            currentConversation = null;
+            conversationPanel.SetActive(false);
+        }
+
+        #region Singleton
+
+        public static ConversationManager instance;
+
+        private void Awake() {
+            if (instance != null) Debug.LogWarning("Multiple instances of ConversationManager detected");
+            instance = this;
+        }
+
+        #endregion
+    }
 }

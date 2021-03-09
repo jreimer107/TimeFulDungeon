@@ -2,42 +2,43 @@
 using UnityEngine.UI;
 
 namespace TimefulDungeon.UI {
-	[RequireComponent(typeof(Image))]
-	public class ClickAndDrag : MonoBehaviour {
-		private Item item;
-		private Image icon;
+    [RequireComponent(typeof(Image))]
+    public class ClickAndDrag : MonoBehaviour {
+        private Image icon;
+        private Item item;
 
-		#region Singleton
-		public static ClickAndDrag instance;
-		void Awake() {
-			if (instance != null) {
-				Debug.LogWarning("More than one instance of ClickAndDrag found.");
-			}
-			instance = this;
-		}
-		#endregion
+        public bool Active => item;
 
-		void Start() {
-			icon = GetComponent<Image>();
-		}
+        private void Start() {
+            icon = GetComponent<Image>();
+        }
 
-		// Update is called once per frame
-		void Update() {
-			icon.transform.position = Input.mousePosition;
-		}
+        // Update is called once per frame
+        private void Update() {
+            icon.transform.position = Input.mousePosition;
+        }
 
-		public void SetHeldItem(Item item) {
-			this.item = item;
-			icon.enabled = true;
-			icon.sprite = item.sprite;
-			icon.preserveAspect = true;
-		}
+        public void SetHeldItem(Item newItem) {
+            item = newItem;
+            icon.enabled = true;
+            icon.sprite = newItem.sprite;
+            icon.preserveAspect = true;
+        }
 
-		public void UnsetHeldItem() {
-			item = null;
-			icon.enabled = false;
-		}
+        public void UnsetHeldItem() {
+            item = null;
+            icon.enabled = false;
+        }
 
-		public bool active { get { return item != null; } }
-	}
+        #region Singleton
+
+        public static ClickAndDrag instance;
+        
+        private void Awake() {
+            if (instance != null) Debug.LogWarning("More than one instance of ClickAndDrag found.");
+            instance = this;
+        }
+        
+        #endregion
+    }
 }

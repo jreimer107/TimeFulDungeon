@@ -1,52 +1,50 @@
 ﻿using TimefulDungeon.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using VoraUtils;
 
 namespace TimefulDungeon.Core {
-	/// <summary>
-	///     The point which in-hand items will be attached to.
-	///     This is a controls object that changes the values in the player object.
-	/// </summary>
-	public class HoldingPoint : MonoBehaviour {
+    /// <summary>
+    ///     The point which in-hand items will be attached to.
+    ///     This is a controls object that changes the values in the player object.
+    /// </summary>
+    public class HoldingPoint : MonoBehaviour {
         [Range(0, 5)] [SerializeField] private float radius = 1;
         public float angle;
 
-        public Equipment inHand;
+        public Equippable inHand;
 
         public SpriteRenderer spriteRenderer;
         public EdgeCollider2D hitbox;
         public Animator animator;
         public AnimatorOverrideController animatorOverrideController;
-        public AnimationClip testIdleClip, testAttackClip;
-        public AnimationEvent startEvent;
         public AudioSource audioSource;
-        public AudioClip soundEffect;
 
         public ParticleSystem particles;
 
         private bool controlledByInHand;
         private EquipType currentWeaponType = EquipType.Melee;
-        private EquipmentManager equipmentManager;
         private Player player;
+        private Inventory playerEquipment;
         private bool shieldToggleBuffer;
         private float startSwingAngle;
 
         private void Start() {
             player = Player.instance;
+            playerEquipment = player.Inventory;
             player.onStaminaEmptyCallback += ExhaustedUnshield;
-            equipmentManager = EquipmentManager.instance;
-            equipmentManager.onEquipmentChangedCallback += UpdateRendered;
+            UpdateRendered();
         }
 
         private void Update() {
             // Check for weapon swapping
             if (Input.GetButtonDown("Swap Weapon")) {
-                Debug.Log("Swap inhand");
+                Debug.Log("Swap in-hand");
                 ToggleWeapon();
 
                 // Activate if holding button down while swapping
                 if (inHand && Input.GetButton("Fire1") && !EventSystem.current.IsPointerOverGameObject() &&
-                    !ClickAndDrag.instance.active) inHand.Activate();
+                    !ClickAndDrag.instance.Active) inHand.Activate();
             }
 
             // If not attacking and shield is buffered, shield and consume the buffer
@@ -54,12 +52,11 @@ namespace TimefulDungeon.Core {
             if (shieldToggleBuffer && !controlledByInHand) ToggleShield();
 
             // Check for button press or release
-            if (inHand) {
-                if (Input.GetButtonDown("Fire1") && !EventSystem.current.IsPointerOverGameObject() &&
-                    !ClickAndDrag.instance.active)
-                    inHand.Activate();
-                else if (Input.GetButtonUp("Fire1")) inHand.Deactivate();
-            }
+            if (!inHand) return;
+            if (Input.GetButtonDown("Fire1") && !EventSystem.current.IsPointerOverGameObject() &&
+                !ClickAndDrag.instance.Active)
+                inHand.Activate();
+            else if (Input.GetButtonUp("Fire1")) inHand.Deactivate();
         }
 
         // Update is called once per frame
@@ -78,12 +75,12 @@ namespace TimefulDungeon.Core {
             transform.localEulerAngles = new Vector3(0, 0, angle);
 
             // Use the angle to determine the position of the held object
-            var xpos = Mathf.Cos(Mathf.Deg2Rad * angle) * radius;
-            var ypos = Mathf.Sin(Mathf.Deg2Rad * angle) * radius;
-            transform.localPosition = new Vector3(xpos, ypos, 0);
+            var x = Mathf.Cos(Mathf.Deg2Rad * angle) * radius;
+            var y = Mathf.Sin(Mathf.Deg2Rad * angle) * radius;
+            transform.localPosition = new Vector3(x, y, 0);
 
             // Flip the sprite if on left side, but only we're not melee attacking - this messes up animations
-            spriteRenderer.flipY = inHand && inHand.type != EquipType.Melee || !controlledByInHand ? xpos < 0 : false;
+            spriteRenderer.flipY = (inHand && inHand.type != EquipType.Melee || !controlledByInHand) && x < 0;
         }
 
         /// <summary>
@@ -91,7 +88,7 @@ namespace TimefulDungeon.Core {
         /// </summary>
         /// <returns></returns>
         public void RotateToMouse() {
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition) - player.transform.position;
+            var mousePos = Utils.GetMouseWorldPosition2D() - player.transform.Position2D();
 
             //Determine angle of mouse
             angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
@@ -104,10 +101,9 @@ namespace TimefulDungeon.Core {
         /// </summary>
         private void ToggleWeapon() {
             currentWeaponType = currentWeaponType == EquipType.Melee ? EquipType.Ranged : EquipType.Melee;
-            if (!player.Shielding) {
-                inHand = equipmentManager.GetEquipment(currentWeaponType);
-                SwapRendered();
-            }
+            if (player.Shielding) return;
+            inHand = playerEquipment.GetEquipment(currentWeaponType);
+            SwapRendered();
         }
 
         /// <summary>
@@ -121,10 +117,10 @@ namespace TimefulDungeon.Core {
                 return;
             }
 
-            Equipment shield = equipmentManager.Shield;
+            Equippable shield = playerEquipment.Shield;
             if (shield) {
                 player.ToggleShielding();
-                inHand = player.Shielding ? shield : equipmentManager.GetEquipment(currentWeaponType);
+                inHand = player.Shielding ? shield : playerEquipment.GetEquipment(currentWeaponType);
                 SwapRendered();
             }
             else {
@@ -142,17 +138,10 @@ namespace TimefulDungeon.Core {
         /// </summary>
         private void SwapRendered() {
             Debug.Log("In hand: " + inHand);
-            // spriteRenderer.sprite = inHand?.sprite;
-            // animatorOverrideController["idle"] = inHand?.idleClip;
-            // animatorOverrideController["action"] = inHand?.actionClip;
-            // inHand?.Equip();
             if (inHand) {
                 spriteRenderer.sprite = inHand.sprite;
                 animatorOverrideController["idle"] = inHand.idleClip;
-                // inHand.actionClip.AddEvent(startEvent);
                 animatorOverrideController["action"] = inHand.actionClip;
-                // soundEffect = inHand.soundEffect;
-                //Set animation speed
                 inHand.Equip();
                 spriteRenderer.enabled = true;
             }
@@ -164,11 +153,8 @@ namespace TimefulDungeon.Core {
             }
         }
 
-        private void UpdateRendered() {
-            if (inHand != null)
-                inHand = equipmentManager.GetEquipment(inHand.type);
-            else
-                inHand = equipmentManager.GetEquipment(currentWeaponType);
+        public void UpdateRendered() {
+            inHand = playerEquipment.GetEquipment(inHand ? inHand.type : currentWeaponType);
             SwapRendered();
         }
 
@@ -188,7 +174,6 @@ namespace TimefulDungeon.Core {
             animator = GetComponent<Animator>();
             animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
             animator.runtimeAnimatorController = animatorOverrideController;
-            startEvent = new AnimationEvent();
             audioSource = GetComponent<AudioSource>();
         }
 

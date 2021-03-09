@@ -14,6 +14,7 @@ namespace TimefulDungeon.Core {
 
         public int health;
         public int maxHealth;
+        public Inventory Inventory { get; private set; }
 
         public float stamina;
         public float maxStamina;
@@ -21,36 +22,23 @@ namespace TimefulDungeon.Core {
         public bool exhausted;
         private BoxCollider2D collisionCollider;
 
-        private MovementController controller;
-        private EquipmentManager equipmentManager;
+        private MovementController movementController;
         public OnHealthChanged onHealthChangedCallback;
         public OnMaxStaminaChanged onMaxStaminaChangedCallback;
         public OnStaminaEmpty onStaminaEmptyCallback;
-        private CircleCollider2D pickupTrigger;
 
         public bool Shielding { get; private set; }
 
-        #region Singleton
-        public static Player instance;
-        private void Awake() {
-            if (instance != null) {
-                Debug.LogWarning("More than one instance of Player found.");
-            }
-            instance = this;
-        }
-        #endregion
-    
         private void Start() {
-            pickupTrigger = GetComponentInChildren<CircleCollider2D>();
             collisionCollider = GetComponent<BoxCollider2D>();
-            controller = GetComponent<MovementController>();
-            controller.automatedMovement = false;
-            equipmentManager = EquipmentManager.instance;
+            movementController = GetComponent<MovementController>();
+            movementController.automatedMovement = false;
+            Inventory = GetComponent<Inventory>();
         }
 
         private void Update() {
             //Get input from player
-            controller.SetDesiredDirection(
+            movementController.SetDesiredDirection(
                 new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
             );
 
@@ -63,7 +51,7 @@ namespace TimefulDungeon.Core {
             if (Shielding)
                 stamina = Mathf.Max(
                     0,
-                    stamina - equipmentManager.Shield.staminaUse * Time.deltaTime
+                    stamina - Inventory.Shield.staminaUse * Time.deltaTime
                 );
             else if (stamina < maxStamina)
                 stamina = Mathf.Min(
@@ -77,7 +65,7 @@ namespace TimefulDungeon.Core {
                 exhausted = true;
             }
 
-            if (exhausted && stamina == maxStamina) exhausted = false;
+            if (exhausted && Math.Abs(stamina - maxStamina) < 0.01f) exhausted = false;
         }
 
         private void OnCollisionEnter2D(Collision2D collision) {
@@ -108,5 +96,16 @@ namespace TimefulDungeon.Core {
             Shielding = !Shielding;
             return Shielding;
         }
+
+        #region Singleton
+
+        public static Player instance;
+
+        private void Awake() {
+            if (instance != null) Debug.LogWarning("More than one instance of Player found.");
+            instance = this;
+        }
+
+        #endregion
     }
 }

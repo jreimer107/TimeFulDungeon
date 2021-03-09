@@ -138,7 +138,7 @@ public class ConversationInspector : Editor {
 			SerializedProperty content = section.FindPropertyRelative("content");
 			SerializedProperty show = section.FindPropertyRelative("shownInInspector");
 
-			string speakerName = speaker.objectReferenceValue ? (speaker.objectReferenceValue as NPC).name : "";
+			string speakerName = speaker.objectReferenceValue ? (speaker.objectReferenceValue as Npc).name : "";
 			bool hasName = !string.IsNullOrEmpty(speakerName);
 			bool hasContent = !string.IsNullOrEmpty(content.stringValue);
 

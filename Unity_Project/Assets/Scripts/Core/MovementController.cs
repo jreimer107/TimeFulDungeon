@@ -93,7 +93,7 @@ namespace TimefulDungeon.Core {
 		#region Private methods
 		private void Move(float deltaTime) {
 			float calculatedMaxSpeed = maxSpeed;
-			if (wandering && !wanderModule.outsideWanderLimit) {
+			if (wandering && !wanderModule.OutsideWanderLimit) {
 				calculatedMaxSpeed = 0.5f;
 			}
 			Vector2 desiredVelocity = desiredDirection * calculatedMaxSpeed;
@@ -142,12 +142,12 @@ namespace TimefulDungeon.Core {
 				contextSteering.defaultDirection = Vector2.zero;
 			}
 		
-			desiredDirection = contextSteering.direction;
+			desiredDirection = contextSteering.Direction;
 		}
 
 		private void GetUpdatedPath() {
 			if (destination != default(Vector2)) {
-				path = PathfindingGrid.Instance.RequestPath(transform.position, destination);
+				path = PathfindingGrid.instance.RequestPath(transform.position, destination);
 			}
 		}
 		#endregion
