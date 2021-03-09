@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TimefulDungeon.Items;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace TimefulDungeon.UI {

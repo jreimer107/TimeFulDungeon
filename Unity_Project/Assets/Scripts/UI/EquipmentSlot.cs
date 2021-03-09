@@ -1,4 +1,5 @@
 ﻿using TimefulDungeon.Core;
+using TimefulDungeon.Items;
 using UnityEngine;
 
 namespace TimefulDungeon.UI {
@@ -25,7 +26,6 @@ namespace TimefulDungeon.UI {
 
         public override void Refresh() {
             item = equipmentManager.GetEquipment(type);
-            Debug.Log(item);
             base.Refresh();
         }
 

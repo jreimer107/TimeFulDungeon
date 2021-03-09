@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TimefulDungeon.Items;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -14,7 +15,7 @@ namespace TimefulDungeon.Core {
         private bool HasSpace => bag.Count < enabledSlots;
 
         public bool CanAdd(Item newItem) {
-            return HasSpace || (newItem.stackable && bag.Any(item => item == newItem));
+            return HasSpace || newItem.stackable && bag.Any(item => item == newItem);
         }
 
         //Adds an item to the inventory, if possible.

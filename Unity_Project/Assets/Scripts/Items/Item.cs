@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace TimefulDungeon {
+namespace TimefulDungeon.Items {
     [CreateAssetMenu(fileName = "New Item", menuName = "Interactables/Item")]
     public class Item : ScriptableObject, IEquatable<Item> {
         public new string name;

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace TimefulDungeon {
+namespace TimefulDungeon.Items {
     [CreateAssetMenu(fileName = "New Melee", menuName = "Interactables/Melee")]
     public class Melee : Weapon {
         public float arc;

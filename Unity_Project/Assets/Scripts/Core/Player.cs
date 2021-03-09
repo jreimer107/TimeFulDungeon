@@ -5,11 +5,9 @@ using UnityEngine;
 
 namespace TimefulDungeon.Core {
     [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
-    public class Player : MonoBehaviour {
+    public class Player : MonoBehaviour, IDamageable {
         public delegate void OnHealthChanged();
-
         public delegate void OnMaxStaminaChanged();
-
         public delegate void OnStaminaEmpty();
 
         public int health;
@@ -20,7 +18,6 @@ namespace TimefulDungeon.Core {
         public float maxStamina;
         public float staminaRegen;
         public bool exhausted;
-        private BoxCollider2D collisionCollider;
 
         private MovementController movementController;
         public OnHealthChanged onHealthChangedCallback;
@@ -30,7 +27,7 @@ namespace TimefulDungeon.Core {
         public bool Shielding { get; private set; }
 
         private void Start() {
-            collisionCollider = GetComponent<BoxCollider2D>();
+            GetComponent<BoxCollider2D>();
             movementController = GetComponent<MovementController>();
             movementController.automatedMovement = false;
             Inventory = GetComponent<Inventory>();
@@ -73,7 +70,7 @@ namespace TimefulDungeon.Core {
         }
 
         public void Damage(int damage) {
-            health = Math.Max(0, health - damage);
+            health = Mathf.Max(0, health - damage);
             Popup.CreatePopup(damage.ToString(), transform.position, Color.red);
             onHealthChangedCallback?.Invoke();
             if (health == 0)

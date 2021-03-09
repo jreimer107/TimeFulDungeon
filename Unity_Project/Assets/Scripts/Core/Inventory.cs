@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TimefulDungeon.Items;
+using UnityEngine;
 
 namespace TimefulDungeon.Core {
     public class Inventory : MonoBehaviour{

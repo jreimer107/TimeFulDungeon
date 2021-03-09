@@ -2,9 +2,8 @@
 using TimefulDungeon.Core;
 using TimefulDungeon.UI;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace TimefulDungeon {
+namespace TimefulDungeon.Items {
     //Simple GameObject wrapper for item class. Item contains all functional aspects of the item.
     //This simply a dropped object that, when picked up, gives the player the attached item.
     [RequireComponent(typeof(SpriteRenderer), typeof(Rigidbody2D))]

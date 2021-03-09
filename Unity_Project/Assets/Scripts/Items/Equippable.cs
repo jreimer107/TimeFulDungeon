@@ -1,7 +1,7 @@
 ﻿using TimefulDungeon.Core;
 using UnityEngine;
 
-namespace TimefulDungeon {
+namespace TimefulDungeon.Items {
     public enum EquipType {
         Melee,
         Ranged,

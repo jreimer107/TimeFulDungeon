@@ -1,4 +1,5 @@
-﻿using TimefulDungeon.UI;
+﻿using TimefulDungeon.Items;
+using TimefulDungeon.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using VoraUtils;
@@ -68,6 +69,11 @@ namespace TimefulDungeon.Core {
             if (!controlledByInHand) RotateToMouse();
 
             SetPosition();
+        }
+
+        private void OnTriggerEnter2D(Collider2D other) {
+            other.TryGetComponent(out IDamageable damageable);
+            damageable?.Damage(((Weapon) inHand).damage);
         }
 
         private void SetPosition() {
