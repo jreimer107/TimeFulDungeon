@@ -19,13 +19,13 @@ namespace TimefulDungeon.Items {
         }
 
         public void fire() {
-            holdingPoint.particles.Play();
+            holdingPoint.Particles.Play();
             // return new Projectile(this.damage, this.speed, this.projectile, this.penetrate);
         }
 
         public override void Equip() {
             base.Equip();
-            if (holdingPoint.animator.speed < 1) holdingPoint.animator.speed = 1;
+            if (holdingPoint.Animator.speed < 1) holdingPoint.Animator.speed = 1;
             shootTimer = 0;
             Debug.Log("Swap rendered to ranged.");
         }

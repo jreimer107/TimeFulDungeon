@@ -27,16 +27,16 @@ namespace TimefulDungeon.Items {
             var animationTime = actionClip.length;
             var speedMultiplier = animationTime * rate;
             Debug.Log("Setting speed to " + speedMultiplier);
-            holdingPoint.animator.speed = speedMultiplier;
+            holdingPoint.Animator.speed = speedMultiplier;
             attacking = false;
-            holdingPoint.audioSource.clip = soundEffect;
+            holdingPoint.AudioSource.clip = soundEffect;
         }
 
         public override void Activate() {
             base.Activate();
             if (attacking) return;
             ActionStart();
-            holdingPoint.animator.SetBool(Action, true);
+            holdingPoint.Animator.SetBool(Action, true);
             attacking = true;
         }
 
@@ -67,7 +67,7 @@ namespace TimefulDungeon.Items {
         ///     Called during ControlHoldingPoint when a new action is started.
         /// </summary>
         protected virtual void ActionStart() {
-            holdingPoint.audioSource.Play();
+            holdingPoint.AudioSource.Play();
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace TimefulDungeon.Items {
         /// </summary>
         protected virtual void DelayedDeactivate() {
             attacking = false;
-            holdingPoint.animator.SetBool(Action, false);
+            holdingPoint.Animator.SetBool(Action, false);
         }
     }
 }

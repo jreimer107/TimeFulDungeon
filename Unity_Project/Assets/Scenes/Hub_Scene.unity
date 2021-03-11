@@ -289,6 +289,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4091082390065985887, guid: 82f062ceab0c514438c7fec165f42c55,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4091082390313209565, guid: 82f062ceab0c514438c7fec165f42c55,
         type: 3}
       propertyPath: m_IsActive
@@ -1910,13 +1915,28 @@ PrefabInstance:
       objectReference: {fileID: 661253344}
     - target: {fileID: 1681660173334746967, guid: e93ab3209c971734a96555e1daafe6da,
         type: 3}
+      propertyPath: equipment.onEquipmentChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1681660173334746967, guid: e93ab3209c971734a96555e1daafe6da,
+        type: 3}
       propertyPath: equipment.onEquipmentChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1396988695}
+    - target: {fileID: 1681660173334746967, guid: e93ab3209c971734a96555e1daafe6da,
+        type: 3}
+      propertyPath: equipment.onEquipmentChanged.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: OnEquipmentChange
+      objectReference: {fileID: 0}
     - target: {fileID: 1681660173334747052, guid: e93ab3209c971734a96555e1daafe6da,
         type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 1681660174642634033, guid: e93ab3209c971734a96555e1daafe6da,
+        type: 3}
+      propertyPath: inHand
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1681660174721350120, guid: e93ab3209c971734a96555e1daafe6da,
         type: 3}

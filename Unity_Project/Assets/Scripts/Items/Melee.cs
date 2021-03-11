@@ -39,7 +39,7 @@ namespace TimefulDungeon.Items {
 
         public override void Equip() {
             base.Equip();
-            holdingPoint.hitbox.points = new[] {new Vector2(0, 0), new Vector2(range, 0)};
+            holdingPoint.Hitbox.points = new[] {new Vector2(0, 0), new Vector2(range, 0)};
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace TimefulDungeon.Items {
         /// </summary>
         public override void Activate() {
             base.Activate();
-            holdingPoint.hitbox.enabled = true;
+            holdingPoint.Hitbox.enabled = true;
         }
 
         protected override void ActionStart() {

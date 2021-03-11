@@ -6,7 +6,7 @@ namespace TimefulDungeon.UI {
     public class EquipmentUI : MonoBehaviour {
         private EquipmentSlot[] slots;
 
-        private void Start() {
+        private void Awake() {
             slots = GetComponentsInChildren<EquipmentSlot>();
             Array.Sort(slots, (x, y) => x.type.CompareTo(y.type));
         }

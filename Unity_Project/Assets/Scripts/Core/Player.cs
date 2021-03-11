@@ -6,6 +6,7 @@ using UnityEngine;
 namespace TimefulDungeon.Core {
     [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
     public class Player : MonoBehaviour, IDamageable {
+        public static Player instance;
         public delegate void OnHealthChanged();
         public delegate void OnMaxStaminaChanged();
         public delegate void OnStaminaEmpty();
@@ -18,16 +19,17 @@ namespace TimefulDungeon.Core {
         public float maxStamina;
         public float staminaRegen;
         public bool exhausted;
+        private int staminaUse;
 
         private MovementController movementController;
         public OnHealthChanged onHealthChangedCallback;
         public OnMaxStaminaChanged onMaxStaminaChangedCallback;
         public OnStaminaEmpty onStaminaEmptyCallback;
 
-        public bool Shielding { get; private set; }
-
-        private void Start() {
-            GetComponent<BoxCollider2D>();
+        private void Awake() {
+            if (instance != null) Debug.LogWarning("More than one instance of Player found.");
+            instance = this;
+            
             movementController = GetComponent<MovementController>();
             movementController.automatedMovement = false;
             Inventory = GetComponent<Inventory>();
@@ -41,14 +43,21 @@ namespace TimefulDungeon.Core {
 
             if (Input.GetKeyDown(KeyCode.G)) Damage(1);
             if (Input.GetKeyDown(KeyCode.H)) Heal(1);
-
             if (Input.GetKeyDown(KeyCode.T)) ChatBubble.Create(transform, new Vector3(.5f, .5f), "Quack damn you!");
 
+            // If stamina runs out, set exhausted so they can't shield until refill
+            if (stamina <= 0) {
+                stamina = 0;
+                staminaUse = 0;
+                exhausted = true;
+                onStaminaEmptyCallback?.Invoke();
+            }
+            
             // Adjust stamina based on shielding or regenning
-            if (Shielding)
+            if (staminaUse > 0)
                 stamina = Mathf.Max(
                     0,
-                    stamina - Inventory.Shield.staminaUse * Time.deltaTime
+                    stamina - staminaUse * Time.deltaTime
                 );
             else if (stamina < maxStamina)
                 stamina = Mathf.Min(
@@ -56,17 +65,8 @@ namespace TimefulDungeon.Core {
                     stamina + staminaRegen * Time.deltaTime
                 );
 
-            // If stamina runs out, set exhausted so they can't shield until refill
-            if (stamina == 0) {
-                onStaminaEmptyCallback?.Invoke();
-                exhausted = true;
-            }
 
             if (exhausted && Math.Abs(stamina - maxStamina) < 0.01f) exhausted = false;
-        }
-
-        private void OnCollisionEnter2D(Collision2D collision) {
-            if (collision.collider.CompareTag("Enemy")) Damage(1);
         }
 
         public void Damage(int damage) {
@@ -89,20 +89,19 @@ namespace TimefulDungeon.Core {
             Debug.Log("Dead");
         }
 
-        public bool ToggleShielding() {
-            Shielding = !Shielding;
-            return Shielding;
+        public void ConsumeStaminaSingleUse(int staminaConsumed) {
+            if (exhausted) return;
+            stamina = Mathf.Max(0, stamina - staminaConsumed);
         }
 
-        #region Singleton
-
-        public static Player instance;
-
-        private void Awake() {
-            if (instance != null) Debug.LogWarning("More than one instance of Player found.");
-            instance = this;
+        public void StartConsumeStaminaContinuous(int newStaminaUse) {
+            if (exhausted) return;
+            staminaUse += newStaminaUse;
         }
 
-        #endregion
+        public void StopConsumeStaminaContinuous(int newStaminaUse) {
+            if (exhausted) return;
+            staminaUse = Mathf.Max(0, staminaUse - newStaminaUse);
+        }
     }
 }

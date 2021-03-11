@@ -9,31 +9,33 @@ using Random = UnityEngine.Random;
 
 namespace VoraUtils {
 	public static class Utils {
+		public static readonly Camera MainCamera = Camera.main;
+		
 		public static Vector2 GetMouseWorldPosition2D() {
-			return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			return MainCamera.ScreenToWorldPoint(Input.mousePosition);
 		}
 
 		public static Vector3 GetMouseWorldPosition3D() {
-			return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			return MainCamera.ScreenToWorldPoint(Input.mousePosition);
 		}
 
 		public static TextMeshPro CreateWorldText(string text, Transform parent = null, Vector2 localPosition = default(Vector2), int fontSize = 40, Color? color = null, TextAnchor textAnchor = TextAnchor.UpperLeft, TextAlignmentOptions textAlignment = TextAlignmentOptions.Center, int sortingOrder = 5000) {
-			if (color == null) color = Color.white;
+			color ??= Color.white;
 			return CreateWorldText(parent, text, localPosition, fontSize, (Color)color, textAnchor, textAlignment, sortingOrder);
 		}
 
 		public static TextMeshPro CreateWorldText(Transform parent, string text, Vector2 localPosition, int fontSize, Color color, TextAnchor textAnchor, TextAlignmentOptions textAlignment, int sortingOrder = 5000) {
-			GameObject gameObject = new GameObject("World_Text", typeof(TextMeshPro));
-			Transform transform = gameObject.transform;
+			var gameObject = new GameObject("World_Text", typeof(TextMeshPro));
+			var transform = gameObject.transform;
 			transform.SetParent(parent, false);
 			transform.localPosition = localPosition;
-			TextMeshPro textMeshPro = gameObject.GetComponent<TextMeshPro>();
+			var textMeshPro = gameObject.GetComponent<TextMeshPro>();
 			// TextMeshPro.anchor = textAnchor;
 			textMeshPro.alignment = textAlignment;
 			textMeshPro.text = text;
 			textMeshPro.fontSize = fontSize;
 			textMeshPro.color = color;
-			MeshRenderer meshRenderer = textMeshPro.GetComponent<MeshRenderer>();
+			var meshRenderer = textMeshPro.GetComponent<MeshRenderer>();
 			meshRenderer.sortingLayerName = "Sky";
 			meshRenderer.sortingOrder = sortingOrder;
 			return textMeshPro;
@@ -51,9 +53,9 @@ namespace VoraUtils {
 		public struct Empty {};
 
 		public static string GetRandomText() {
-			string abc = "abcdefghijklmnopqrstuvwxyz\n\n\n\nABCDEFGHIJKLMNOPQRSTUVWXYZ\t\t\t";
-			string text = "";
-			for (int i = 0; i < Random.Range(20, 100); i++) {
+			const string abc = "abcdefghijklmnopqrstuvwxyz\n\n\n\nABCDEFGHIJKLMNOPQRSTUVWXYZ\t\t\t";
+			var text = "";
+			for (var i = 0; i < Random.Range(20, 100); i++) {
 				text += abc[Random.Range(0, abc.Length)];
 			}
 			return text;
@@ -73,16 +75,16 @@ namespace VoraUtils {
 		}
 
 		public static Vector2 GetNormalPoint(Vector2 vectorStart, Vector2 vectorEnd, Vector2 projSrc) {
-			Vector2 targetVector = vectorEnd - vectorStart;
-			Vector2 sourceVector = projSrc - vectorStart;
+			var targetVector = vectorEnd - vectorStart;
+			var sourceVector = projSrc - vectorStart;
 			return targetVector.Project(sourceVector) + vectorStart;
 		}
 
 		public static bool PointOnSegment(Vector2 segmentStart, Vector2 segmentEnd, Vector2 point) {
-			Vector2 ab = segmentEnd - segmentStart;
-			Vector2 ac = point - segmentStart;
-			float dotAC = Vector2.Dot(ab, ac);
-			float dotAB = Vector2.Dot(ab, ab);
+			var ab = segmentEnd - segmentStart;
+			var ac = point - segmentStart;
+			var dotAC = Vector2.Dot(ab, ac);
+			var dotAB = Vector2.Dot(ab, ab);
 			return 0 <= dotAC && dotAC <= dotAB;
 		}
 

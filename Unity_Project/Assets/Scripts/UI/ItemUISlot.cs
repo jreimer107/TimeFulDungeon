@@ -40,9 +40,9 @@ namespace TimefulDungeon.UI {
         public void OnEndDrag(PointerEventData eventData) {
             if (IsEmpty || eventData.button != PointerEventData.InputButton.Left) return;
             var droppedLocation = eventData.pointerCurrentRaycast.gameObject;
-            if (droppedLocation != null) {
+            if (!droppedLocation) {
                 var droppedSlot = droppedLocation.GetComponent<ItemUISlot>();
-                if (droppedSlot != null) {
+                if (droppedSlot) {
                     Debug.Log("Dropped item on other slot.");
                     DropOn(droppedSlot);
                 }
