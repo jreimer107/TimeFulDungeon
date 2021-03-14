@@ -51,11 +51,11 @@ namespace TimefulDungeon.Core {
         }
 
         public Equippable GetEquipment(int index) {
-            return currentEquipment[index];
+            return index < 0 ? null : currentEquipment[index];
         }
 
         public Equippable GetEquipment(EquipType type) {
-            return currentEquipment[(int) type];
+            return type == EquipType.None ? null : currentEquipment[(int) type];
         }
     }
 }

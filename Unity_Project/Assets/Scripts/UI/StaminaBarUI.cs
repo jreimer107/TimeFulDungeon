@@ -5,23 +5,23 @@ using UnityEngine.UI;
 namespace TimefulDungeon.UI {
     [RequireComponent(typeof(Slider))]
     public class StaminaBarUI : MonoBehaviour {
-        private Player player;
+        private Stamina stamina;
         private Slider slider;
 
-        // Start is called before the first frame update
-        private void Start() {
+        private void Awake() {
             slider = GetComponent<Slider>();
-            player = Player.instance;
-            player.onMaxStaminaChangedCallback += MaxStaminaChanged;
         }
 
-        // Update is called once per frame
+        private void Start() {
+            stamina = Player.instance.Stamina;
+        }
+
         private void Update() {
-            slider.value = player.stamina;
+            slider.value = stamina.Current;
         }
 
         private void MaxStaminaChanged() {
-            slider.maxValue = player.maxStamina;
+            slider.maxValue = stamina.max;
         }
     }
 }

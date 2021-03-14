@@ -1,6 +1,5 @@
 ﻿using TimefulDungeon.Entities;
 using TimefulDungeon.Items;
-using TimefulDungeon.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using VoraUtils;
@@ -14,9 +13,9 @@ namespace TimefulDungeon.Core {
         [Range(0, 5)] [SerializeField] private float radius = 1;
         
         // Dependencies
-        private Player player;
         private Inventory playerEquipment;
-        private BulletParticle bulletParticle;
+        private Stamina playerStamina;
+        private Transform playerTransform;
         private EventSystem eventSystem;
 
         // The thing we are currently holding. Can be weapon or shield
@@ -24,24 +23,43 @@ namespace TimefulDungeon.Core {
 
         // Stuff controlled by our inHand
         [HideInInspector] public float angle;
-        public SpriteRenderer SpriteRenderer {get; private set; }
-        public EdgeCollider2D Hitbox {get; private set; }
-        public Animator Animator {get; private set; }
-        public AnimatorOverrideController AnimatorOverrideController {get; private set; }
-        public AudioSource AudioSource {get; private set; }
-        public ParticleSystem Particles {get; private set; }
+        public SpriteRenderer SpriteRenderer { get; private set; }
+        public EdgeCollider2D Hitbox { get; private set; }
+        public Animator Animator { get; private set; }
+        public AnimatorOverrideController AnimatorOverrideController { get; private set; }
+        public AudioSource AudioSource { get; private set; }
+        public ParticleSystem Particles { get; private set; }
+        public BulletParticle Bullet { get; private set; }
 
         // State
-        private bool IsShielding => inHand.type == EquipType.Shield;
+        private EquipType CurrType => inHand ? inHand.type : EquipType.None;
+        private bool IsShielding => CurrType == EquipType.Shield;
+        private bool IsActive => inHand && inHand.Activated;
+        private EquipType prevType = EquipType.None;
         private bool controlledByInHand;
-        private EquipType prevType = EquipType.Melee;
-        private float startSwingAngle;
+        private bool shouldShield;
+        private bool shouldActivate;
+        
+        private void Awake() {
+            SpriteRenderer = GetComponent<SpriteRenderer>();
+            Hitbox = GetComponent<EdgeCollider2D>();
+            Hitbox.enabled = false;
+            Particles = GetComponentInChildren<ParticleSystem>();
+            Bullet = Particles.GetComponent<BulletParticle>();
+
+            // Setup runtime clip changes
+            Animator = GetComponent<Animator>();
+            AnimatorOverrideController = new AnimatorOverrideController(Animator.runtimeAnimatorController);
+            Animator.runtimeAnimatorController = AnimatorOverrideController;
+            AudioSource = GetComponent<AudioSource>();
+        }
         
         private void Start() {
-            player = Player.instance;
+            var player = Player.instance;
             playerEquipment = player.Inventory;
+            playerStamina = player.Stamina;
+            playerTransform = player.transform;
             eventSystem = EventSystem.current;
-            player.onStaminaEmptyCallback += Unshield;
             SwapTo(EquipType.Melee);
         }
 
@@ -50,22 +68,43 @@ namespace TimefulDungeon.Core {
             if (Input.GetButtonDown("Swap Weapon")) {
                 ToggleWeapon();
             }
+            
+            if (Input.GetButtonDown("Shield")) {
+                shouldShield = true;
+            }
+            else if (Input.GetButtonUp("Shield")) {
+                shouldShield = false;
+            }
+
+            if (Input.GetButtonDown("Fire1") && !eventSystem.IsPointerOverGameObject()) {
+                shouldActivate = true;
+            }
+            else if (Input.GetButtonUp("Fire1")) {
+                shouldActivate = false;
+            }
 
             // If not attacking, check if we should shield/unshield
             if (!controlledByInHand) {
-                if (Input.GetButton("Shield") && !IsShielding) {
-                    Shield();
-                }
-                else if (!Input.GetButton("Shield") && IsShielding) {
-                    Unshield();
+                switch (shouldShield) {
+                    case true when !IsShielding:
+                        Shield();
+                        break;
+                    case false when IsShielding:
+                        Unshield();
+                        break;
                 }
             }
 
             // Check for weapon use
             if (!inHand) return;
-            if (Input.GetButtonDown("Fire1") && !eventSystem.IsPointerOverGameObject())
-                inHand.Activate();
-            else if (Input.GetButtonUp("Fire1")) inHand.Deactivate();
+            switch (shouldActivate) {
+                case true when !IsActive:
+                    inHand.Activate();
+                    break;
+                case false when IsActive:
+                    inHand.Deactivate();
+                    break;
+            }
         }
 
         // Update is called once per frame
@@ -102,7 +141,7 @@ namespace TimefulDungeon.Core {
         /// </summary>
         /// <returns></returns>
         public void RotateToMouse() {
-            var mousePos = Utils.GetMouseWorldPosition2D() - player.transform.Position2D();
+            var mousePos = Utils.GetMouseWorldPosition2D() - playerTransform.Position2D();
 
             //Determine angle of mouse
             angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
@@ -115,28 +154,25 @@ namespace TimefulDungeon.Core {
         /// </summary>
         private void ToggleWeapon() {
             if (IsShielding) return;
-            SwapTo(inHand.type == EquipType.Melee ? EquipType.Ranged : EquipType.Melee);
-            
-            // Reactivate if holding button down while swapping
-            if (Input.GetButton("Fire1") && !EventSystem.current.IsPointerOverGameObject() &&
-                !ClickAndDrag.instance.Active) inHand.Activate();
+            SwapTo(CurrType == EquipType.Melee ? EquipType.Ranged : EquipType.Melee);
         }
 
         private void Shield() {
-            if (player.exhausted) {
+            if (playerStamina.Exhausted) {
                 print("Player exhausted, cannot shield.");
                 return;
             }
 
             SwapTo(EquipType.Shield);
-            player.StartConsumeStaminaContinuous(((Shield) inHand).staminaUse);
+            if (inHand) playerStamina.StartContinuousUse(((Shield) inHand).staminaUse);
         }
 
         private void Unshield() {
-            SwapTo(prevType);
-            player.StopConsumeStaminaContinuous(((Shield) inHand).staminaUse);
+            playerStamina.StopContinuousUse(((Shield) inHand).staminaUse);
+            SwapTo(prevType, true);
         }
-        
+
+        public void OnStaminaEmpty() => SwapTo(prevType, true);
 
         /// <summary>
         ///     Event listener for when the equipment changes. If the changed equipment is what we're holding,
@@ -144,58 +180,37 @@ namespace TimefulDungeon.Core {
         /// </summary>
         /// <param name="type">Which equipment was updated.</param>
         public void OnEquipmentChange(EquipType type) {
-            if (type == inHand.type) SwapTo(type);
+            if (type == CurrType || !inHand && type != EquipType.Shield) SwapTo(type, true);
         }
         
         /// <summary>
         ///     Swaps the currently rendered item to the in hand item.
         /// </summary>
-        private void SwapTo(EquipType type) {
+        private void SwapTo(EquipType type, bool resetOnNull = false) {
             var newInHand = playerEquipment.GetEquipment(type);
             if (!newInHand) {
-                // We should not be able to swap to equippables that we do not have
-                if (type != inHand.type) return;
-                
-                // If we are discarding our currently held item
-                SpriteRenderer.sprite = null;
-                AnimatorOverrideController["idle"] = null;
-                AnimatorOverrideController["action"] = null;
-                SpriteRenderer.enabled = false;
                 print($"No {type} equipped.");
-                return;
+                if (resetOnNull) {
+                    Reset();
+                }
+                else {
+                    return;
+                }
             }
 
-            prevType = inHand.type;
+            prevType = CurrType;
             inHand = newInHand;
-            inHand.Equip();
-            SpriteRenderer.sprite = inHand.sprite;
-            AnimatorOverrideController["idle"] = inHand.idleClip;
-            AnimatorOverrideController["action"] = inHand.actionClip;
-            SpriteRenderer.enabled = true;
+
+            if (!inHand) return;
+            inHand.Equip(this);
+ 
         }
 
-        #region Singleton
-
-        public static HoldingPoint instance;
-
-        private void Awake() {
-            if (instance != null) Debug.LogWarning("More than one instance of holding point detected.");
-            instance = this;
-
-            SpriteRenderer = GetComponent<SpriteRenderer>();
-            Hitbox = GetComponent<EdgeCollider2D>();
-            Hitbox.enabled = false;
-            Particles = GetComponentInChildren<ParticleSystem>();
-            bulletParticle = Particles.GetComponent<BulletParticle>();
-            if (bulletParticle) print("Got bullet particle!");
-
-            // Setup runtime clip changes
-            Animator = GetComponent<Animator>();
-            AnimatorOverrideController = new AnimatorOverrideController(Animator.runtimeAnimatorController);
-            Animator.runtimeAnimatorController = AnimatorOverrideController;
-            AudioSource = GetComponent<AudioSource>();
+        private void Reset() {
+            SpriteRenderer.sprite = null;
+            AnimatorOverrideController["idle"] = null;
+            AnimatorOverrideController["action"] = null;
+            SpriteRenderer.enabled = false;
         }
-
-        #endregion
     }
 }

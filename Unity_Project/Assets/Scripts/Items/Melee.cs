@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TimefulDungeon.Core;
+using UnityEngine;
 
 namespace TimefulDungeon.Items {
     [CreateAssetMenu(fileName = "New Melee", menuName = "Interactables/Melee")]
@@ -37,8 +38,8 @@ namespace TimefulDungeon.Items {
 
         public float DeltaAngle => arc * rate * Time.fixedDeltaTime;
 
-        public override void Equip() {
-            base.Equip();
+        public override void Equip(HoldingPoint holding) {
+            base.Equip(holding);
             holdingPoint.Hitbox.points = new[] {new Vector2(0, 0), new Vector2(range, 0)};
         }
 

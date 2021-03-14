@@ -1,3 +1,4 @@
+using TimefulDungeon.Core;
 using UnityEngine;
 
 namespace TimefulDungeon.Items {
@@ -23,8 +24,8 @@ namespace TimefulDungeon.Items {
             // return new Projectile(this.damage, this.speed, this.projectile, this.penetrate);
         }
 
-        public override void Equip() {
-            base.Equip();
+        public override void Equip(HoldingPoint holding) {
+            base.Equip(holding);
             if (holdingPoint.Animator.speed < 1) holdingPoint.Animator.speed = 1;
             shootTimer = 0;
             Debug.Log("Swap rendered to ranged.");

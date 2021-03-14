@@ -9,17 +9,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: fe3ec5529d2981241a3a81dd1e0ab6a2, type: 3}
   m_Name: Shield
   m_EditorClassIdentifier: Assembly-CSharp::Shield
   name: Shield
-  ID: 4
-  description: A test shield.
-  sprite: {fileID: 21300000, guid: c14e9e9ad59f7434282f9d5f35a38a61, type: 3}
+  id: 3
+  description: 
+  redText: 
+  sprite: {fileID: 21300000, guid: 3a23ffc0a3d9749448b45857bc9114bc, type: 3}
   stackable: 0
   count: 0
+  cooldown: 0
+  autoPickup: 0
   idleClip: {fileID: 0}
   actionClip: {fileID: 0}
+  soundEffect: {fileID: 0}
   type: 2
   staminaUse: 20
-  arc: 90
+  arc: 0

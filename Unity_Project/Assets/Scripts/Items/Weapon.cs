@@ -1,3 +1,4 @@
+using TimefulDungeon.Core;
 using UnityEngine;
 
 namespace TimefulDungeon.Items {
@@ -22,14 +23,14 @@ namespace TimefulDungeon.Items {
             rate = copy.rate;
         }
 
-        public override void Equip() {
-            base.Equip();
+        public override void Equip(HoldingPoint holding) {
+            base.Equip(holding);
             var animationTime = actionClip.length;
             var speedMultiplier = animationTime * rate;
             Debug.Log("Setting speed to " + speedMultiplier);
-            holdingPoint.Animator.speed = speedMultiplier;
+            holding.Animator.speed = speedMultiplier;
             attacking = false;
-            holdingPoint.AudioSource.clip = soundEffect;
+            holding.AudioSource.clip = soundEffect;
         }
 
         public override void Activate() {
@@ -47,7 +48,7 @@ namespace TimefulDungeon.Items {
         /// <returns>True if controlling holding point's position.</returns>
         public override bool ControlHoldingPoint() {
             if (!attacking || !CheckIfActionDone()) return attacking;
-            if (activated)
+            if (Activated)
                 ActionStart();
             else
                 DelayedDeactivate();

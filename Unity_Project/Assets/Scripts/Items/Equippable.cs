@@ -2,15 +2,9 @@
 using UnityEngine;
 
 namespace TimefulDungeon.Items {
-    public enum EquipType {
-        Melee,
-        Ranged,
-        Shield
-    }
-
     public class Equippable : Item {
         public EquipType type;
-        protected bool activated;
+        public bool Activated { get; private set; }
         protected HoldingPoint holdingPoint;
 
         public Equippable(string name, int id, string description, Sprite sprite, float cooldown, EquipType type) : base(
@@ -33,17 +27,27 @@ namespace TimefulDungeon.Items {
             Player.instance.Inventory.Equip(this);
         }
 
-        public virtual void Equip() {
-            holdingPoint = HoldingPoint.instance;
-            activated = false;
-        }
+        public virtual void Equip(HoldingPoint holding) {
+            holdingPoint = holding;
+            Activated = false;
+            
+            holdingPoint.SpriteRenderer.sprite = sprite;
+            if (idleClip && actionClip) {
+                holdingPoint.AnimatorOverrideController["idle"] = idleClip;
+                holdingPoint.AnimatorOverrideController["action"] = actionClip;
+                holdingPoint.Animator.enabled = true;
+            }
+            else {
+                holdingPoint.Animator.enabled = false;
+            }
+            holdingPoint.SpriteRenderer.enabled = true;        }
 
         public virtual void Activate() {
-            activated = true;
+            Activated = true;
         }
 
         public virtual void Deactivate() {
-            activated = false;
+            Activated = false;
         }
 
         public virtual bool ControlHoldingPoint() {
