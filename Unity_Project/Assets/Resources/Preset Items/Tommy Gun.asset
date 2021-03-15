@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Tommy Gun
   m_EditorClassIdentifier: Assembly-CSharp::Ranged
   name: Tommy Gun
-  ID: 2
+  id: 0
   description: Gun that shoots bullets!
   redText: 
   sprite: {fileID: 4971424834031436807, guid: 32749d73ad7d51b47bd5c612e575c83c, type: 3}
@@ -31,3 +31,4 @@ MonoBehaviour:
   projectile: {fileID: 0}
   speed: 1
   penetrate: 1
+  spread: 45

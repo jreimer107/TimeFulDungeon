@@ -5,12 +5,14 @@ namespace TimefulDungeon.Items {
     [CreateAssetMenu(fileName = "New Ranged", menuName = "Interactables/Ranged")]
     public class Ranged : Weapon {
         public Sprite projectile;
-        public int speed, penetrate;
+        public float speed;
+        public int penetrate;
+        public float spread;
 
         private float shootTimer;
 
         public Ranged(string name, Sprite sprite, Sprite projectile, int damage, int range, int rate, float cooldown,
-            int speed, int penetrate) :
+            float speed, int penetrate) :
             base(name, sprite, damage, range, rate, cooldown, EquipType.Ranged) {
             this.projectile = projectile;
             this.damage = damage;
@@ -19,7 +21,7 @@ namespace TimefulDungeon.Items {
             this.penetrate = penetrate;
         }
 
-        public void fire() {
+        private void fire() {
             holdingPoint.Particles.Play();
             // return new Projectile(this.damage, this.speed, this.projectile, this.penetrate);
         }
@@ -28,7 +30,17 @@ namespace TimefulDungeon.Items {
             base.Equip(holding);
             if (holdingPoint.Animator.speed < 1) holdingPoint.Animator.speed = 1;
             shootTimer = 0;
-            Debug.Log("Swap rendered to ranged.");
+            holdingPoint.Bullet.damage = damage;
+            holdingPoint.Particles.gameObject.SetActive(true);
+
+            // Particle system properties are faux-read-only. You can't edit them directly, but storing them in a
+            // variable and modifying that variable works for some reason.
+            var shape = holdingPoint.Particles.shape;
+            shape.arc = spread;
+            shape.rotation = new Vector3(0, 0, -spread / 2);
+            
+            var bulletSpawnPoint = (sprite.rect.width - sprite.pivot.x) / sprite.pixelsPerUnit;
+            shape.position = new Vector2(bulletSpawnPoint, 0);
         }
 
         public override bool ControlHoldingPoint() {
@@ -45,24 +57,6 @@ namespace TimefulDungeon.Items {
         protected override bool CheckIfActionDone() {
             shootTimer += Time.fixedDeltaTime;
             return shootTimer > 1f / rate;
-        }
-    }
-
-    public class Projectile : MonoBehaviour {
-        public int damage;
-        public int speed;
-        public Sprite sprite;
-        public int penetrate;
-
-        public Projectile(int damage, int speed, Sprite sprite, int penetrate) {
-            this.damage = damage;
-            this.speed = speed;
-            this.sprite = sprite;
-            this.penetrate = penetrate;
-        }
-
-        private void FixedUpdate() {
-            //move projectile and check for enemies in its hitbox
         }
     }
 }

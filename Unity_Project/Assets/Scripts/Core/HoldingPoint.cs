@@ -128,7 +128,9 @@ namespace TimefulDungeon.Core {
             transform.localPosition = new Vector2(x, y);
 
             // Flip the sprite if on left side, but only we're not melee attacking - this messes up animations
-            SpriteRenderer.flipY = (inHand && inHand.type != EquipType.Melee || !controlledByInHand) && x < 0;
+            var flip = (CurrType != EquipType.Melee || !controlledByInHand) && x < 0;
+            SpriteRenderer.flipY = flip;
+            SpriteRenderer.sortingOrder = flip ? -1 : 1;
         }
 
         /// <summary>
