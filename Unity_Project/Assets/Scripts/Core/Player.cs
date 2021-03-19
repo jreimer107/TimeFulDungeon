@@ -13,6 +13,7 @@ namespace TimefulDungeon.Core {
         public int maxHealth;
         public Inventory Inventory { get; private set; }
         public Stamina Stamina { get; private set; }
+        public HoldingPoint HoldingPoint { get; private set; }
 
         private MovementController movementController;
         public OnHealthChanged onHealthChangedCallback;
@@ -25,6 +26,7 @@ namespace TimefulDungeon.Core {
             movementController.automatedMovement = false;
             Inventory = GetComponent<Inventory>();
             Stamina = GetComponent<Stamina>();
+            HoldingPoint = GetComponentInChildren<HoldingPoint>();
         }
 
         private void Update() {
