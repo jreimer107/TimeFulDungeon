@@ -1,10 +1,11 @@
 ﻿using TimefulDungeon.Items;
+using TMPro;
 using UnityEngine;
 
 namespace TimefulDungeon.Core.HoldingPointFSM {
     public class ShieldState : EquippableState {
         private EquipType _previousType;
-        private bool _shouldShield;
+        private Shield _shield;
 
         public ShieldState(HoldingPoint fsm) : base(fsm) {
             Name = EquipType.Shield;
@@ -14,11 +15,19 @@ namespace TimefulDungeon.Core.HoldingPointFSM {
         }
 
         public override void Start() {
-            _previousType = fsm.CurrType;
+            if (fsm.CurrType != EquipType.Shield) {
+                _previousType = fsm.CurrType;
+            }
+            _shield = playerEquipment.Shield;
+            playerStamina.StartContinuousUse(_shield.staminaUse);
+        }
+
+        public override void Exit() {
+            playerStamina.StopContinuousUse(_shield.staminaUse);
         }
 
         public override EquipType Update() {
-            if (Input.GetButtonUp("Shield") || playerStamina.Exhausted) return _previousType;
+            if (!Input.GetButton("Shield") || playerStamina.Exhausted) return _previousType;
 
             return EquipType.Shield;
         }

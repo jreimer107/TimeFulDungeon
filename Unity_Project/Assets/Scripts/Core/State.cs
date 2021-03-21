@@ -32,14 +32,6 @@ namespace TimefulDungeon.Core {
             return Name;
         }
 
-        public virtual T FixedUpdate() {
-            return Name;
-        }
-
-        public virtual T LateUpdate() {
-            return Name;
-        }
-
         public virtual void Exit() { }
     }
 }
