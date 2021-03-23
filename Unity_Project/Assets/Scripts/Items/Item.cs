@@ -17,30 +17,6 @@ namespace TimefulDungeon.Items {
         public AnimationClip actionClip;
         public AudioClip soundEffect;
 
-        public Item(string name, int id, string description, Sprite sprite, bool stackable, int count, float cooldown,
-            bool autoPickup, string redText = "") {
-            this.name = name;
-            this.id = id;
-            this.description = description;
-            this.sprite = sprite;
-            this.stackable = stackable;
-            this.count = count;
-            this.cooldown = cooldown;
-            this.autoPickup = autoPickup;
-            this.redText = redText;
-        }
-
-        protected Item(Item copy) {
-            name = copy.name;
-            id = copy.id;
-            description = copy.description;
-            redText = copy.redText;
-            sprite = copy.sprite;
-            stackable = copy.stackable;
-            count = copy.count;
-            cooldown = copy.cooldown;
-        }
-
         public bool Equals(Item other) {
             return !ReferenceEquals(other, null) && id == other.id;
         }

@@ -8,51 +8,53 @@ using VoraUtils;
 namespace TimefulDungeon.AI {
     public class PathfindingGrid : MonoBehaviour {
         private static LayerMask obstacleMask;
+        [SerializeField] private bool doPeriodicUpdates;
         [SerializeField] [Range(0f, 2f)] private float updateInterval = 0.2f;
         [SerializeField] private int gridWidth = 100;
         [SerializeField] private int gridHeight = 100;
         [SerializeField] private float cellSize = 0.5f;
         [SerializeField] private bool debug;
-        private WorldGrid<bool> grid;
 
-        private float intervalCounter;
-        private Pathfinding<Coordinate> pathfinding;
+        private WorldGrid<bool> _grid;
+        private float _intervalCounter;
+        private Pathfinding<Coordinate> _pathfinding;
 
         private void Start() {
-            grid = new WorldGrid<bool>(gridWidth, gridHeight, cellSize);
-            pathfinding = new Pathfinding<Coordinate>();
+            _grid = new WorldGrid<bool>(gridWidth, gridHeight, cellSize);
+            _pathfinding = new Pathfinding<Coordinate>();
             obstacleMask = LayerMask.GetMask("Obstacle");
         }
 
         private void Update() {
-            if (Input.GetKeyDown(KeyCode.O)) grid.ShowDebug();
+            if (Input.GetKeyDown(KeyCode.O)) _grid.ShowDebug();
         }
 
         private void FixedUpdate() {
-            if (intervalCounter >= updateInterval) {
-                for (var x = 0; x < grid.Width; x++)
-                for (var y = 0; y < grid.Height; y++) {
+            if (!doPeriodicUpdates) return;
+            if (_intervalCounter >= updateInterval) {
+                for (var x = 0; x < _grid.Width; x++)
+                for (var y = 0; y < _grid.Height; y++) {
                     // Check for collisions
-                    var worldPos = grid.GetWorldPosition(x, y);
-                    var middle = new Vector2(worldPos.x + grid.CellSize / 2, worldPos.y + grid.CellSize / 2);
-                    grid[x, y] = Physics2D.OverlapBox(middle, new Vector2(grid.CellSize / 2, grid.CellSize / 2), 0f,
+                    var worldPos = _grid.GetWorldPosition(x, y);
+                    var middle = new Vector2(worldPos.x + _grid.CellSize / 2, worldPos.y + _grid.CellSize / 2);
+                    _grid[x, y] = Physics2D.OverlapBox(middle, new Vector2(_grid.CellSize / 2, _grid.CellSize / 2), 0f,
                         obstacleMask);
                 }
 
-                intervalCounter = 0;
+                _intervalCounter = 0;
             }
             else {
-                intervalCounter += Time.fixedDeltaTime;
+                _intervalCounter += Time.fixedDeltaTime;
             }
         }
 
         private Vector2 GetWorldPosition(Vector2Int xy) {
-            return grid.GetWorldPosition(xy.x, xy.y, true);
+            return _grid.GetWorldPosition(xy.x, xy.y, true);
         }
 
         public List<Vector2> RequestPath(Vector2 start, Vector2 end) {
-            var startCoord = new Coordinate(grid.GetXY(start));
-            var endCoord = new Coordinate(grid.GetXY(end));
+            var startCoord = new Coordinate(_grid.GetXY(start));
+            var endCoord = new Coordinate(_grid.GetXY(end));
 
             static float GetCost(Coordinate successor, Coordinate current, Coordinate parent, float currentCost) {
                 return currentCost + Vector2Int.Distance(current, successor);
@@ -66,7 +68,7 @@ namespace TimefulDungeon.AI {
                 return GetSuccessorsWithJump(curr, endCoord);
             }
 
-            var coordinates = pathfinding.AStar(startCoord, endCoord, GetSuccessor, GetCost, GetHeuristic);
+            var coordinates = _pathfinding.AStar(startCoord, endCoord, GetSuccessor, GetCost, GetHeuristic);
             var waypoints = Waypointify(coordinates.ConvertAll(a => (Vector2Int) a).ToArray());
             return waypoints;
         }
@@ -80,12 +82,12 @@ namespace TimefulDungeon.AI {
                 new Coordinate(x - 1, y),
                 new Coordinate(x, y - 1)
             };
-            if (grid[x + 1, y] && grid[x, y + 1]) successors.Add(new Coordinate(x + 1, y + 1));
-            if (grid[x, y + 1] && grid[x - 1, y]) successors.Add(new Coordinate(x - 1, y + 1));
-            if (grid[x - 1, y] && grid[x, y - 1]) successors.Add(new Coordinate(x - 1, y - 1));
-            if (grid[x, y - 1] && grid[x + 1, y]) successors.Add(new Coordinate(x + 1, y - 1));
+            if (_grid[x + 1, y] && _grid[x, y + 1]) successors.Add(new Coordinate(x + 1, y + 1));
+            if (_grid[x, y + 1] && _grid[x - 1, y]) successors.Add(new Coordinate(x - 1, y + 1));
+            if (_grid[x - 1, y] && _grid[x, y - 1]) successors.Add(new Coordinate(x - 1, y - 1));
+            if (_grid[x, y - 1] && _grid[x + 1, y]) successors.Add(new Coordinate(x + 1, y - 1));
 
-            successors.RemoveAll(a => !grid[a.x, a.y]);
+            successors.RemoveAll(a => !_grid[a.x, a.y]);
             return successors.ToArray();
         }
 
@@ -110,15 +112,16 @@ namespace TimefulDungeon.AI {
                 var next = new Coordinate(curr.x + dx, curr.y + dy);
 
                 // If blocked, can't jump
-                if (!grid[next.x, next.y]) return null;
+                if (!_grid[next.x, next.y]) return null;
 
                 // If goal, return it
                 if (next == end) return end;
 
                 // If next has forced neighbors (or, is a jump point), return it
-                if (grid[next.x + dy, next.y + dx] &&
-                    !grid[next.x - dx + dy, next.y - dy + dx] || // 1st forced neighbor
-                    grid[next.x - dy, next.y - dx] && !grid[next.x - dx - dy, next.y - dy - dx]) // 2nd forced neighbor
+                if (_grid[next.x + dy, next.y + dx] &&
+                    !_grid[next.x - dx + dy, next.y - dy + dx] || // 1st forced neighbor
+                    _grid[next.x - dy, next.y - dx] && !_grid[next.x - dx - dy, next.y - dy - dx]
+                ) // 2nd forced neighbor
                     return next;
 
                 // Diagonal case

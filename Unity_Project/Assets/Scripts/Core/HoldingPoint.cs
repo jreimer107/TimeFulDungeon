@@ -2,6 +2,8 @@
 using TimefulDungeon.Items;
 using UnityEngine;
 using VoraUtils;
+using System.Linq;
+using TimefulDungeon.Items.Behaviors;
 
 namespace TimefulDungeon.Core {
     /// <summary>
@@ -14,18 +16,20 @@ namespace TimefulDungeon.Core {
 
         // State controlled by currently held item
         [HideInInspector] public float angle;
-        private Inventory _playerEquipment;
         private Transform _playerTransform;
+        private static readonly int Action = Animator.StringToHash("action");
 
         // State
-        public bool ControlledByInHand { get; private set; }
+        public bool ControlledByInHand { get; set; }
 
         // Dependencies
-        private Equippable InHand { get; set; }
+
+        private EquippableBehavior CurrentBehavior { get; set; }
+        private EquippableBehavior[] _behaviors;
 
         // Components, configured by currently held item
         public SpriteRenderer SpriteRenderer { get; private set; }
-        public EdgeCollider2D Hitbox { get; private set; }
+        public PolygonCollider2D Hitbox { get; private set; }
         public Animator Animator { get; private set; }
         public AnimatorOverrideController AnimatorOverrideController { get; private set; }
         public AudioSource AudioSource { get; private set; }
@@ -33,80 +37,72 @@ namespace TimefulDungeon.Core {
         public BulletParticle Bullet { get; private set; }
 
         // Shorthands
-        public EquipType CurrType => InHand ? InHand.type : EquipType.None;
-        private bool IsActive => InHand && InHand.Activated;
+        public EquipType CurrType => CurrentBehavior ? CurrentBehavior.Type : EquipType.None;
+        private bool IsActive => CurrentBehavior && CurrentBehavior.Activated;
 
         private void Awake() {
             SpriteRenderer = GetComponent<SpriteRenderer>();
-            Hitbox = GetComponent<EdgeCollider2D>();
+            Hitbox = GetComponent<PolygonCollider2D>();
             Hitbox.enabled = false;
             Particles = GetComponentInChildren<ParticleSystem>();
             Bullet = Particles.GetComponent<BulletParticle>();
+            Particles.gameObject.SetActive(false);
             Animator = GetComponent<Animator>();
             AnimatorOverrideController = new AnimatorOverrideController(Animator.runtimeAnimatorController);
             Animator.runtimeAnimatorController = AnimatorOverrideController;
             AudioSource = GetComponent<AudioSource>();
-
+            
             Initialize(EquipType.Melee);
+            
+            _behaviors = GetComponents<EquippableBehavior>().OrderBy(x => (int) x.Type).ToArray();
+            // Array.Sort(_behaviors, (b1, b2) => b2.Type.CompareTo(b1.Type));
+            CurrentBehavior = _behaviors[(int) currentState.Name + 1];
+            
         }
 
         private void Start() {
             var player = Player.instance;
-            _playerEquipment = player.Inventory;
             _playerTransform = player.transform;
+        }
+
+        public void OnActionStart() {
+            AudioSource.Play();
+            if (CurrentBehavior) CurrentBehavior.OnActionLoop();
         }
 
         protected override void Update() {
             base.Update();
             
             // Check for weapon use
-            if (!InHand) return;
             switch (Input.GetButton("Fire1")) {
                 case true when !IsActive:
-                    InHand.Activate();
+                    Animator.SetBool(Action, true);
+                    CurrentBehavior.Activate();
                     break;
                 case false when IsActive:
-                    InHand.Deactivate();
+                    Animator.SetBool(Action, false);
+                    CurrentBehavior.Deactivate();
                     break;
             }
         }
 
         private void FixedUpdate() {
-            // If we have a weapon, see if it is controlling our position
-            if (InHand) ControlledByInHand = InHand.ControlHoldingPoint();
-
             // If we're not being controlled, freely rotate
             if (!ControlledByInHand) RotateToMouse();
 
             SetPosition();
         }
-
+        
         public void OnEquipmentChange(EquipType changedType) {
             if (changedType == CurrType || changedType != EquipType.Shield && CurrType == EquipType.None) {
                 Transition(changedType);
             }
         }
-
-        private void OnTriggerEnter2D(Collider2D other) {
-            other.TryGetComponent(out IDamageable damageable);
-            damageable?.Damage(((Weapon) InHand).damage);
-        }
-
+        
         protected override void OnTransition() {
-            InHand = _playerEquipment.GetEquipment(currentState.Name);
-            if (InHand) { 
-                InHand.Equip(this);
-            }
-            else {
-                ResetComponents();
-            }
-        }
-
-        private void ResetComponents() {
-            SpriteRenderer.sprite = null;
-            AnimatorOverrideController["idle"] = null;
-            AnimatorOverrideController["action"] = null;
-            SpriteRenderer.enabled = false;
+            CurrentBehavior.enabled = false;
+            CurrentBehavior = _behaviors[(int) currentState.Name + 1];
+            CurrentBehavior.enabled = true;
         }
 
         private void SetPosition() {
