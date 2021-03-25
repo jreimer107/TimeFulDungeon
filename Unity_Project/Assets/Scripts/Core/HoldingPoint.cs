@@ -2,8 +2,6 @@
 using TimefulDungeon.Items;
 using UnityEngine;
 using VoraUtils;
-using System.Linq;
-using TimefulDungeon.Items.Behaviors;
 
 namespace TimefulDungeon.Core {
     /// <summary>
@@ -17,6 +15,7 @@ namespace TimefulDungeon.Core {
         // State controlled by currently held item
         [HideInInspector] public float angle;
         private Transform _playerTransform;
+        private Inventory _playerInventory;
         private static readonly int Action = Animator.StringToHash("action");
 
         // State
@@ -24,8 +23,7 @@ namespace TimefulDungeon.Core {
 
         // Dependencies
 
-        private EquippableBehavior CurrentBehavior { get; set; }
-        private EquippableBehavior[] _behaviors;
+        private Equippable InHand { get; set; }
 
         // Components, configured by currently held item
         public SpriteRenderer SpriteRenderer { get; private set; }
@@ -37,8 +35,8 @@ namespace TimefulDungeon.Core {
         public BulletParticle Bullet { get; private set; }
 
         // Shorthands
-        public EquipType CurrType => CurrentBehavior ? CurrentBehavior.Type : EquipType.None;
-        private bool IsActive => CurrentBehavior && CurrentBehavior.Activated;
+        public EquipType CurrType => InHand ? InHand.type : EquipType.None;
+        private bool IsActive => InHand != null && InHand.Activated;
 
         private void Awake() {
             SpriteRenderer = GetComponent<SpriteRenderer>();
@@ -54,34 +52,40 @@ namespace TimefulDungeon.Core {
             
             Initialize(EquipType.Melee);
             
-            _behaviors = GetComponents<EquippableBehavior>().OrderBy(x => (int) x.Type).ToArray();
+            // _behaviors = GetComponents<EquippableBehavior>().OrderBy(x => (int) x.Type).ToArray();
             // Array.Sort(_behaviors, (b1, b2) => b2.Type.CompareTo(b1.Type));
-            CurrentBehavior = _behaviors[(int) currentState.Name + 1];
-            
+            // InHand = _behaviors[(int) currentState.Name + 1];
         }
 
         private void Start() {
             var player = Player.instance;
             _playerTransform = player.transform;
+            _playerInventory = player.Inventory;
+
+            InHand = _playerInventory.GetEquipment(currentState.Name);
         }
 
         public void OnActionStart() {
             AudioSource.Play();
-            if (CurrentBehavior) CurrentBehavior.OnActionLoop();
+            if (InHand) InHand.OnActionLoop();
         }
 
         protected override void Update() {
             base.Update();
+
+            if (!InHand) return;
+            
+            InHand.Update();
             
             // Check for weapon use
             switch (Input.GetButton("Fire1")) {
                 case true when !IsActive:
                     Animator.SetBool(Action, true);
-                    CurrentBehavior.Activate();
+                    InHand.Activate();
                     break;
                 case false when IsActive:
                     Animator.SetBool(Action, false);
-                    CurrentBehavior.Deactivate();
+                    InHand.Deactivate();
                     break;
             }
         }
@@ -100,9 +104,13 @@ namespace TimefulDungeon.Core {
         }
         
         protected override void OnTransition() {
-            CurrentBehavior.enabled = false;
-            CurrentBehavior = _behaviors[(int) currentState.Name + 1];
-            CurrentBehavior.enabled = true;
+            InHand = _playerInventory.GetEquipment(currentState.Name);
+            if (InHand) {
+                InHand.OnEnable();
+            }
+            else {
+                ResetComponents();
+            }
         }
 
         private void SetPosition() {
@@ -129,6 +137,13 @@ namespace TimefulDungeon.Core {
             //Determine angle of mouse
             angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
             angle = angle < 0 ? angle + 360 : angle;
+        }
+
+        private void ResetComponents() {
+            SpriteRenderer.sprite = null;
+            SpriteRenderer.enabled = false;
+            AnimatorOverrideController["idle"] = null;
+            AnimatorOverrideController["action"] = null;
         }
     }
 }

@@ -1,8 +1,15 @@
 namespace TimefulDungeon.Items {
-    public class Weapon : Equippable {
-        public int damage;
-        public int range;
-        public float rate;
+    public abstract class Weapon : Equippable {
+        public readonly int damage;
+        public readonly int range;
+        public readonly float rate;
+
+        public Weapon(WeaponTemplate template) : base(template) {
+            damage = template.damage;
+            range = template.range;
+            rate = template.rate;
+
+        }
 
     }
 }

@@ -8,6 +8,8 @@ namespace TimefulDungeon.Items {
     //This simply a dropped object that, when picked up, gives the player the attached item.
     [RequireComponent(typeof(SpriteRenderer), typeof(Rigidbody2D))]
     public class Pickup : MonoBehaviour {
+        [SerializeField] private ItemTemplate template;
+        
         // Resources
         private static Pickup pickupPrefab;
         private static PhysicsMaterial2D pickupMaterial;
@@ -35,28 +37,33 @@ namespace TimefulDungeon.Items {
         [SerializeField] private float maxPushVelocity = 30f;
         
         // State
-        private Transform target;
-        private bool pickUpDisabled;
-        private bool beingMerged;
-        private bool beingPickedUp;
-        private Vector2 velocity = Vector2.zero;
+        private Transform _target;
+        private bool _pickUpDisabled;
+        private bool _beingMerged;
+        private bool _beingPickedUp;
+        private Vector2 _velocity = Vector2.zero;
 
         // References to own components
-        private PolygonCollider2D hitbox;
-        private CircleCollider2D triggerCollider;
-        private SpriteRenderer spriteRenderer;
-        private new Rigidbody2D rigidbody;
-        private float distanceToTarget = float.MaxValue;
+        private PolygonCollider2D _hitbox;
+        private CircleCollider2D _triggerCollider;
+        private SpriteRenderer _spriteRenderer;
+        private Rigidbody2D _rigidbody;
+        private float _distanceToTarget = float.MaxValue;
         
 
         private void Awake() {
             // Get own references
-            spriteRenderer = GetComponent<SpriteRenderer>();
-            triggerCollider = GetComponent<CircleCollider2D>();
-            rigidbody = GetComponent<Rigidbody2D>();
+            _spriteRenderer = GetComponent<SpriteRenderer>();
+            _triggerCollider = GetComponent<CircleCollider2D>();
+            _rigidbody = GetComponent<Rigidbody2D>();
 
             pickupPrefab ??= Resources.Load<Pickup>("Prefabs/Pickup");
             pickupMaterial ??= Resources.Load<PhysicsMaterial2D>("Materials/PickupMaterial");
+
+            if (template) {
+                item = ItemFactory.GetItemFromTemplate(template);
+            }
+            
         }
 
         private void Start() {
@@ -65,13 +72,13 @@ namespace TimefulDungeon.Items {
             inventory ??= Player.instance.Inventory;
 
             // Set sprite and create the hitbox
-            spriteRenderer.sprite = item.sprite;
-            hitbox = gameObject.AddComponent<PolygonCollider2D>();
-            hitbox.sharedMaterial = pickupMaterial;
+            _spriteRenderer.sprite = item.sprite;
+            _hitbox = gameObject.AddComponent<PolygonCollider2D>();
+            _hitbox.sharedMaterial = pickupMaterial;
             
             // Push the pickup
             if (spawnVelocity != Vector2.zero) {
-                rigidbody.velocity = spawnVelocity.ClampMagnitude(minPushVelocity, maxPushVelocity);
+                _rigidbody.velocity = spawnVelocity.ClampMagnitude(minPushVelocity, maxPushVelocity);
             }
             
             // Disable picking up for a bit to allow for discarding
@@ -80,43 +87,43 @@ namespace TimefulDungeon.Items {
 
         private void Update() {
             //If we have a targetPosition, scale size based on distance to it.
-            if (!target) return;
-            distanceToTarget = Vector2.Distance(target.position, transform.position);
+            if (!_target) return;
+            _distanceToTarget = Vector2.Distance(_target.position, transform.position);
             
             // Check if we can merge or pickup
-            if (beingMerged && distanceToTarget <= mergeRadius) {
+            if (_beingMerged && _distanceToTarget <= mergeRadius) {
                 // Merges destroy instantly, as they cannot fail
                 Destroy(gameObject);
             }
-            else if (beingPickedUp && distanceToTarget < pickupDistance) {
+            else if (_beingPickedUp && _distanceToTarget < pickupDistance) {
                 // Pickups can fail, so undo picking up if it does
                 if (inventory.AddItem(item)) {
                     Debug.Log("Item picked up by player");
                     Destroy(gameObject);
                 }
                 else {
-                    target = null;
+                    _target = null;
                 }
             }
 
             // Scale size by distance
-            if (!target || distanceToTarget >= shrinkDistance) {
+            if (!_target || _distanceToTarget >= shrinkDistance) {
                 transform.localScale = Vector3.one;
             }
             //Normalize scale to be within set min scale and 1 between range of shrink and pickup
             else {
                 var newScale =
-                    (distanceToTarget - pickupDistance) / (shrinkDistance - pickupDistance) * (1 - minShrinkScale) +
+                    (_distanceToTarget - pickupDistance) / (shrinkDistance - pickupDistance) * (1 - minShrinkScale) +
                     minShrinkScale;
                 transform.localScale = Vector2.one * newScale;
             }
         }
 
         private void FixedUpdate() {
-            if (!target) return;
+            if (!_target) return;
             //MoveTowards for linear movement, SmoothDamp for smoothed movement.
             // transform.position = Vector2.MoveTowards(transform.position, target.transform.position, maxSpeed * Time.fixedDeltaTime);
-            transform.position = Vector2.SmoothDamp(transform.position, target.transform.position, ref velocity,
+            transform.position = Vector2.SmoothDamp(transform.position, _target.transform.position, ref _velocity,
                 smoothTime, maxSpeed, Time.fixedDeltaTime);
         }
 
@@ -124,22 +131,22 @@ namespace TimefulDungeon.Items {
             Debug.Log("Trigger enter: " + other.name, gameObject);
             // Player entered pickup range, begin pick up
             if (other.CompareTag("Player")) {
-                if (pickUpDisabled || !inventory.CanAdd(item)) return;
+                if (_pickUpDisabled || !inventory.CanAdd(item)) return;
                 Debug.Log("Pickup check passed!");
-                beingPickedUp = true;
-                target = other.transform;
+                _beingPickedUp = true;
+                _target = other.transform;
             }
             // We are stackable and can stack with nearby pickup, begin merge
             else if (item.stackable && other.CompareTag("Pickup")) {
                 var otherPickup = other.GetComponent<Pickup>();
                 if (item != otherPickup.item) return;
-                target = other.transform;
-                Debug.Log("Target position set to " + target.transform.position);
+                _target = other.transform;
+                Debug.Log("Target position set to " + _target.transform.position);
                 //Item with greater ID gets destroyed to avoid race conditions
-                if (transform.GetInstanceID() > target.GetInstanceID()) {
-                    beingMerged = true;
-                    hitbox.enabled = false;
-                    triggerCollider.enabled = false;
+                if (transform.GetInstanceID() > _target.GetInstanceID()) {
+                    _beingMerged = true;
+                    _hitbox.enabled = false;
+                    _triggerCollider.enabled = false;
                 }
                 else {
                     item.count += otherPickup.item.count;
@@ -151,18 +158,19 @@ namespace TimefulDungeon.Items {
         private void OnTriggerExit2D(Collider2D other) {
             if (other.CompareTag("Player")) {
                 Debug.Log("Exited pickup radius, picking up re-enabled.", gameObject);
-                beingPickedUp = false;
+                _beingPickedUp = false;
             }
 
-            target = null;
+            _target = null;
             transform.localScale = Vector3.one;
         }
 
         #region Static methods
+
         /// <summary>
         /// Creates a pickup of the given item at the given position.
         /// </summary>
-        /// <param name="item">The item the pickup contains.</param>
+        /// <param name="item"></param>
         /// <param name="position">Where the pickup should spawn.</param>
         /// <param name="velocity">When instantiated, this velocity is applied. Clamped by parameters.</param>
         public static void Create(Item item, Vector2 position, Vector2 velocity) {
@@ -180,9 +188,9 @@ namespace TimefulDungeon.Items {
         #endregion
 
         private IEnumerator TemporarilyDisablePickup() {
-            pickUpDisabled = true;
+            _pickUpDisabled = true;
             yield return new WaitForSeconds(2f);
-            pickUpDisabled = false;
+            _pickUpDisabled = false;
         }
 
         #region TooltipHover

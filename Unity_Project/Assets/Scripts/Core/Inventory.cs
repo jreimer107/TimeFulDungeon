@@ -7,7 +7,7 @@ namespace TimefulDungeon.Core {
         [SerializeField] private Backpack backpack;
 
         public bool AddItem(Item item) {
-            if (!(item is Equippable equippable) || equipment.GetEquipment(equippable.type)) return backpack.Add(item);
+            if (!(item is Equippable equippable) || equipment.GetEquipment(equippable.type) == null) return backpack.Add(item);
             Equip(equippable);
             return true;
         }

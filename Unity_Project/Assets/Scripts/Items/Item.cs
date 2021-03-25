@@ -1,22 +1,34 @@
-using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TimefulDungeon.Items {
-    [CreateAssetMenu(fileName = "New Item", menuName = "Interactables/Item")]
-    public class Item : ScriptableObject, IEquatable<Item> {
-        public new string name;
-        public int id;
-        public string description;
-        public string redText;
-        public Sprite sprite;
-        public bool stackable;
+    [System.Serializable]
+    public class Item {
+        // Randomized fields, configured on construction
+        public string name;
         public int count;
         public float cooldown;
-        public bool autoPickup;
-        public AnimationClip idleClip;
-        public AnimationClip actionClip;
-        public AudioClip soundEffect;
-
+        
+        
+        protected readonly ItemTemplate template;
+        
+        // Template fields, not changeable
+        public int id => template.id;
+        public string description => template.description;
+        public string redText => template.redText;
+        public bool stackable => template.stackable;
+        public bool autoPickup => template.autoPickup;
+        public Sprite sprite => template.sprite;
+        public AnimationClip idleClip => template.idleClip;
+        public AnimationClip actionClip => template.actionClip;
+        public AudioClip soundEffect => template.soundEffect;
+        
+        public Item(ItemTemplate template) {
+            this.template = template;
+            name = template.name;
+            count = template.count;
+            cooldown = template.cooldown;
+        }
+        
         public bool Equals(Item other) {
             return !ReferenceEquals(other, null) && id == other.id;
         }
@@ -54,6 +66,10 @@ namespace TimefulDungeon.Items {
 
         public static bool operator false(Item a) {
             return ReferenceEquals(a, null);
+        }
+        
+        public bool ToBool() {
+            return !ReferenceEquals(this, null);
         }
 
         public virtual string GetTooltipText() {

@@ -18,15 +18,15 @@ namespace TimefulDungeon.Core.HoldingPointFSM {
         }
 
         protected bool ToMelee() {
-            return playerEquipment.Melee;
+            return playerEquipment.Melee != null;
         }
 
         protected bool ToRanged() {
-            return playerEquipment.Ranged;
+            return playerEquipment.Ranged != null;
         }
 
         protected bool ToShield() {
-            return !playerStamina.Exhausted && playerEquipment.Shield;
+            return !playerStamina.Exhausted && playerEquipment.Shield != null;
         }
     }
 }

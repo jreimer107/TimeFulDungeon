@@ -9,26 +9,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10bfc9478f76e2c498bc6710c7a2a39f, type: 3}
+  m_Script: {fileID: 11500000, guid: f62a6d39216b44feb9e0d09b955d9e0d, type: 3}
   m_Name: Tommy Gun
-  m_EditorClassIdentifier: Assembly-CSharp::Ranged
+  m_EditorClassIdentifier: 
   name: Tommy Gun
   id: 0
-  description: Gun that shoots bullets!
-  redText: 
-  sprite: {fileID: 4971424834031436807, guid: 32749d73ad7d51b47bd5c612e575c83c, type: 3}
+  description: 
+  redText: Wise guy, eh?
   stackable: 0
   count: 0
   cooldown: 0
-  autoPickup: 1
+  autoPickup: 0
+  sprite: {fileID: 4971424834031436807, guid: 32749d73ad7d51b47bd5c612e575c83c, type: 3}
   idleClip: {fileID: 7400000, guid: bb1e1b7745b3ddc44a17814721e0aeb7, type: 2}
   actionClip: {fileID: 7400000, guid: c9090fca55f87084b846717e4292b771, type: 2}
   soundEffect: {fileID: 8300000, guid: 2f0e8e802f26b9942a22b3523bb0089c, type: 3}
   type: 1
   damage: 1
-  range: 0
+  range: 50
   rate: 10
   projectile: {fileID: 0}
-  speed: 1
+  speed: 10
   penetrate: 1
-  spread: 45
+  spread: 30

@@ -23,7 +23,7 @@ namespace TimefulDungeon.UI {
             base.Refresh();
 
             //Initialize the count UI if item is stackable
-            if (item && item.stackable) {
+            if (item != null && item.stackable) {
                 var count = item.count;
                 countUI.enabled = true;
                 if (count > 1000000)

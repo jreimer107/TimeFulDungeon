@@ -8,7 +8,7 @@ namespace TimefulDungeon.UI {
         private Image icon;
         private Item item;
 
-        public bool Active => item;
+        public bool Active => item != null;
 
         private void Start() {
             icon = GetComponent<Image>();
