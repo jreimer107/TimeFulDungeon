@@ -19,5 +19,9 @@ namespace TimefulDungeon.Items {
         public AnimationClip idleClip;
         public AnimationClip actionClip;
         public AudioClip soundEffect;
+
+        public virtual Item GetInstance() {
+            return new Item(this);
+        }
     }
 }

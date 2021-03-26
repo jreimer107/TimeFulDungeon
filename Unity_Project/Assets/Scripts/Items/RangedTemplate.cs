@@ -7,5 +7,9 @@ namespace TimefulDungeon.Items {
         public float speed;
         public int penetrate;
         public float spread;
+
+        public override Item GetInstance() {
+            return new Ranged(this);
+        }
     }
 }

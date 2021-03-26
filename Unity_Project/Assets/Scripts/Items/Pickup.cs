@@ -61,7 +61,7 @@ namespace TimefulDungeon.Items {
             pickupMaterial ??= Resources.Load<PhysicsMaterial2D>("Materials/PickupMaterial");
 
             if (template) {
-                item = ItemFactory.GetItemFromTemplate(template);
+                item = template.GetInstance();
             }
             
         }
