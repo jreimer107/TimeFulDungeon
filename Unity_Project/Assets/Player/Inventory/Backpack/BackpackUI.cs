@@ -7,26 +7,26 @@ namespace TimefulDungeon.UI {
         private static InventorySlot slotPrefab;
         
         // Dependencies
-        private Inventory inventory;
+        private Inventory _inventory;
         
         // Instance fields
-        private InventorySlot[] slots;
+        private InventorySlot[] _slots;
 
         private void Start() {
-            inventory = Player.instance.Inventory;
-            slotPrefab ??= Resources.Load<InventorySlot>("Prefabs/Slot");
+            _inventory = Player.instance.Inventory;
+            slotPrefab ??= Resources.Load<InventorySlot>("Slot");
 
             // Create slots, count based on player's capacity
-            slots = new InventorySlot[inventory.EnabledSlots];
-            for (var i = 0; i < inventory.EnabledSlots; i++) {
+            _slots = new InventorySlot[_inventory.EnabledSlots];
+            for (var i = 0; i < _inventory.EnabledSlots; i++) {
                 var newSlot = Instantiate(slotPrefab, transform);
                 newSlot.slotNumber = i;
-                slots[i] = newSlot;
+                _slots[i] = newSlot;
             }
         }
 
         public void UpdateUI(int slotIndex) {
-            slots?[slotIndex]?.Refresh();
+            _slots?[slotIndex]?.Refresh();
         }
     }
 }

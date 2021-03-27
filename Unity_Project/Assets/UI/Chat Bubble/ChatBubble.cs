@@ -17,18 +17,18 @@ namespace TimefulDungeon.UI {
         /// <param name="localPosition">Offset from the gameobject's postion.</param>
         /// <param name="text">The text to print.</param>
         public static void Create(Transform parent, Vector3 localPosition, string text) {
-            chatBubblePrefab ??= Resources.Load<ChatBubble>("Prefabs/ChatBubble");
+            chatBubblePrefab ??= Resources.Load<ChatBubble>("ChatBubble");
 
             var chatBubble = Instantiate(chatBubblePrefab, parent);
             chatBubble.transform.localPosition = localPosition;
-            chatBubble.text = text;
+            chatBubble._text = text;
         }
 
         #endregion
 
         #region Instance fields and methods
 
-        private string text;
+        private string _text;
 
         private void Start() {
             var backgroundSprite = transform.Find("Background").GetComponent<SpriteRenderer>();
@@ -36,7 +36,7 @@ namespace TimefulDungeon.UI {
             var autoType = GetComponent<AutoType>();
 
             // Get the background the right size
-            textMeshPro.text = text;
+            textMeshPro.text = _text;
             textMeshPro.ForceMeshUpdate();
             var textSize = textMeshPro.GetRenderedValues(false);
             backgroundSprite.size = textSize + new Vector2(0.2f, 0.1f);
@@ -50,7 +50,7 @@ namespace TimefulDungeon.UI {
 
             // Tween in the alpha and then print the message
             LeanTween.alpha(backgroundSprite.gameObject, 1f, 0.5f).setOnComplete(
-                () => autoType.PrintMessage(text, () => Destroy(gameObject, 3f))
+                () => autoType.PrintMessage(_text, () => Destroy(gameObject, 3f))
             );
         }
 

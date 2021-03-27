@@ -57,19 +57,18 @@ namespace TimefulDungeon.Items {
             _triggerCollider = GetComponent<CircleCollider2D>();
             _rigidbody = GetComponent<Rigidbody2D>();
 
-            pickupPrefab ??= Resources.Load<Pickup>("Prefabs/Pickup");
-            pickupMaterial ??= Resources.Load<PhysicsMaterial2D>("Materials/PickupMaterial");
-
-            if (template) {
-                item = template.GetInstance();
-            }
-            
+            pickupPrefab ??= Resources.Load<Pickup>("Pickup");
+            pickupMaterial ??= Resources.Load<PhysicsMaterial2D>("PickupMaterial");
         }
 
         private void Start() {
             // Get dependencies
             tooltip ??= Tooltip.instance;
             inventory ??= Player.instance.Inventory;
+            
+            if (template) {
+                item = template.GetInstance();
+            }
 
             // Set sprite and create the hitbox
             _spriteRenderer.sprite = item.sprite;

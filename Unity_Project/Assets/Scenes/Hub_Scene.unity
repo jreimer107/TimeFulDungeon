@@ -167,6 +167,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &133211896 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1681660174799188871, guid: e93ab3209c971734a96555e1daafe6da,
+    type: 3}
+  m_PrefabInstance: {fileID: 1681660174141730769}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &239139374
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1028,6 +1034,25 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 919447006cd75ed4a955468b341003e0, type: 3}
+--- !u!1 &975874149 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1681660174354462474, guid: e93ab3209c971734a96555e1daafe6da,
+    type: 3}
+  m_PrefabInstance: {fileID: 1681660174141730769}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &975874150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 975874149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 588a5e9071502ba4dae605cd49b074f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sliderObject: {fileID: 133211896}
 --- !u!1 &1054533870 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4091082390148873527, guid: 82f062ceab0c514438c7fec165f42c55,
@@ -2115,6 +2140,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[1]
       value: 
       objectReference: {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
+    - target: {fileID: 1681660174354462474, guid: e93ab3209c971734a96555e1daafe6da,
+        type: 3}
+      propertyPath: m_Name
+      value: Stamina Bar
+      objectReference: {fileID: 0}
     - target: {fileID: 1681660174625926946, guid: e93ab3209c971734a96555e1daafe6da,
         type: 3}
       propertyPath: m_Enabled
@@ -2139,6 +2169,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1681660174799188871, guid: e93ab3209c971734a96555e1daafe6da,
+        type: 3}
+      propertyPath: m_Name
+      value: Slider
       objectReference: {fileID: 0}
     - target: {fileID: 1681660174999292030, guid: e93ab3209c971734a96555e1daafe6da,
         type: 3}
@@ -2195,7 +2230,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1681660174799188873, guid: e93ab3209c971734a96555e1daafe6da, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: e93ab3209c971734a96555e1daafe6da, type: 3}
 --- !u!1 &1681660174141730770 stripped
 GameObject:
