@@ -1,27 +1,26 @@
-﻿using TimefulDungeon.Core;
+﻿using System;
+using TimefulDungeon.Core;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace TimefulDungeon.UI {
-    [RequireComponent(typeof(Slider))]
     public class StaminaBarUI : MonoBehaviour {
-        private Stamina stamina;
-        private Slider slider;
-
-        private void Awake() {
-            slider = GetComponent<Slider>();
-        }
-
+        [SerializeField] private GameObject sliderObject;
+        private Slider _slider;
+        private Stamina _stamina;
+        
         private void Start() {
-            stamina = Player.instance.Stamina;
+            _stamina = Player.instance.Stamina;
+            _slider = sliderObject.GetComponent<Slider>();
         }
 
         private void Update() {
-            slider.value = stamina.Current;
+            _slider.value = _stamina.Current;
+            sliderObject.SetActive(Math.Abs(_stamina.Current - _stamina.max) > 0.1f);
         }
 
         private void MaxStaminaChanged() {
-            slider.maxValue = stamina.max;
+            _slider.maxValue = _stamina.max;
         }
     }
 }
