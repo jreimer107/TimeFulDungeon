@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace TimefulDungeon.Core.Movement {
@@ -10,12 +11,12 @@ namespace TimefulDungeon.Core.Movement {
         [SerializeField] private bool freeze;
         [SerializeField] private bool drawPath;
 
-        // Steering module
-
         // Automatic pathfinding variables
         private Vector2 _destination;
         private List<Vector2> _path;
 
+        private float _targetMaxSpeed;
+        
         // Physics
         private Rigidbody2D _rigidbody;
 
@@ -23,12 +24,18 @@ namespace TimefulDungeon.Core.Movement {
         public float MaxAcceleration { get; set; } = 10f;
         public Vector2 DesiredDirection { get; set; }
 
-        private void Start() {
+        private void Awake() {
             _rigidbody = GetComponent<Rigidbody2D>();
+            _targetMaxSpeed = MaxSpeed;
         }
 
         private void Update() {
             if (_destination != default && _path.Count != 0) GetUpdatedPath();
+
+            // Adjust max speed
+            if (Mathf.Abs(MaxSpeed - _targetMaxSpeed) > Mathf.Epsilon) {
+                MaxSpeed = Mathf.MoveTowards(MaxSpeed, _targetMaxSpeed, MaxAcceleration * Time.deltaTime * 0.2f);
+            }
 
             // Adjust our velocity
             Move(Time.deltaTime);
@@ -41,6 +48,10 @@ namespace TimefulDungeon.Core.Movement {
         public void Travel(Vector2 destination) {
             _destination = destination;
             GetUpdatedPath();
+        }
+
+        public void ChangeMaxSpeedOverTime(float newMaxSpeed) {
+            _targetMaxSpeed = newMaxSpeed;
         }
 
         private void Move(float deltaTime) {

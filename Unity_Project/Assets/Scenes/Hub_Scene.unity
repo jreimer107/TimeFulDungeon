@@ -2218,6 +2218,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1277034853, guid: 8ee21ed58db7fdc4a8708fc7f1e1184d, type: 3}
+      propertyPath: maxAcceleration
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 9165525602769653012, guid: 8ee21ed58db7fdc4a8708fc7f1e1184d,
         type: 3}
       propertyPath: m_RootOrder

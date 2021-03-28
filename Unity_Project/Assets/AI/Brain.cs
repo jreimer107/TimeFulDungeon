@@ -30,6 +30,12 @@ namespace TimefulDungeon.AI {
             SetDesiredByContext();
         }
 
+        protected virtual void OnValidate() {
+            if (!_movementController) return;
+            _movementController.ChangeMaxSpeedOverTime(maxSpeed);
+            _movementController.MaxAcceleration = maxAcceleration;
+        }
+
         protected void SetDesiredByContext() {
             _movementController.DesiredDirection = contextSteering.Direction;
         }
@@ -39,12 +45,12 @@ namespace TimefulDungeon.AI {
             switch (shouldWander) {
                 case true when !_wandering:
                     _wanderModule.enabled = true;
-                    _movementController.MaxSpeed = 0.5f;
+                    _movementController.ChangeMaxSpeedOverTime(0.5f);
                     _wandering = true;
                     break;
                 case false when _wandering:
                     _wanderModule.enabled = false;
-                    _movementController.MaxSpeed = maxSpeed;
+                    _movementController.ChangeMaxSpeedOverTime(maxSpeed);
                     _wandering = false;
                     break;
             }

@@ -10,9 +10,13 @@ namespace TimefulDungeon.Enemies {
         
         private int _health;
 
+        private Rigidbody2D _rigidbody;
+
         protected override void Awake() {
             base.Awake();
             _health = maxHealth;
+            _rigidbody = GetComponent<Rigidbody2D>();
+
         }
 
         public void Damage(int damage) {
@@ -22,7 +26,13 @@ namespace TimefulDungeon.Enemies {
         }
     
         private void OnCollisionEnter2D(Collision2D other) {
-            other.collider.GetComponent<Player>()?.Damage(damage);
+            var player = other.collider.GetComponent<Player>();
+            if (!player) return;
+            player.Damage(damage);
+            var knockback = (transform.Position2D() - player.transform.Position2D()) * 100 * _rigidbody.mass;
+            print($"Applying knockback force: {knockback}");
+            _rigidbody.AddForce(knockback, ForceMode2D.Impulse);
+            player.ApplyKnockback(knockback * -1);
         }
     }
 }
