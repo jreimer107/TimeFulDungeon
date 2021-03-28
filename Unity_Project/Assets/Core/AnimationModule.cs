@@ -1,69 +1,51 @@
-﻿using System;
+﻿using TimefulDungeon.Core.Movement;
 using UnityEngine;
 
 namespace TimefulDungeon.Core {
-    [RequireComponent(typeof(SpriteRenderer), typeof(Animator))]
+    [RequireComponent(typeof(SpriteRenderer), typeof(Animator), typeof(MovementController))]
     public class AnimationModule : MonoBehaviour {
-        #region Private fields
-
-        private SpriteRenderer spriteRenderer;
-        private Animator animator;
-        private bool hasVerticalAnimation;
-        private bool hasHorizontalAnimation;
-
-        private bool FacingRight {
-            get => spriteRenderer.flipX;
-            set => spriteRenderer.flipX = value;
-        }
-
-        #endregion
-
-        #region Public fields
-
-        /// <summary>
-        ///     Input. Determines what animation plays. Assign at creation.
-        /// </summary>
-        public Func<Vector2> getDesiredVelocity = () => {
-            Debug.LogWarning("No velocity getter given to AnimationModule!");
-            return Vector2.zero;
-        };
-
         private static readonly int Horizontal = Animator.StringToHash("Horizontal");
         private static readonly int Vertical = Animator.StringToHash("Vertical");
+        private bool _hasHorizontalAnimation;
+        private bool _hasVerticalAnimation;
+        private Animator _animator;
+        private MovementController _movementController;
+        private Rigidbody2D _rigidbody;
+        private SpriteRenderer _spriteRenderer;
 
-        #endregion
-
-        #region Unity methods
+        private bool FacingRight {
+            get => _spriteRenderer.flipX;
+            set => _spriteRenderer.flipX = value;
+        }
 
         private void Start() {
-            spriteRenderer = GetComponent<SpriteRenderer>();
-            animator = GetComponent<Animator>();
-            foreach (var parameter in animator.parameters) {
+            _spriteRenderer = GetComponent<SpriteRenderer>();
+            _movementController = GetComponent<MovementController>();
+            _rigidbody = GetComponent<Rigidbody2D>();
+            _animator = GetComponent<Animator>();
+            foreach (var parameter in _animator.parameters) {
                 switch (parameter.name) {
                     case "Horizontal":
-                        hasHorizontalAnimation = true;
+                        _hasHorizontalAnimation = true;
                         break;
                     case "Vertical":
-                        hasVerticalAnimation = true;
+                        _hasVerticalAnimation = true;
                         break;
                 }
 
-                if (hasHorizontalAnimation && hasVerticalAnimation) break;
+                if (_hasHorizontalAnimation && _hasVerticalAnimation) break;
             }
         }
 
         private void Update() {
-            // Update 
-            var desiredVelocity = getDesiredVelocity();
-            if (hasHorizontalAnimation)
-                animator.SetFloat(Horizontal, Mathf.Abs(desiredVelocity.x));
-            if (hasVerticalAnimation)
-                animator.SetFloat(Vertical, Mathf.Abs(desiredVelocity.y));
+            var desiredVelocity = _movementController.DesiredDirection * _rigidbody.velocity.magnitude;
+            if (_hasHorizontalAnimation)
+                _animator.SetFloat(Horizontal, Mathf.Abs(desiredVelocity.x));
+            if (_hasVerticalAnimation)
+                _animator.SetFloat(Vertical, Mathf.Abs(desiredVelocity.y));
 
             // Flip animation based on intended direction
             if (desiredVelocity.x != 0 && (desiredVelocity.x < 0) ^ FacingRight) FacingRight = !FacingRight;
         }
-
-        #endregion
     }
 }

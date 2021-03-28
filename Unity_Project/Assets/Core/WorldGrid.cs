@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using VoraUtils;
 
-namespace TimefulDungeon.AI {
+namespace TimefulDungeon.Core {
     public class WorldGrid<T> {
         public delegate T CreateGridObject(WorldGrid<T> worldGrid, int x, int y);
 

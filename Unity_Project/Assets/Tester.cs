@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TimefulDungeon.AI;
-using TimefulDungeon.Generation;
+﻿using TimefulDungeon.Core;
 using UnityEngine;
 using VoraUtils;
 

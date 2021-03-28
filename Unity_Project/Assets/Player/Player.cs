@@ -1,4 +1,5 @@
 ﻿using System;
+using TimefulDungeon.Core.Movement;
 using TimefulDungeon.UI;
 using UnityEditor;
 using UnityEngine;
@@ -23,7 +24,6 @@ namespace TimefulDungeon.Core {
             instance = this;
             
             movementController = GetComponent<MovementController>();
-            movementController.automatedMovement = false;
             Inventory = GetComponent<Inventory>();
             Stamina = GetComponent<Stamina>();
             HoldingPoint = GetComponentInChildren<HoldingPoint>();
@@ -31,9 +31,7 @@ namespace TimefulDungeon.Core {
 
         private void Update() {
             //Get input from player
-            movementController.SetDesiredDirection(
-                new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
-            );
+            movementController.DesiredDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
             if (Input.GetKeyDown(KeyCode.G)) Damage(1);
             if (Input.GetKeyDown(KeyCode.H)) Heal(1);

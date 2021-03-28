@@ -5,7 +5,7 @@ using TimefulDungeon.Generation;
 using UnityEngine;
 using VoraUtils;
 
-namespace TimefulDungeon.AI {
+namespace TimefulDungeon.Core.Movement {
     public class PathfindingGrid : MonoBehaviour {
         private static LayerMask obstacleMask;
         [SerializeField] private bool doPeriodicUpdates;

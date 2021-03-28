@@ -11,7 +11,6 @@ namespace TimefulDungeon.AI {
 
         [SerializeField] private float maxInterestRange = 30f;
         [SerializeField] private int resolution = 12;
-        [SerializeField] private int mapIncrementCount = 10;
         [SerializeField] private float wallCheckRange = 30f;
         [SerializeField] private float wallAvoidRange = 1f;
         [SerializeField] private float panicSeconds = 3;
@@ -22,21 +21,21 @@ namespace TimefulDungeon.AI {
         #region Private Variables
 
         private readonly struct Interest {
-            private readonly Transform transform;
-            private readonly Vector2 vector2;
+            private readonly Transform _transform;
+            private readonly Vector2 _vector2;
 
-            public Vector2 Position => transform ? vector2 : (Vector2) transform.position;
+            public Vector2 Position => _transform ? _transform.Position2D() : _vector2;
             public readonly bool isDanger;
 
             public Interest(Transform transform, bool isDanger) {
-                this.transform = transform;
-                vector2 = Vector2.zero;
+                _transform = transform;
+                _vector2 = Vector2.zero;
                 this.isDanger = isDanger;
             }
 
             public Interest(Vector2 vector2, bool isDanger) {
-                transform = null;
-                this.vector2 = vector2;
+                _transform = null;
+                _vector2 = vector2;
                 this.isDanger = isDanger;
             }
 
@@ -46,26 +45,26 @@ namespace TimefulDungeon.AI {
         }
 
         // Cached values calculated from configuration
-        private float arcWidthRadians;
-        private Vector2[] mapVectors;
+        private float _arcWidthRadians;
+        private Vector2[] _mapVectors;
 
         // Lists modified by public add/remove functions, translated into maps
-        private readonly HashSet<Interest> interestList = new HashSet<Interest>();
+        private readonly HashSet<Interest> _interestList = new HashSet<Interest>();
 
         // Scalar maps resulting from input lists
-        private float[] interestMap;
-        private float[] obstacleMap;
+        private float[] _interestMap;
+        private float[] _obstacleMap;
 
         // State
-        private bool panicing;
-        private float panicFrameCount;
+        private bool _panicking;
+        private float _panicFrameCount;
 
         #endregion
 
         #region Public Variables
 
         /// <summary>
-        ///     Output vector of context steerning.
+        ///     Output vector of context steering.
         /// </summary>
         public Vector2 Direction { get; private set; }
 
@@ -80,23 +79,23 @@ namespace TimefulDungeon.AI {
 
         // Input API. Helpers to modify input lists.
         public void AddInterest(Vector2 interest, bool isDanger = false) {
-            interestList.Add(new Interest(interest, isDanger));
+            _interestList.Add(new Interest(interest, isDanger));
         }
 
         public void AddInterest(Transform interest, bool isDanger = false) {
-            interestList.Add(new Interest(interest, isDanger));
+            _interestList.Add(new Interest(interest, isDanger));
         }
 
         public void RemoveInterest(Vector2 interest) {
-            interestList.RemoveWhere(x => x == interest);
+            _interestList.RemoveWhere(x => x == interest);
         }
 
         public void RemoveInterest(Transform interest) {
-            interestList.RemoveWhere(x => x == (Vector2) interest.position);
+            _interestList.RemoveWhere(x => x == (Vector2) interest.position);
         }
 
         public void ClearInterests() {
-            interestList.Clear();
+            _interestList.Clear();
         }
 
         /// <summary>
@@ -105,7 +104,7 @@ namespace TimefulDungeon.AI {
         /// <returns>True if any interests in range, false otherwise.</returns>
         public bool HasNoInterestsOrDangers() {
             Vector2 ourPosition = transform.position;
-            return interestList.All(interest => !(ourPosition.LazyDistanceCheck(interest, maxInterestRange) < 0));
+            return _interestList.All(interest => !(ourPosition.LazyDistanceCheck(interest, maxInterestRange) < 0));
         }
 
         #endregion
@@ -113,11 +112,11 @@ namespace TimefulDungeon.AI {
         #region Unity Methods
 
         private void Start() {
-            arcWidthRadians = 2 * Mathf.PI / resolution;
-            mapVectors = new Vector2[resolution];
-            for (var i = 0; i < resolution; i++) mapVectors[i] = GetVectorForMapSlot(i);
-            interestMap = new float[resolution];
-            obstacleMap = new float[resolution];
+            _arcWidthRadians = 2 * Mathf.PI / resolution;
+            _mapVectors = new Vector2[resolution];
+            for (var i = 0; i < resolution; i++) _mapVectors[i] = GetVectorForMapSlot(i);
+            _interestMap = new float[resolution];
+            _obstacleMap = new float[resolution];
         }
 
         private void LateUpdate() {
@@ -125,17 +124,17 @@ namespace TimefulDungeon.AI {
             CreateMapsFromLists();
             var cornered = AvoidWalls();
             if (cornered) {
-                panicing = true;
-                panicFrameCount = panicSeconds;
+                _panicking = true;
+                _panicFrameCount = panicSeconds;
             }
-            else if (panicFrameCount > 0) {
-                panicFrameCount -= Time.deltaTime;
+            else if (_panicFrameCount > 0) {
+                _panicFrameCount -= Time.deltaTime;
             }
             else {
-                panicing = false;
+                _panicking = false;
             }
 
-            if (panicing) Panic();
+            if (_panicking) Panic();
             Direction = Vector2.MoveTowards(Direction, CalculateSumInterest(), 0.05f);
         }
 
@@ -146,18 +145,18 @@ namespace TimefulDungeon.AI {
             Gizmos.color = Color.black;
             Gizmos.DrawWireSphere(position, 0.5f);
             for (var i = 0; i < resolution; i++) {
-                var start = position + mapVectors[i] / 2;
+                var start = position + _mapVectors[i] / 2;
                 float desirability;
-                if (obstacleMap[i] < wallAvoidRange) {
-                    desirability = obstacleMap[i] * 0.1f;
+                if (_obstacleMap[i] < wallAvoidRange) {
+                    desirability = _obstacleMap[i] * 0.1f;
                     Gizmos.color = Color.cyan;
                 }
                 else {
-                    desirability = interestMap[i];
+                    desirability = _interestMap[i];
                     Gizmos.color = desirability < 0 ? Color.red : Color.green;
                 }
 
-                var desireVector = 2 * mapVectors[i] * Mathf.Abs(desirability);
+                var desireVector = 2 * _mapVectors[i] * Mathf.Abs(desirability);
                 Gizmos.DrawLine(start, start + desireVector);
             }
         }
@@ -172,7 +171,7 @@ namespace TimefulDungeon.AI {
         /// </summary>
         /// <param name="callback">A function that will be called for each direction. Expects no return.</param>
         private void ForEachInterest(Action<int, float> callback) {
-            for (var i = 0; i < resolution; i++) callback(i, interestMap[i]);
+            for (var i = 0; i < resolution; i++) callback(i, _interestMap[i]);
         }
 
         /// <summary>
@@ -183,7 +182,7 @@ namespace TimefulDungeon.AI {
         ///     interest map.
         /// </param>
         private void ForEachInterest(Func<int, float, float> callback) {
-            for (var i = 0; i < resolution; i++) interestMap[i] = callback(i, interestMap[i]);
+            for (var i = 0; i < resolution; i++) _interestMap[i] = callback(i, _interestMap[i]);
         }
 
         /// <summary>
@@ -206,8 +205,8 @@ namespace TimefulDungeon.AI {
         /// </summary>
         private void ClearMaps() {
             ForEachInterest((i, interest) => {
-                interestMap[i] = 0;
-                obstacleMap[i] = wallCheckRange;
+                _interestMap[i] = 0;
+                _obstacleMap[i] = wallCheckRange;
             });
         }
 
@@ -217,7 +216,7 @@ namespace TimefulDungeon.AI {
         private void CreateMapsFromLists() {
             Vector2 ourPosition = transform.position;
             var interestAddedToMap = false;
-            foreach (var interest in interestList.Where(interest =>
+            foreach (var interest in _interestList.Where(interest =>
                 ourPosition.LazyDistanceCheck(interest.Position, maxInterestRange) < 0)) {
                 AddToMap(interest.Position, interest.isDanger);
                 interestAddedToMap = true;
@@ -228,17 +227,17 @@ namespace TimefulDungeon.AI {
         }
 
         /// <summary>
-        ///     Takes a target and adds it to the interst map using the desirability function.
+        ///     Takes a target and adds it to the interest map using the desirability function.
         /// </summary>
         /// <param name="target">The position of our target.</param>
-        /// <param name="isDanger">Wether we'd like to move towards or away from that target.</param>
+        /// <param name="isDanger">Whether we'd like to move towards or away from that target.</param>
         private void AddToMap(Vector2 target, bool isDanger) {
             var getDesirability = GetDesirabilityFunc(isDanger);
             var position = transform.Position2D();
             var distance = Vector2.Distance(target, position);
             var targetVector = (target - position).normalized;
             ForEachInterest((i, interest) => {
-                var desirability = getDesirability(mapVectors[i], targetVector);
+                var desirability = getDesirability(_mapVectors[i], targetVector);
                 return interest + ScaleDesirability(distance, desirability);
             });
         }
@@ -246,7 +245,7 @@ namespace TimefulDungeon.AI {
         /// <summary>
         ///     Used to control how the agent determines its interest. Override this for custom behavior.
         /// </summary>
-        /// <param name="isDanger">Wether we'd like to move towards or away from our target.</param>
+        /// <param name="isDanger">Whether we'd like to move towards or away from our target.</param>
         /// <returns>A function that will be called to get the interest in a given direction.</returns>
         private Func<Vector2, Vector2, float> GetDesirabilityFunc(bool isDanger) {
             if (isDanger)
@@ -262,7 +261,7 @@ namespace TimefulDungeon.AI {
         /// <param name="length">How long the vector should be. Defaults to 1.</param>
         /// <returns>The vector that the map slot represents.</returns>
         private Vector2 GetVectorForMapSlot(int mapSlot, float length = 1) {
-            var angle = arcWidthRadians * mapSlot;
+            var angle = _arcWidthRadians * mapSlot;
             return new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * length;
         }
 
@@ -274,7 +273,7 @@ namespace TimefulDungeon.AI {
         /// <returns>The normalized sum of the interest vectors.</returns>
         private Vector2 CalculateSumInterest() {
             // Ignore any interests with nearby walls
-            ForEachInterest((i, interest) => obstacleMap[i] < wallAvoidRange ? 0 : interest);
+            ForEachInterest((i, interest) => _obstacleMap[i] < wallAvoidRange ? 0 : interest);
 
             var highestInterestIndex = 0;
             var highestInterest = float.MinValue;
@@ -287,25 +286,25 @@ namespace TimefulDungeon.AI {
             var interestVector = Vector2.zero;
             for (var i = highestInterestIndex - 2; i <= highestInterestIndex + 2; i++) {
                 var index = (i % resolution + resolution) % resolution;
-                interestVector += mapVectors[index] * interestMap[index];
+                interestVector += _mapVectors[index] * _interestMap[index];
             }
 
             return interestVector.normalized;
         }
 
         /// <summary>
-        ///     Checks if their are walls within the wallcheck range, and assigns the distance to the obstacle map.
+        ///     Checks if their are walls within the wall check range, and assigns the distance to the obstacle map.
         ///     Also checks to see if the agent is cornered or surrounded, and returns a boolean.
         /// </summary>
         /// <returns>True if the agent is cornered or surrounded, false otherwise.</returns>
         private bool AvoidWalls() {
             var badDirections = 0;
             ForEachInterest((i, interest) => {
-                var hit = Physics2D.Raycast(transform.position, mapVectors[i], wallCheckRange, obstacleMask);
+                var hit = Physics2D.Raycast(transform.position, _mapVectors[i], wallCheckRange, obstacleMask);
                 var wallDistance = wallCheckRange;
                 if (hit.collider) {
                     wallDistance = hit.distance;
-                    obstacleMap[i] = wallDistance;
+                    _obstacleMap[i] = wallDistance;
                 }
 
                 if (wallDistance <= wallAvoidRange || interest < 0) badDirections++;
@@ -318,7 +317,7 @@ namespace TimefulDungeon.AI {
         /// </summary>
         private void Panic() {
             ForEachInterest((i, interest) => {
-                var normalizedDistance = obstacleMap[i] / wallCheckRange * 0.5f;
+                var normalizedDistance = _obstacleMap[i] / wallCheckRange * 0.5f;
                 return interest + normalizedDistance;
             });
         }
