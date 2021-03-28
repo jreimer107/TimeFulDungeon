@@ -1,31 +1,31 @@
+using System;
 using System.Collections;
 using NoiseTest;
 using UnityEngine;
-using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace TimefulDungeon.AI {
-	/// <summary>
-	///     Controls NPCs when they don't need to be doing anything.
-	///     Works by using opensimplex noise to generate a turning amount. Every update,
-	///     the desired movement direction is turned by that amount. Every so often, that amount
-	///     is updated. Opensimplex is used so that going straight is more common. Also allows for
-	///     a tendency to go back to spawn if too far away.
-	/// </summary>
-	public class WanderModule : MonoBehaviour {
+    /// <summary>
+    ///     Controls NPCs when they don't need to be doing anything.
+    ///     Works by using opensimplex noise to generate a turning amount. Every update,
+    ///     the desired movement direction is turned by that amount. Every so often, that amount
+    ///     is updated. Opensimplex is used so that going straight is more common. Also allows for
+    ///     a tendency to go back to a center if too far away.
+    /// </summary>
+    public class WanderModule : MonoBehaviour {
         #region Configuration Fields
 
-        [Tooltip("Distance from spawn when the entity will start to be guided back towards it.")]
+        [Tooltip("Distance from center when the entity will start to be guided back towards it.")]
         [SerializeField]
         [Min(0)]
-        private float spawnAdjustStart = 2;
+        private float centerAdjustStart = 2;
 
-        [Tooltip("Distance from spawn past which the entity will head straight back to its spawn.")]
+        [Tooltip("Distance from center past which the entity will not be able to continue further.")]
         [SerializeField]
         [Min(0)]
-        private float spawnAdjustLimit = 8;
+        private float centerAdjustLimit = 8;
 
-        [FormerlySerializedAs("directionChangeInverval")]
-        [Tooltip("How many frames in between wander turn updates. More frames makes smoother turns.")]
+        [Tooltip("A measure of time between picking a new direction to turn in. Smaller vales mean less turning.")]
         [SerializeField]
         [Min(1)]
         private int directionChangeInterval = 20;
@@ -45,15 +45,17 @@ namespace TimefulDungeon.AI {
 
         #region Private Fields
 
-        private int frameCount;
-        private float turnAmount;
-        private bool isPausing;
+        private float _turnAmount;
+        private bool _isPausing;
 
-        private Vector2 rawWanderDirection;
-        private Vector2 adjustedWanderDirection;
-        private OpenSimplexNoise noise;
-        private Vector2 spawn;
-        private float spawnAdjustSlope;
+        // The adjusted is the raw pulled towards spawn based on how far away we are.
+        // It is important to keep these separate to avoid an orbiting pattern.
+        private Vector2 _rawWanderDirection;
+        private Vector2 _adjustedWanderDirection;
+        
+        private OpenSimplexNoise _noise;
+        private float _centerAdjustSlope;
+        private bool OutsideWanderLimit => center.LazyDistanceCheck(transform.position, centerAdjustLimit) > 0;
 
         #endregion
 
@@ -62,57 +64,47 @@ namespace TimefulDungeon.AI {
         /// <summary>
         ///     Where the NPC should wander towards.
         /// </summary>
-        public Vector2 WanderDirection => isPausing ? Vector2.zero : adjustedWanderDirection;
+        public Vector2 WanderDirection => _isPausing ? Vector2.zero : _adjustedWanderDirection;
 
         /// <summary>
-        ///     Whether the agent is outside the furthest limit it should get while wandering.
+        ///     Where the NPC should wander around.
         /// </summary>
-        public bool OutsideWanderLimit => spawn.LazyDistanceCheck(transform.position, spawnAdjustLimit) > 0;
+        public Vector2 center;
 
         #endregion
 
         #region Unity Methods
 
         private void Awake() {
-            noise = new OpenSimplexNoise();
-            rawWanderDirection = Random.insideUnitCircle;
-            spawn = transform.position;
-            CalculateSpawnAdjustSlope();
+            _noise = new OpenSimplexNoise();
+            _rawWanderDirection = Random.insideUnitCircle;
+            center = transform.position;
+            CalculateCenterAdjustSlope();
         }
 
         private void OnEnable() {
             StartCoroutine(Pause());
+            StartCoroutine(ChangeDirection());
+        }
+
+        private void OnDisable() {
+            StopAllCoroutines();
         }
 
         private void OnValidate() {
-            CalculateSpawnAdjustSlope();
+            CalculateCenterAdjustSlope();
         }
 
         private void Update() {
-            // Only change our wander turning every so often to smooth turns
-            frameCount++;
-
-            var position = transform.Position2D();
-            if (frameCount >= directionChangeInterval) {
-                frameCount = 0;
-                turnAmount = (float) noise.Evaluate(position.x, position.y) * Mathf.Deg2Rad *
-                             turnSpeedModifier;
-            }
-
             // Turn our desired direction
-            rawWanderDirection = rawWanderDirection.Rotate(turnAmount);
+            _rawWanderDirection = _rawWanderDirection.Rotate(_turnAmount);
 
-            // Check if we are too far from spawn, and weight going back if we are
-            var spawnDirection = spawn - (Vector2) transform.position;
-            var spawnDistance = spawnDirection.magnitude;
-            adjustedWanderDirection = rawWanderDirection;
-            if (spawnDistance > spawnAdjustStart) {
-                var weight = Mathf.Min((spawnDistance - spawnAdjustStart) * spawnAdjustSlope, 1);
-                adjustedWanderDirection = rawWanderDirection * (1 - weight) + spawnDirection.normalized * weight;
-                adjustedWanderDirection.Normalize();
+            KeepNearCenter();
+
+            if (debug) {
+                var position = transform.Position2D();
+                Debug.DrawLine(position, position + _rawWanderDirection, Color.red);
             }
-
-            Debug.DrawLine(position, position + rawWanderDirection, Color.red);
         }
 
         #endregion
@@ -120,12 +112,37 @@ namespace TimefulDungeon.AI {
         #region Private Methods
 
         /// <summary>
+        ///     Check if we are too far from spawn, and weight going back if we are
+        /// </summary>
+        private void KeepNearCenter() {
+            var centerDirection = center - (Vector2) transform.position;
+            var centerDistance = centerDirection.magnitude;
+            _adjustedWanderDirection = _rawWanderDirection;
+            if (!(centerDistance > centerAdjustStart)) return;
+            var weight = Mathf.Min((centerDistance - centerAdjustStart) * _centerAdjustSlope, 1);
+            _adjustedWanderDirection = _rawWanderDirection * (1 - weight) + centerDirection.normalized * weight;
+            _adjustedWanderDirection.Normalize();
+        }
+
+        /// <summary>
+        ///     Coroutine that uses noise to modify how we are turning over time. This modifies a turn amount,
+        ///     which is used to rotate our desired direction every update.
+        /// </summary>
+        private IEnumerator ChangeDirection() {
+            while (enabled) {
+                yield return new WaitForSeconds(directionChangeInterval * Time.fixedDeltaTime);
+                var position = transform.Position2D();
+                _turnAmount = (float) _noise.Evaluate(position.x, position.y) * Mathf.Deg2Rad * turnSpeedModifier;
+            }
+        }
+
+
+        /// <summary>
         ///     Coroutine that pauses movement at random intervals and for random lengths of time.
         /// </summary>
-        /// <returns></returns>
         private IEnumerator Pause() {
             // Pause on start to try and eliminate syncing with other enemies
-            isPausing = true;
+            _isPausing = true;
             var pauseDuration = Random.Range(0, pauseDurationMean + pauseDurationDeviation);
             if (debug) Debug.Log($"Start pause for {pauseDuration} seconds");
             yield return new WaitForSeconds(pauseDuration);
@@ -133,7 +150,7 @@ namespace TimefulDungeon.AI {
             // Cycle pausing until this disabled
             while (enabled) {
                 // Calculate when next pause will be, wander for that amount of time
-                isPausing = false;
+                _isPausing = false;
                 var nextPauseTime = Random.Range(pauseIntervalMean - pauseIntervalDeviation,
                     pauseIntervalMean + pauseIntervalDeviation);
                 if (debug) Debug.Log($"Next pause in {nextPauseTime} seconds");
@@ -141,7 +158,7 @@ namespace TimefulDungeon.AI {
 
                 // Pause for a random amount of time
                 if (OutsideWanderLimit) continue;
-                isPausing = true;
+                _isPausing = true;
                 pauseDuration = Random.Range(pauseDurationMean - pauseDurationDeviation,
                     pauseDurationMean + pauseDurationDeviation);
                 if (debug) Debug.Log($"Pausing for {pauseDuration} seconds");
@@ -153,16 +170,16 @@ namespace TimefulDungeon.AI {
         ///     Uses a linear slope. 1 at start, 0.5 at limit.
         ///     0.5 is used so that no further progress can be made, but the entity can sit still.
         /// </summary>
-        private void CalculateSpawnAdjustSlope() {
-            if (spawnAdjustLimit < spawnAdjustStart) {
-                spawnAdjustLimit = spawnAdjustStart;
-                Debug.LogWarning("Wander module: spawn adjust limit less than adjust start.");
+        private void CalculateCenterAdjustSlope() {
+            if (centerAdjustLimit < centerAdjustStart) {
+                centerAdjustLimit = centerAdjustStart;
+                Debug.LogWarning("Wander module: center adjust limit less than adjust start.");
             }
 
-            if (spawnAdjustStart == spawnAdjustLimit)
-                spawnAdjustSlope = 0;
+            if (Math.Abs(centerAdjustStart - centerAdjustLimit) < 0.01)
+                _centerAdjustSlope = 0;
             else
-                spawnAdjustSlope = 0.5f / (spawnAdjustLimit - spawnAdjustStart);
+                _centerAdjustSlope = 0.5f / (centerAdjustLimit - centerAdjustStart);
         }
 
         #endregion
