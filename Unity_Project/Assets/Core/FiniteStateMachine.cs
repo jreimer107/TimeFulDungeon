@@ -5,18 +5,24 @@ using System.Reflection;
 using UnityEngine;
 
 namespace TimefulDungeon.Core {
-    public abstract class FiniteStateMachine<T> : MonoBehaviour where T : Enum {
-        protected State<T> currentState;
+    public sealed class FiniteStateMachine<T> where T : Enum {
         private bool _isInitialized;
-
         private Dictionary<T, State<T>> _states;
 
-        protected virtual void Update() {
+        /// <summary>
+        ///     Called after calling Start on the new state. Use to change the data of the
+        ///     inheriting class to prepare for the new state.
+        /// </summary>
+        public Action onTransition;
+
+        public State<T> currentState { get; private set; }
+
+        public void Update() {
             var nextState = currentState.Update();
             if (!Equals(nextState, currentState.Name)) Transition(nextState);
         }
 
-        protected virtual void Initialize(T initialStateName) {
+        public void Initialize(T initialStateName) {
             if (_isInitialized)
                 Debug.LogError($"The FiniteStateMachine component on {GetType()} is already initialized.");
 
@@ -29,9 +35,8 @@ namespace TimefulDungeon.Core {
                 !x.IsAbstract
             );
 
-            var parameters = new object[] {this};
             foreach (var stateClass in stateClasses) {
-                var instance = (State<T>) Activator.CreateInstance(stateClass, parameters);
+                var instance = (State<T>) Activator.CreateInstance(stateClass);
                 _states.Add(instance.Name, instance);
             }
 
@@ -45,19 +50,13 @@ namespace TimefulDungeon.Core {
             }
         }
 
-        protected void Transition(T toState) {
+        public void Transition(T toState) {
             if (!_isInitialized) return;
             if (!Equals(currentState.Name, toState) && !currentState.CanTransition(toState)) return;
             currentState.Exit();
             currentState = _states[toState];
             currentState.Start();
-            OnTransition();
+            onTransition();
         }
-        
-        /// <summary>
-        /// Called after calling Start on the new state. Use to change the data of the
-        /// inheriting class to prepare for the new state.
-        /// </summary>
-        protected virtual void OnTransition() { }
     }
 }

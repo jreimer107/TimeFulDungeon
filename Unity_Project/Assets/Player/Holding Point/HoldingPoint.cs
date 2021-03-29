@@ -8,7 +8,7 @@ namespace TimefulDungeon.Core {
     ///     The point which in-hand items will be attached to.
     ///     This is a controls object that changes the values in the player object.
     /// </summary>
-    public class HoldingPoint : FiniteStateMachine<EquipType> {
+    public class HoldingPoint : FiniteStateMachineBehavior<EquipType> {
         // Configuration
         [Range(0, 5)] [SerializeField] private float radius = 1;
 
@@ -38,7 +38,8 @@ namespace TimefulDungeon.Core {
         public EquipType CurrType => InHand ? InHand.type : EquipType.None;
         private bool IsActive => InHand != null && InHand.Activated;
 
-        private void Awake() {
+        protected override void Awake() {
+            base.Awake();
             SpriteRenderer = GetComponent<SpriteRenderer>();
             Hitbox = GetComponent<PolygonCollider2D>();
             Hitbox.enabled = false;

@@ -7,7 +7,7 @@ namespace TimefulDungeon.Core.HoldingPointFSM {
         private EquipType _previousType;
         private Shield _shield;
 
-        public ShieldState(HoldingPoint fsm) : base(fsm) {
+        public ShieldState() {
             Name = EquipType.Shield;
             transitions.Add(EquipType.None, ToNone);
             transitions.Add(EquipType.Melee, ToMelee);
@@ -15,8 +15,8 @@ namespace TimefulDungeon.Core.HoldingPointFSM {
         }
 
         public override void Start() {
-            if (fsm.CurrType != EquipType.Shield) {
-                _previousType = fsm.CurrType;
+            if (holdingPoint.CurrType != EquipType.Shield) {
+                _previousType = holdingPoint.CurrType;
             }
             _shield = playerEquipment.Shield;
             playerStamina.StartContinuousUse(_shield.staminaUse);

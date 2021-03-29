@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TimefulDungeon.Core.HoldingPointFSM {
     public class RangedState : EquippableState {
-        public RangedState(HoldingPoint fsm) : base(fsm) {
+        public RangedState() {
             Name = EquipType.Ranged;
             transitions.Add(EquipType.None, ToNone);
             transitions.Add(EquipType.Melee, ToMelee);
@@ -12,7 +12,7 @@ namespace TimefulDungeon.Core.HoldingPointFSM {
 
         public override EquipType Update() {
             if (Input.GetButtonDown("Swap Weapon")) return EquipType.Melee;
-            if (Input.GetButton("Shield") && !fsm.ControlledByInHand) return EquipType.Shield;
+            if (Input.GetButton("Shield") && !holdingPoint.ControlledByInHand) return EquipType.Shield;
 
             return EquipType.Ranged;
         }
