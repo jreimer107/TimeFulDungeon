@@ -5,9 +5,9 @@ namespace TimefulDungeon.Core.HoldingPointFSM {
     public class RangedState : EquippableState {
         public RangedState() {
             Name = EquipType.Ranged;
-            transitions.Add(EquipType.None, ToNone);
-            transitions.Add(EquipType.Melee, ToMelee);
-            transitions.Add(EquipType.Shield, ToShield);
+            AddTransition(EquipType.None, ToNone);
+            AddTransition(EquipType.Melee, ToMelee);
+            AddTransition(EquipType.Shield, ToShield);
         }
 
         public override EquipType Update() {

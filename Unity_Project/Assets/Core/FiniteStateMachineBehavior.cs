@@ -13,7 +13,7 @@ namespace TimefulDungeon.Core {
         
         protected virtual void Awake() {
             _that = new FiniteStateMachine<T>();
-            _that.onTransition += OnTransition;
+            _that.OnTransition += OnTransition;
         }
 
         protected virtual void Update() {

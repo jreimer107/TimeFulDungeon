@@ -13,7 +13,7 @@ namespace TimefulDungeon.Core {
         ///     Called after calling Start on the new state. Use to change the data of the
         ///     inheriting class to prepare for the new state.
         /// </summary>
-        public Action onTransition;
+        public event Action OnTransition;
 
         public State<T> currentState { get; private set; }
 
@@ -56,7 +56,7 @@ namespace TimefulDungeon.Core {
             currentState.Exit();
             currentState = _states[toState];
             currentState.Start();
-            onTransition();
+            OnTransition?.Invoke();
         }
     }
 }

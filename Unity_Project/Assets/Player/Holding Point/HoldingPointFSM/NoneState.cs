@@ -5,9 +5,9 @@ namespace TimefulDungeon.Core.HoldingPointFSM {
     public class NoneState : EquippableState {
         public NoneState() {
             Name = EquipType.None;
-            transitions.Add(EquipType.Melee, ToMelee);
-            transitions.Add(EquipType.Ranged, ToRanged);
-            transitions.Add(EquipType.Shield, ToShield);
+            AddTransition(EquipType.Melee, ToMelee);
+            AddTransition(EquipType.Ranged, ToRanged);
+            AddTransition(EquipType.Shield, ToShield);
         }
 
         public override EquipType Update() {

@@ -1,5 +1,4 @@
 ﻿using TimefulDungeon.Items;
-using TMPro;
 using UnityEngine;
 
 namespace TimefulDungeon.Core.HoldingPointFSM {
@@ -9,9 +8,9 @@ namespace TimefulDungeon.Core.HoldingPointFSM {
 
         public ShieldState() {
             Name = EquipType.Shield;
-            transitions.Add(EquipType.None, ToNone);
-            transitions.Add(EquipType.Melee, ToMelee);
-            transitions.Add(EquipType.Ranged, ToRanged);
+            AddTransition(EquipType.None, ToNone);
+            AddTransition(EquipType.Melee, ToMelee);
+            AddTransition(EquipType.Ranged, ToRanged);
         }
 
         public override void Start() {
