@@ -52,7 +52,7 @@ namespace TimefulDungeon.Core {
 
         public void Transition(T toState) {
             if (!_isInitialized) return;
-            if (!Equals(currentState.Name, toState) && !currentState.CanTransition(toState)) return;
+            if (!_states[toState].CanEnter()) return;
             currentState.Exit();
             currentState = _states[toState];
             currentState.Start();

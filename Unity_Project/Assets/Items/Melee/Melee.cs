@@ -53,7 +53,12 @@ namespace TimefulDungeon.Items {
             holdingPoint.Particles.gameObject.SetActive(false);
         }
 
-        private void OnTriggerEnter2D(Collider2D other) {
+        public override void OnDisable() {
+            DoDeactivate();
+        }
+
+        public override void OnCollision(Collider2D other) {
+            base.OnCollision(other);
             other.TryGetComponent(out IDamageable damageable);
             damageable?.Damage(damage);
         }
@@ -78,6 +83,10 @@ namespace TimefulDungeon.Items {
 
         protected IEnumerator DelayedDeactivate() {
             yield return new WaitUntil(() => holdingPoint.angle < endSwingAngle);
+            DoDeactivate();
+        }
+
+        protected void DoDeactivate() {
             base.Deactivate();
             holdingPoint.ControlledByInHand = false;
             holdingPoint.Hitbox.enabled = false;

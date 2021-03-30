@@ -1,4 +1,5 @@
-﻿using TimefulDungeon.Entities;
+﻿using System;
+using TimefulDungeon.Entities;
 using TimefulDungeon.Items;
 using UnityEngine;
 using VoraUtils;
@@ -13,7 +14,7 @@ namespace TimefulDungeon.Core {
         [Range(0, 5)] [SerializeField] private float radius = 1;
 
         // State controlled by currently held item
-        [HideInInspector] public float angle;
+        [NonSerialized] public float angle;
         private Transform _playerTransform;
         private Inventory _playerInventory;
         private static readonly int Action = Animator.StringToHash("action");
@@ -64,7 +65,7 @@ namespace TimefulDungeon.Core {
 
         public void OnActionStart() {
             AudioSource.Play();
-            if (InHand) InHand.OnActionLoop();
+            InHand?.OnActionLoop();
         }
 
         protected override void Update() {
@@ -93,7 +94,11 @@ namespace TimefulDungeon.Core {
 
             SetPosition();
         }
-        
+
+        private void OnTriggerEnter2D(Collider2D other) {
+            InHand?.OnCollision(other);
+        }
+
         public void OnEquipmentChange(EquipType changedType) {
             if (changedType == CurrType || changedType != EquipType.Shield && CurrType == EquipType.None) {
                 Transition(changedType);
@@ -101,6 +106,7 @@ namespace TimefulDungeon.Core {
         }
         
         protected override void OnTransition() {
+            InHand?.OnDisable();
             InHand = _playerInventory.GetEquipment(currentState.Name);
             if (InHand) {
                 InHand.OnEnable();

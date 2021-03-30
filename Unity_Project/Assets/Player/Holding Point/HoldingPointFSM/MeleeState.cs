@@ -5,9 +5,10 @@ namespace TimefulDungeon.Core.HoldingPointFSM {
     public class MeleeState : EquippableState {
         public MeleeState() {
             Name = EquipType.Melee;
-            AddTransition(EquipType.None, ToNone); 
-            AddTransition(EquipType.Ranged, ToRanged);
-            AddTransition(EquipType.Shield, ToShield);
+        }
+
+        public override bool CanEnter() {
+            return playerEquipment.Melee != null;
         }
 
         public override EquipType Update() {

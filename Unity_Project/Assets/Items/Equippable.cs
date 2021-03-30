@@ -1,4 +1,5 @@
 ﻿using TimefulDungeon.Core;
+using UnityEngine;
 
 namespace TimefulDungeon.Items {
     public abstract class Equippable : Item {
@@ -17,8 +18,8 @@ namespace TimefulDungeon.Items {
             _inventory.Equip(this);
         }
         
-        protected HoldingPoint holdingPoint;
-        private Inventory _inventory;
+        protected readonly HoldingPoint holdingPoint;
+        private readonly Inventory _inventory;
         
         public bool Activated { get; private set; }
 
@@ -37,6 +38,8 @@ namespace TimefulDungeon.Items {
 
             holdingPoint.SpriteRenderer.enabled = true;
         }
+        
+        public virtual void OnDisable() { }
 
         public virtual void Activate() {
             Activated = true;
@@ -47,5 +50,7 @@ namespace TimefulDungeon.Items {
         }
 
         public virtual void OnActionLoop() { }
+        
+        public virtual void OnCollision(Collider2D other) { }
     }
 }

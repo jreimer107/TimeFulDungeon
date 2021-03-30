@@ -8,9 +8,10 @@ namespace TimefulDungeon.Core.HoldingPointFSM {
 
         public ShieldState() {
             Name = EquipType.Shield;
-            AddTransition(EquipType.None, ToNone);
-            AddTransition(EquipType.Melee, ToMelee);
-            AddTransition(EquipType.Ranged, ToRanged);
+        }
+
+        public override bool CanEnter() {
+            return playerEquipment.Shield != null;
         }
 
         public override void Start() {

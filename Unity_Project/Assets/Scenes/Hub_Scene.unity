@@ -2219,8 +2219,21 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1277034853, guid: 8ee21ed58db7fdc4a8708fc7f1e1184d, type: 3}
+      propertyPath: searchTime
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1277034853, guid: 8ee21ed58db7fdc4a8708fc7f1e1184d, type: 3}
+      propertyPath: sightRange
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1277034853, guid: 8ee21ed58db7fdc4a8708fc7f1e1184d, type: 3}
       propertyPath: maxAcceleration
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686308405971366453, guid: 8ee21ed58db7fdc4a8708fc7f1e1184d,
+        type: 3}
+      propertyPath: directionChangeInterval
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 9165525602769653012, guid: 8ee21ed58db7fdc4a8708fc7f1e1184d,
         type: 3}
