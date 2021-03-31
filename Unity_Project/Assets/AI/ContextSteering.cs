@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VoraUtils;
@@ -9,7 +8,7 @@ namespace TimefulDungeon.AI {
     public class ContextSteering : MonoBehaviour {
         #region Configuration Variables
 
-        [SerializeField] private float maxInterestRange = 30f;
+        [SerializeField] [Min(0)] private float distanceDropoff = 3f;
         [SerializeField] private int resolution = 12;
         [SerializeField] private float wallCheckRange = 30f;
         [SerializeField] private float wallAvoidRange = 1f;
@@ -19,37 +18,13 @@ namespace TimefulDungeon.AI {
         #endregion
 
         #region Private Variables
-
-        private readonly struct Interest {
-            private readonly Transform _transform;
-            private readonly Vector2 _vector2;
-
-            public Vector2 Position => _transform ? _transform.Position2D() : _vector2;
-            public readonly bool isDanger;
-
-            public Interest(Transform transform, bool isDanger) {
-                _transform = transform;
-                _vector2 = Vector2.zero;
-                this.isDanger = isDanger;
-            }
-
-            public Interest(Vector2 vector2, bool isDanger) {
-                _transform = null;
-                _vector2 = vector2;
-                this.isDanger = isDanger;
-            }
-
-            public static implicit operator Vector2(Interest i) {
-                return i.Position;
-            }
-        }
-
+        
         // Cached values calculated from configuration
         private float _arcWidthRadians;
         private Vector2[] _mapVectors;
 
         // Lists modified by public add/remove functions, translated into maps
-        private readonly HashSet<Interest> _interestList = new HashSet<Interest>();
+        private readonly HashSet<Interest> _interests = new HashSet<Interest>();
 
         // Scalar maps resulting from input lists
         private float[] _interestMap;
@@ -78,24 +53,29 @@ namespace TimefulDungeon.AI {
         #region Public Methods
 
         // Input API. Helpers to modify input lists.
-        public void AddInterest(Vector2 interest, bool isDanger = false) {
-            _interestList.Add(new Interest(interest, isDanger));
+        public Interest AddInterestObj(Interest newInterest) {
+            _interests.Add(newInterest);
+            return newInterest;
+        }
+        
+        public Interest AddInterest(Vector2 interest, bool isDanger = false) {
+            return AddInterestObj(new Interest(interest, isDanger));
         }
 
-        public void AddInterest(Transform interest, bool isDanger = false) {
-            _interestList.Add(new Interest(interest, isDanger));
+        public Interest AddInterest(Transform interest, bool isDanger = false) {
+            return AddInterestObj(new Interest(interest, isDanger));
         }
 
         public void RemoveInterest(Vector2 interest) {
-            _interestList.RemoveWhere(x => x == interest);
+            _interests.RemoveWhere(x => x == interest);
         }
 
         public void RemoveInterest(Transform interest) {
-            _interestList.RemoveWhere(x => x == (Vector2) interest.position);
+            _interests.RemoveWhere(x => x == (Vector2) interest.position);
         }
 
         public void ClearInterests() {
-            _interestList.Clear();
+            _interests.Clear();
         }
 
         /// <summary>
@@ -103,8 +83,7 @@ namespace TimefulDungeon.AI {
         /// </summary>
         /// <returns>True if any interests in range, false otherwise.</returns>
         public bool HasNoInterestsOrDangers() {
-            Vector2 ourPosition = transform.position;
-            return _interestList.All(interest => !(ourPosition.LazyDistanceCheck(interest, maxInterestRange) < 0));
+            return _interests.Count == 0;
         }
 
         #endregion
@@ -192,10 +171,10 @@ namespace TimefulDungeon.AI {
         /// <param name="desirability">How much we'd like to go to that target.</param>
         /// <returns></returns>
         private float ScaleDesirability(float distance, float desirability) {
-            // Linear scale. Distance of zero has 100% modifier. Distance of max or larger has 0% modifier.
+            // Logarithmic scale. Distance of zero has 100% modifier. Distance of infinity has 0% modifier.
             // TODO: Agents maintain their interest distance when this is not capped at 0.
-            // float distanceModifier = 1 - (distance / (float) maxInterestRange);
-            var distanceModifier = Mathf.Max(1 - distance / maxInterestRange, 0);
+            // var distanceModifier = Mathf.Max(1 - distance / maxInterestRange, 0);
+            var distanceModifier = distanceDropoff / (distance + distanceDropoff);
             var normalizedDesirability = desirability * distanceModifier;
             return normalizedDesirability;
         }
@@ -214,11 +193,9 @@ namespace TimefulDungeon.AI {
         ///     Converts the input lists into maps.
         /// </summary>
         private void CreateMapsFromLists() {
-            Vector2 ourPosition = transform.position;
             var interestAddedToMap = false;
-            foreach (var interest in _interestList.Where(interest =>
-                ourPosition.LazyDistanceCheck(interest.Position, maxInterestRange) < 0)) {
-                AddToMap(interest.Position, interest.isDanger);
+            foreach (var interest in _interests) {
+                AddToMap(interest, interest.isDanger);
                 interestAddedToMap = true;
             }
 

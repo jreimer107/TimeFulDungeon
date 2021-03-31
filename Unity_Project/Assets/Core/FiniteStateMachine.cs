@@ -21,8 +21,7 @@ namespace TimefulDungeon.Core {
             var nextState = currentState.Update();
             if (!Equals(nextState, currentState.Name)) Transition(nextState);
         }
-
-        public void Initialize(T initialStateName) {
+        public void Initialize(T initialStateName, params object[] parameters) {
             if (_isInitialized)
                 Debug.LogError($"The FiniteStateMachine component on {GetType()} is already initialized.");
 
@@ -36,7 +35,7 @@ namespace TimefulDungeon.Core {
             );
 
             foreach (var stateClass in stateClasses) {
-                var instance = (State<T>) Activator.CreateInstance(stateClass);
+                var instance = (State<T>) Activator.CreateInstance(stateClass, parameters);
                 _states.Add(instance.Name, instance);
             }
 

@@ -22,6 +22,27 @@ namespace VoraUtils {
 			return CreateWorldText(parent, text, localPosition, fontSize, (Color)color, textAnchor, textAlignment, sortingOrder);
 		}
 
+		public static void DrawDebugCircle(Vector2 pos, float radius, Color color) {
+			var angle = 0f;
+			var segments = radius * 32;
+			var deltaAngle = 2 * Mathf.PI / segments;
+			var currPoint = Vector2.up * radius;
+			var nextPoint = Vector2.zero;
+
+
+			for (var i = 0; i < segments; i++) {
+				angle += deltaAngle;
+				nextPoint.x = Mathf.Sin(angle) * radius;
+				nextPoint.y = Mathf.Cos(angle) * radius;
+
+				Debug.DrawLine(currPoint + pos, nextPoint + pos, color, 1);
+
+				currPoint = nextPoint;
+			}
+
+
+		}
+
 		public static TextMeshPro CreateWorldText(Transform parent, string text, Vector2 localPosition, int fontSize, Color color, TextAnchor textAnchor, TextAlignmentOptions textAlignment, int sortingOrder = 5000) {
 			var gameObject = new GameObject("World_Text", typeof(TextMeshPro));
 			var transform = gameObject.transform;

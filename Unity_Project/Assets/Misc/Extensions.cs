@@ -59,6 +59,7 @@ public static class Extensions {
 	public static bool IsZero(this Vector2 vector) => vector == Vector2.zero;
 
 	public static Vector2 Position2D(this Transform transform) => transform.position;
+	public static Vector2 Position2D(this MonoBehaviour behavior) => behavior.transform.position;
 
 	/// <summary>
 	/// Checks to see if two points are further apart than a given distance, but in an efficient way.
@@ -110,5 +111,13 @@ public static class Extensions {
 	/// <returns>True if the positions are closer together than the given distance. False otherwise.</returns>
 	public static bool CloserThan(this Vector2 here, Vector2 there, float compareDistance) {
 		return LazyDistanceCheck(here, there, compareDistance) < 0;
+	}
+
+	public static bool CloserThan(this MonoBehaviour here, Vector2 there, float compareDistance) {
+		return LazyDistanceCheck(here.transform.position, there, compareDistance) < 0;
+	}
+	
+	public static bool FartherThan(this MonoBehaviour here, Vector2 there, float compareDistance) {
+		return LazyDistanceCheck(here.transform.position, there, compareDistance) > 0;
 	}
 }

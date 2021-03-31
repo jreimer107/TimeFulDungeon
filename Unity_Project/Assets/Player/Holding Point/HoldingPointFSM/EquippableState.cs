@@ -12,21 +12,5 @@ namespace TimefulDungeon.Core.HoldingPointFSM {
             playerStamina = player.Stamina;
             holdingPoint = player.HoldingPoint;
         }
-
-        protected static bool ToNone() {
-            return true;
-        }
-
-        protected bool ToMelee() {
-            return playerEquipment.Melee != null;
-        }
-
-        protected bool ToRanged() {
-            return playerEquipment.Ranged != null;
-        }
-
-        protected bool ToShield() {
-            return !playerStamina.Exhausted && playerEquipment.Shield != null;
-        }
     }
 }

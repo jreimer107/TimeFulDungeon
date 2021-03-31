@@ -4,29 +4,33 @@ using UnityEngine;
 namespace TimefulDungeon.AI {
     [RequireComponent(typeof(MovementController))]
     public abstract class Brain : MonoBehaviour {
-        public float maxSpeed;
-        public float maxAcceleration;
+        [SerializeField] private float maxSpeed = 10f;
+        [SerializeField] private float maxAcceleration = 10f;
 
-        protected ContextSteering contextSteering;
-        private MovementController _movementController;
-        private WanderModule _wanderModule;
+        public bool debug;
 
         private bool _wandering;
 
+        private ContextSteering _contextSteering;
+        private MovementController _movementController;
+        private WanderModule _wanderModule;
+
         protected virtual void Awake() {
             _movementController = GetComponent<MovementController>();
-            contextSteering = GetComponent<ContextSteering>();
+            _contextSteering = GetComponent<ContextSteering>();
             _wanderModule = GetComponent<WanderModule>();
         }
 
         protected virtual void Start() {
             _movementController.MaxSpeed = maxSpeed;
             _movementController.MaxAcceleration = maxAcceleration;
-            SetWandering();
+            SetWanderingDirection();
         }
 
         protected virtual void Update() {
-            SetWandering();
+            if (_wandering) {
+                SetWanderingDirection();
+            }
             SetDesiredByContext();
         }
 
@@ -37,24 +41,46 @@ namespace TimefulDungeon.AI {
         }
 
         protected void SetDesiredByContext() {
-            _movementController.DesiredDirection = contextSteering.Direction;
+            _movementController.DesiredDirection = _contextSteering.Direction;
+        }
+        
+        protected void SetWanderingDirection() {
+            _contextSteering.defaultDirection = _wanderModule.WanderDirection;
         }
 
-        protected void SetWandering() {
-            var shouldWander = contextSteering.HasNoInterestsOrDangers();
-            switch (shouldWander) {
-                case true when !_wandering:
-                    _wanderModule.enabled = true;
-                    _movementController.ChangeMaxSpeedOverTime(0.5f);
-                    _wandering = true;
-                    break;
-                case false when _wandering:
-                    _wanderModule.enabled = false;
-                    _movementController.ChangeMaxSpeedOverTime(maxSpeed);
-                    _wandering = false;
-                    break;
+        #region Wandering
+        public void WanderAround(Vector2 position) {
+            if (!_wandering) {
+                _wanderModule.enabled = true;
+                _wandering = true;
             }
-            contextSteering.defaultDirection = _wandering ? _wanderModule.WanderDirection : Vector2.zero;
+            _wanderModule.center = position;
         }
+
+        public void StopWandering() {
+            if (!_wandering) return;
+            _wandering = false;
+            _wanderModule.enabled = false;
+        }
+        
+        public bool OutsideWanderLimit => _wanderModule.OutsideWanderLimit;
+        #endregion
+
+        #region Context steering
+        public Interest AddInterest(Vector2 interest) => _contextSteering.AddInterest(interest);
+        public Interest AddInterest(Transform interest) => _contextSteering.AddInterest(interest);
+        public void RemoveInterest(Vector2 interest) => _contextSteering.RemoveInterest(interest);
+        public void RemoveInterest(Transform interest) => _contextSteering.RemoveInterest(interest);
+        #endregion
+
+        #region Movement
+        public void SetSpeed(float newSpeed) {
+            _movementController.ChangeMaxSpeedOverTime(newSpeed);
+        }
+
+        public void RestoreSpeed() {
+            _movementController.ChangeMaxSpeedOverTime(maxSpeed);
+        }
+        #endregion
     }
 }

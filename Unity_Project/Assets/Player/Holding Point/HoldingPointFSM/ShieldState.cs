@@ -11,7 +11,7 @@ namespace TimefulDungeon.Core.HoldingPointFSM {
         }
 
         public override bool CanEnter() {
-            return playerEquipment.Shield != null;
+            return !playerStamina.Exhausted && playerEquipment.Shield != null;
         }
 
         public override void Start() {

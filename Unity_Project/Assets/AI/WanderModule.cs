@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using NoiseTest;
 using UnityEngine;
+using VoraUtils;
 using Random = UnityEngine.Random;
 
 namespace TimefulDungeon.AI {
@@ -55,7 +56,7 @@ namespace TimefulDungeon.AI {
         
         private OpenSimplexNoise _noise;
         private float _centerAdjustSlope;
-        private bool OutsideWanderLimit => center.LazyDistanceCheck(transform.position, centerAdjustLimit) > 0;
+        public bool OutsideWanderLimit => this.FartherThan(center, centerAdjustLimit);
 
         #endregion
 
@@ -104,6 +105,8 @@ namespace TimefulDungeon.AI {
             if (debug) {
                 var position = transform.Position2D();
                 Debug.DrawLine(position, position + _rawWanderDirection, Color.red);
+                Utils.DrawDebugCircle(center, centerAdjustStart, Color.green);
+                Utils.DrawDebugCircle(center, centerAdjustLimit, Color.red);
             }
         }
 
