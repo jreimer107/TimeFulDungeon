@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace TimefulDungeon.Core {
+namespace TimefulDungeon.Core.FiniteStateMachine {
     /// <summary>
     ///     MonoBehaviour wrapper around a finite state machine.
     ///     Must be overridden.
@@ -9,7 +9,7 @@ namespace TimefulDungeon.Core {
     /// <typeparam name="T">Type of enum to build states between.</typeparam>
     public abstract class FiniteStateMachineBehavior<T> : MonoBehaviour where T : Enum {
         private FiniteStateMachine<T> _that;
-        public State<T> currentState => _that.currentState;
+        public IState<T> currentState => _that.currentState;
         
 
         protected virtual void Update() {
@@ -17,7 +17,7 @@ namespace TimefulDungeon.Core {
         }
 
         protected virtual void Initialize(T initialStateName, params object[] parameters) {
-            if (_that.isInitialized) {
+            if (_that != null) {
                 Debug.LogError($"The FiniteStateMachine component on {GetType()} is already initialized.");
                 return;
             }

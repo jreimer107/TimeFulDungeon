@@ -1,6 +1,7 @@
 ﻿using TimefulDungeon.AI;
 using TimefulDungeon.AI.AggroFSM;
 using TimefulDungeon.Core;
+using TimefulDungeon.Core.FiniteStateMachine;
 using UnityEngine;
 
 namespace TimefulDungeon.Enemies {

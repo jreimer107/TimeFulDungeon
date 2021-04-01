@@ -1,4 +1,5 @@
-﻿using TimefulDungeon.Items;
+﻿using TimefulDungeon.Core.FiniteStateMachine;
+using TimefulDungeon.Items;
 
 namespace TimefulDungeon.Core.HoldingPointFSM {
     public abstract class EquippableState : State<EquipType> {

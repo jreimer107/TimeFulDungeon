@@ -4,10 +4,10 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace TimefulDungeon.Core {
+namespace TimefulDungeon.Core.FiniteStateMachine {
     public class FiniteStateMachine<T> where T : Enum {
         public bool isInitialized;
-        protected readonly Dictionary<T, State<T>> states;
+        protected readonly Dictionary<T, IState<T>> states;
         protected readonly T entryState;
 
         /// <summary>
@@ -16,7 +16,7 @@ namespace TimefulDungeon.Core {
         /// </summary>
         public event Action OnTransition;
 
-        public State<T> currentState { get; private set; }
+        public IState<T> currentState { get; private set; }
 
         public void Update() {
             var nextState = currentState.Update();
@@ -24,22 +24,23 @@ namespace TimefulDungeon.Core {
         }
         
         public FiniteStateMachine() {
-            states = new Dictionary<T, State<T>>();
+            states = new Dictionary<T, IState<T>>();
         }
         
         public FiniteStateMachine(T entryStateName, params object[] parameters) {
             isInitialized = true;
             entryState = entryStateName;
-            states = new Dictionary<T, State<T>>();
+            states = new Dictionary<T, IState<T>>();
 
-            var stateClasses = Assembly.GetAssembly(typeof(State<T>)).GetTypes().Where(x =>
-                x.IsSubclassOf(typeof(State<T>)) &&
+            var stateType = typeof(IState<T>);
+            var stateClasses = Assembly.GetAssembly(typeof(IState<T>)).GetTypes().Where(x =>
+                stateType.IsAssignableFrom(x) &&
                 x.IsClass &&
                 !x.IsAbstract
             );
 
             foreach (var stateClass in stateClasses) {
-                var instance = (State<T>) Activator.CreateInstance(stateClass, parameters);
+                var instance = (IState<T>) Activator.CreateInstance(stateClass, parameters);
                 states.Add(instance.Name, instance);
             }
             
