@@ -399,7 +399,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 0
-    m_SensorSize: {x: 0.8119761, y: 1}
+    m_SensorSize: {x: 0.9437126, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -2220,7 +2220,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1277034853, guid: 8ee21ed58db7fdc4a8708fc7f1e1184d, type: 3}
       propertyPath: searchTime
-      value: 5
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1277034853, guid: 8ee21ed58db7fdc4a8708fc7f1e1184d, type: 3}
       propertyPath: sightRange
@@ -2229,6 +2229,11 @@ PrefabInstance:
     - target: {fileID: 1277034853, guid: 8ee21ed58db7fdc4a8708fc7f1e1184d, type: 3}
       propertyPath: maxAcceleration
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686308405971366453, guid: 8ee21ed58db7fdc4a8708fc7f1e1184d,
+        type: 3}
+      propertyPath: debug
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2686308405971366453, guid: 8ee21ed58db7fdc4a8708fc7f1e1184d,
         type: 3}

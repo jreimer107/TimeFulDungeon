@@ -39,8 +39,7 @@ namespace TimefulDungeon.Core {
         public EquipType CurrType => InHand ? InHand.type : EquipType.None;
         private bool IsActive => InHand != null && InHand.Activated;
 
-        protected override void Awake() {
-            base.Awake();
+        protected void Awake() {
             SpriteRenderer = GetComponent<SpriteRenderer>();
             Hitbox = GetComponent<PolygonCollider2D>();
             Hitbox.enabled = false;
@@ -51,8 +50,6 @@ namespace TimefulDungeon.Core {
             AnimatorOverrideController = new AnimatorOverrideController(Animator.runtimeAnimatorController);
             Animator.runtimeAnimatorController = AnimatorOverrideController;
             AudioSource = GetComponent<AudioSource>();
-            
-            Initialize(EquipType.Melee);
         }
 
         private void Start() {
@@ -60,6 +57,7 @@ namespace TimefulDungeon.Core {
             _playerTransform = player.transform;
             _playerInventory = player.Inventory;
 
+            Initialize(_playerInventory.Melee ? EquipType.Melee : EquipType.None);
             InHand = _playerInventory.GetEquipment(currentState.Name);
         }
 

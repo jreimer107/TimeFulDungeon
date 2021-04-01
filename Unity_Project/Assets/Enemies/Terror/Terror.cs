@@ -10,8 +10,7 @@ namespace TimefulDungeon.Enemies {
 
         protected override void Start() {
             base.Start();
-            _searchFsm = new FiniteStateMachine<AggroStates>();
-            _searchFsm.Initialize(AggroStates.Wander, this);
+            _searchFsm = new FiniteStateMachine<AggroStates>(AggroStates.Wander, this);
             SetTarget(Player.instance.transform);
         }
 
@@ -19,7 +18,5 @@ namespace TimefulDungeon.Enemies {
             base.Update();
             _searchFsm.Update();
         }
-        
-        
     }
 }

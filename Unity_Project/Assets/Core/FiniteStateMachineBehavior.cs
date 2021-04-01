@@ -11,21 +11,23 @@ namespace TimefulDungeon.Core {
         private FiniteStateMachine<T> _that;
         public State<T> currentState => _that.currentState;
         
-        protected virtual void Awake() {
-            _that = new FiniteStateMachine<T>();
+
+        protected virtual void Update() {
+            _that?.Update();
+        }
+
+        protected virtual void Initialize(T initialStateName, params object[] parameters) {
+            if (_that.isInitialized) {
+                Debug.LogError($"The FiniteStateMachine component on {GetType()} is already initialized.");
+                return;
+            }
+            
+            _that = new FiniteStateMachine<T>(initialStateName, parameters);
             _that.OnTransition += OnTransition;
         }
 
-        protected virtual void Update() {
-            _that.Update();
-        }
-
-        protected virtual void Initialize(T initialStateName) {
-            _that.Initialize(initialStateName);
-        }
-
         protected virtual void Transition(T toState) {
-            _that.Transition(toState);
+            _that?.Transition(toState);
         }
 
         protected virtual void OnTransition() { }

@@ -5,9 +5,10 @@ using System.Reflection;
 using UnityEngine;
 
 namespace TimefulDungeon.Core {
-    public sealed class FiniteStateMachine<T> where T : Enum {
-        private bool _isInitialized;
-        private Dictionary<T, State<T>> _states;
+    public class FiniteStateMachine<T> where T : Enum {
+        public bool isInitialized;
+        protected readonly Dictionary<T, State<T>> states;
+        protected readonly T entryState;
 
         /// <summary>
         ///     Called after calling Start on the new state. Use to change the data of the
@@ -21,13 +22,16 @@ namespace TimefulDungeon.Core {
             var nextState = currentState.Update();
             if (!Equals(nextState, currentState.Name)) Transition(nextState);
         }
-        public void Initialize(T initialStateName, params object[] parameters) {
-            if (_isInitialized)
-                Debug.LogError($"The FiniteStateMachine component on {GetType()} is already initialized.");
+        
+        public FiniteStateMachine() {
+            states = new Dictionary<T, State<T>>();
+        }
+        
+        public FiniteStateMachine(T entryStateName, params object[] parameters) {
+            isInitialized = true;
+            entryState = entryStateName;
+            states = new Dictionary<T, State<T>>();
 
-            _isInitialized = true;
-
-            _states = new Dictionary<T, State<T>>();
             var stateClasses = Assembly.GetAssembly(typeof(State<T>)).GetTypes().Where(x =>
                 x.IsSubclassOf(typeof(State<T>)) &&
                 x.IsClass &&
@@ -36,24 +40,21 @@ namespace TimefulDungeon.Core {
 
             foreach (var stateClass in stateClasses) {
                 var instance = (State<T>) Activator.CreateInstance(stateClass, parameters);
-                _states.Add(instance.Name, instance);
+                states.Add(instance.Name, instance);
             }
-
-            var initialState = _states[initialStateName];
-            if (initialState != null) {
-                currentState = initialState;
-                currentState.Start();
-            }
-            else {
+            
+            Transition(entryState);
+            if (currentState == null) {
                 Debug.LogError($"FSM on {GetType()} was passed an initial state that does not exist.");
             }
         }
 
         public void Transition(T toState) {
-            if (!_isInitialized) return;
-            if (!_states[toState].CanEnter()) return;
-            currentState.Exit();
-            currentState = _states[toState];
+            if (!isInitialized) return;
+            var newState = states[toState]; 
+            if (!newState.CanEnter()) return;
+            currentState?.Exit();
+            currentState = newState;
             currentState.Start();
             OnTransition?.Invoke();
         }
