@@ -548,6 +548,7 @@ GameObject:
   - component: {fileID: 598950362}
   - component: {fileID: 598950363}
   - component: {fileID: 598950364}
+  - component: {fileID: 598950365}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -601,6 +602,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 6518348834526014380, guid: 919447006cd75ed4a955468b341003e0,
     type: 3}
+--- !u!114 &598950365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 598950361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a70983470c6a49148b6834ad9783f19e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &598950367
 Transform:
   m_ObjectHideFlags: 0
@@ -2299,6 +2312,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Terror
+      objectReference: {fileID: 0}
+    - target: {fileID: 9165525602769653013, guid: 8ee21ed58db7fdc4a8708fc7f1e1184d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8ee21ed58db7fdc4a8708fc7f1e1184d, type: 3}

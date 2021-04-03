@@ -1,4 +1,5 @@
 ﻿using TimefulDungeon.Items;
+using TimefulDungeon.Items.Melee;
 using UnityEngine;
 
 namespace TimefulDungeon.Core {

@@ -6,7 +6,7 @@ namespace TimefulDungeon.Items {
         public float arc;
 
         public override Item GetInstance() {
-            return new Melee(this);
+            return new Melee.Melee(this);
         }
     }
 }

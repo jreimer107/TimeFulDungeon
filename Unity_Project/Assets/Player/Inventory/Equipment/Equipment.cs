@@ -1,5 +1,6 @@
 ﻿using System;
 using TimefulDungeon.Items;
+using TimefulDungeon.Items.Melee;
 using UnityEngine;
 using UnityEngine.Events;
 

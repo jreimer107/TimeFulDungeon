@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TimefulDungeon.Misc;
 using VoraUtils;
+using Pathfinding = TimefulDungeon.Misc.PathFinding<TimefulDungeon.Generation.Coordinate>;
 
 namespace TimefulDungeon.Generation {
     public class Floor {
@@ -24,7 +26,7 @@ namespace TimefulDungeon.Generation {
 
         private readonly GenConfig gencfg;
         private readonly List<Path> pathList;
-        private readonly Pathfinding<Coordinate> pathfinding;
+        private readonly Pathfinding pathfinding;
         private readonly Random rng;
 
 
@@ -42,7 +44,7 @@ namespace TimefulDungeon.Generation {
             pathList = new List<Path>();
             rng = new Random();
             tiles = new TileType[gencfg.FloorWidth, gencfg.FloorHeight];
-            pathfinding = new Pathfinding<Coordinate>();
+            pathfinding = new Pathfinding();
         }
 
         public void Generate() {

@@ -1,8 +1,12 @@
-﻿using TimefulDungeon.Core;
+﻿using System;
+using TimefulDungeon.Core;
 using UnityEngine;
 
 namespace TimefulDungeon.Items {
     public abstract class Equippable : Item {
+        public int level;
+        public Enum prefix; 
+        
         public EquipType type => ((EquippableTemplate) template).type;
 
         protected Equippable(EquippableTemplate template) : base(template) {

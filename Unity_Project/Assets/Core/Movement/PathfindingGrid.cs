@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TimefulDungeon.Generation;
 using UnityEngine;
-using VoraUtils;
+using Pathfinding = TimefulDungeon.Misc.PathFinding<TimefulDungeon.Generation.Coordinate>;
 
 namespace TimefulDungeon.Core.Movement {
     public class PathfindingGrid : MonoBehaviour {
@@ -17,11 +17,11 @@ namespace TimefulDungeon.Core.Movement {
 
         private WorldGrid<bool> _grid;
         private float _intervalCounter;
-        private Pathfinding<Coordinate> _pathfinding;
+        private Pathfinding _pathfinding;
 
         private void Start() {
             _grid = new WorldGrid<bool>(gridWidth, gridHeight, cellSize);
-            _pathfinding = new Pathfinding<Coordinate>();
+            _pathfinding = new Pathfinding();
             obstacleMask = LayerMask.GetMask("Obstacle");
         }
 

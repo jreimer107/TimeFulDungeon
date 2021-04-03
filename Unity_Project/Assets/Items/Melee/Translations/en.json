@@ -1,0 +1,12 @@
+﻿{
+  "MeleePrefixes": {
+    "AttackUp": "Viscous",
+    "AttackDown": "Wimpy",
+    "RangeUp": "Long",
+    "RangeDown": "Short",
+    "RateUp": "Quick",
+    "RateDown": "Slow",
+    "ArcUp": "Wide",
+    "ArcDown": "Narrow"
+  }
+}

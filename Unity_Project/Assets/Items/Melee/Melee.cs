@@ -1,19 +1,23 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TimefulDungeon.Core;
+using TimefulDungeon.Misc;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
-namespace TimefulDungeon.Items {
+namespace TimefulDungeon.Items.Melee {
     public class Melee : Weapon {
         public readonly float arc;
 
         public Melee(MeleeTemplate template) : base(template) {
             arc = template.arc;
+            prefix = (MeleePrefixes) Random.Range(0, Enum.GetNames(typeof(MeleePrefixes)).Length - 1);
         }
 
         public override string GetTooltipText() {
             return
-                $"<size=32>{name}</size>\n" +
+                $"<size=32>{Translations.Get(prefix) + " " + name}</size>\n" +
                 (description != "" ? $"{description}\n" : "") +
                 $"{damage} dmg\n" +
                 $"{arc}\u00b0 arc\n" +
