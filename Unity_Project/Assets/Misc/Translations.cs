@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -19,17 +18,12 @@ namespace TimefulDungeon.Misc {
             KeyPathStack.Push("");
             var currentLanguage = Get2LetterIsoCodeFromSystemLanguage().ToLower();
             Debug.Log("Current language: " + currentLanguage);
-            Debug.Log("Data path: " + Application.dataPath);
-            var baseDirectory = new DirectoryInfo(Application.dataPath);
-            var fileInfos = baseDirectory.GetFiles(currentLanguage + ".json", SearchOption.AllDirectories);
-            foreach (var fileInfo in fileInfos) {
-                Debug.Log("FileInfo for file : " + fileInfo.Name);
-                using var streamReader = fileInfo.OpenText();
-                string line;
-                while ((line = streamReader.ReadLine()) != null) {
+            var translationFiles = Resources.LoadAll<TextAsset>(currentLanguage);
+            foreach (var translationFile in translationFiles) {
+                Debug.Log("Found translation file");
+                foreach (var line in Regex.Split(translationFile.text, @"\r\n|\r|\n")) {
                     ParseJsonLine(line);
                 }
-                streamReader.Close();
             }
 
             initialized = true;

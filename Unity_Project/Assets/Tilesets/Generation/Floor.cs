@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using TimefulDungeon.Misc;
-using VoraUtils;
 using Pathfinding = TimefulDungeon.Misc.PathFinding<TimefulDungeon.Generation.Coordinate>;
 
 namespace TimefulDungeon.Generation {

@@ -25,7 +25,7 @@ namespace TimefulDungeon.UI {
         }
 
         public override void Refresh() {
-            item = equipmentManager.GetEquipment(type);
+            item = equipmentManager != null ? equipmentManager.GetEquipment(type) : null;
             base.Refresh();
         }
 

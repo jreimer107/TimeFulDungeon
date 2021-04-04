@@ -31,7 +31,8 @@ namespace TimefulDungeon.Enemies {
         public void Damage(int damage) {
             _health -= damage;
             Popup.CreatePopup(damage.ToString(), transform.position, Color.yellow);
-            if (_health <= 0) Destroy(gameObject);
+            // if (_health <= 0) Destroy(gameObject);
+            if (_health <= 0) gameObject.SetActive(false);
         }
     
         private void OnCollisionEnter2D(Collision2D other) {
