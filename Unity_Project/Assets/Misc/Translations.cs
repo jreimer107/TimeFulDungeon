@@ -15,11 +15,12 @@ namespace TimefulDungeon.Misc {
         private static readonly Stack<string> KeyPathStack = new Stack<string>();
 
         public static void Initialize() {
-            KeyPathStack.Push("");
             var currentLanguage = Get2LetterIsoCodeFromSystemLanguage().ToLower();
             Debug.Log("Current language: " + currentLanguage);
             var translationFiles = Resources.LoadAll<TextAsset>(currentLanguage);
             foreach (var translationFile in translationFiles) {
+                KeyPathStack.Clear();
+                KeyPathStack.Push("");
                 Debug.Log("Found translation file");
                 foreach (var line in Regex.Split(translationFile.text, @"\r\n|\r|\n")) {
                     ParseJsonLine(line);

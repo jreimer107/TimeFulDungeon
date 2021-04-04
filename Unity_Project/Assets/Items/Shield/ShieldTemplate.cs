@@ -7,7 +7,7 @@ namespace TimefulDungeon.Items {
         public float arc;
 
         public override Item GetInstance() {
-            return new Shield(this);
+            return new Shield.Shield(this);
         }
     }
 }

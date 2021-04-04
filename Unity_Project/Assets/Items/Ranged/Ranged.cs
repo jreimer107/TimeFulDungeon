@@ -1,17 +1,29 @@
+using TimefulDungeon.Misc;
 using UnityEngine;
 
-namespace TimefulDungeon.Items {
+namespace TimefulDungeon.Items.Ranged {
     public class Ranged : Weapon {
+        public readonly float speedMod;
+        public readonly float penetrateMod;
+        public readonly float spreadMod;
         public readonly Sprite projectile;
-        public readonly float speed;
-        public readonly int penetrate;
-        public readonly float spread;
+        
+        
+        protected readonly float speed;
+        protected readonly int penetrate;
+        protected readonly float spread;
 
         public Ranged(RangedTemplate template) : base(template) {
+            speedMod = GetModifier();
+            penetrateMod = GetModifier();
+            spreadMod =  GetModifier();
             projectile = template.projectile;
-            speed = template.speed;
-            penetrate = template.penetrate;
-            spread = template.spread;
+            prefix = Utils.GetRandomEnum<RangedPrefixes>();
+            
+            
+            speed = template.speed * speedMod;
+            penetrate = (int)(template.penetrate * penetrateMod);
+            spread = template.spread * spreadMod;
         }
         
         public override void OnEnable() {
@@ -33,6 +45,17 @@ namespace TimefulDungeon.Items {
 
         public override void OnActionLoop() {
             holdingPoint.Particles.Play();
+        }
+
+        protected override string CalculateTooltipText() {
+            return
+                base.CalculateTooltipText() +
+                $"{FormatFloat(speed)} m/s\n" +
+                $"{FormatFloat(spread)}\u00b0 spread\n" +
+                (penetrate > 1
+                    ? $"Penetrates {penetrate} enemies\n"
+                    : "") +
+                GetFormattedRedText();
         }
     }
 }

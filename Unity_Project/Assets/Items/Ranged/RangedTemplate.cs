@@ -9,7 +9,7 @@ namespace TimefulDungeon.Items {
         public float spread;
 
         public override Item GetInstance() {
-            return new Ranged(this);
+            return new Ranged.Ranged(this);
         }
     }
 }

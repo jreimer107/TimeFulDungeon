@@ -136,6 +136,10 @@ namespace TimefulDungeon.UI {
         /// <param name="tooltipText">Text to show.</param>
         /// <param name="maxWidth">Width of </param>
         public void ShowTextOnDelay(string tooltipText, int maxWidth = -1) {
+            if (tooltipText == null) {
+                Debug.LogError("Null tool tip text.");
+                return;
+            }
             delayCoroutine = StartCoroutine(ShowOnDelay(tooltipText, maxWidth));
         }
 

@@ -1,0 +1,8 @@
+﻿{
+  "ShieldPrefixes": {
+    "StaminaUp": "Lead",
+    "StaminaDown": "Featherweight",
+    "ArcUp": "Big boned",
+    "ArcDown": "Beanpole"
+  }
+}

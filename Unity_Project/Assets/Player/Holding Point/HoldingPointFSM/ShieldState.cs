@@ -1,4 +1,5 @@
 ﻿using TimefulDungeon.Items;
+using TimefulDungeon.Items.Shield;
 using UnityEngine;
 
 namespace TimefulDungeon.Core.HoldingPointFSM {

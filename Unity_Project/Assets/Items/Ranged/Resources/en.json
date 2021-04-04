@@ -1,0 +1,16 @@
+﻿{
+  "RangedPrefixes": {
+    "AttackUp": "Dangerous",
+    "AttackDown": "Lumpy",
+    "RangeUp": "Extended",
+    "RangeDown": "Limp",
+    "RateUp": "Modded",
+    "RateDown": "Licensed",
+    "SpeedUp": "Supersonic",
+    "SpeedDown": "Suppressed",
+    "PenetrateUp": "Witty",
+    "PenetrateDown": "Dull",
+    "SpreadUp": "Sawed-Off",
+    "SpreadDown": "Scoped"
+  }
+}

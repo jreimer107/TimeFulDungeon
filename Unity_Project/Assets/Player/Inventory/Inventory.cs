@@ -1,5 +1,7 @@
 ﻿using TimefulDungeon.Items;
 using TimefulDungeon.Items.Melee;
+using TimefulDungeon.Items.Ranged;
+using TimefulDungeon.Items.Shield;
 using UnityEngine;
 
 namespace TimefulDungeon.Core {

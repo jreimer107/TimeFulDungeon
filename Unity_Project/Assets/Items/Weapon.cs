@@ -1,15 +1,29 @@
 namespace TimefulDungeon.Items {
     public abstract class Weapon : Equippable {
-        public readonly int damage;
-        public readonly int range;
-        public readonly float rate;
+        public readonly float damageMod;
+        public readonly float rangeMod;
+        public readonly float rateMod;
 
-        public Weapon(WeaponTemplate template) : base(template) {
-            damage = template.damage;
-            range = template.range;
-            rate = template.rate;
+        protected readonly int damage;
+        protected readonly int range;
+        protected readonly float rate;
 
+        protected Weapon(WeaponTemplate template) : base(template) {
+            damageMod = GetModifier();
+            rangeMod = GetModifier();
+            rateMod = GetModifier();
+            
+            damage = (int)(template.damage * damageMod);
+            range = (int)(template.range * rangeMod);
+            rate = template.rate * rateMod;
         }
 
+        protected override string CalculateTooltipText() {
+            return
+                GetNameLevelDescription() +
+                $"{damage} damage/hit\n" +
+                $"{rate.ToString(FloatFormat)} attacks/sec\n" +
+                $"{range}m range\n";
+        }
     }
 }

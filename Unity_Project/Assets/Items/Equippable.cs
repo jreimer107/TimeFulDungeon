@@ -1,13 +1,15 @@
 ﻿using System;
 using TimefulDungeon.Core;
+using TimefulDungeon.Misc;
 using UnityEngine;
 
 namespace TimefulDungeon.Items {
     public abstract class Equippable : Item {
+        private readonly Inventory _inventory;
+
+        protected readonly HoldingPoint holdingPoint;
         public int level;
-        public Enum prefix; 
-        
-        public EquipType type => ((EquippableTemplate) template).type;
+        protected Enum prefix;
 
         protected Equippable(EquippableTemplate template) : base(template) {
             var player = Player.instance;
@@ -15,17 +17,16 @@ namespace TimefulDungeon.Items {
             _inventory = player.Inventory;
         }
 
+        public EquipType type => ((EquippableTemplate) template).type;
+
+        public bool Activated { get; private set; }
+
         public override void Select() { }
 
         public override void Use() {
             base.Use();
             _inventory.Equip(this);
         }
-        
-        protected readonly HoldingPoint holdingPoint;
-        private readonly Inventory _inventory;
-        
-        public bool Activated { get; private set; }
 
         public virtual void Update() { }
 
@@ -42,7 +43,7 @@ namespace TimefulDungeon.Items {
 
             holdingPoint.SpriteRenderer.enabled = true;
         }
-        
+
         public virtual void OnDisable() { }
 
         public virtual void Activate() {
@@ -54,7 +55,14 @@ namespace TimefulDungeon.Items {
         }
 
         public virtual void OnActionLoop() { }
-        
+
         public virtual void OnCollision(Collider2D other) { }
+
+        protected string GetNameLevelDescription() {
+            return
+                $"<size=32>{Translations.Get(prefix) + " " + Translations.Get(name)}</size>\n" +
+                $"Lv. {level}\n" +
+                (description != "" ? $"{Translations.Get(description)}\n" : "");
+        }
     }
 }

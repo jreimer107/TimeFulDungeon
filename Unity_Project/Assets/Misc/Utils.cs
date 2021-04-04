@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TimefulDungeon.Core;
 using TMPro;
 using UnityEngine;
@@ -78,6 +79,10 @@ namespace TimefulDungeon.Misc {
             var text = "";
             for (var i = 0; i < Random.Range(20, 100); i++) text += abc[Random.Range(0, abc.Length)];
             return text;
+        }
+
+        public static T GetRandomEnum<T>() where T : Enum {
+            return (T)(object) Random.Range(0, Enum.GetNames(typeof(T)).Length - 1);
         }
 
         /// <summary>

@@ -1,14 +1,24 @@
+using System;
 using System.IO;
+using TimefulDungeon.Misc;
 using UnityEngine;
 
-namespace TimefulDungeon.Items {
+namespace TimefulDungeon.Items.Shield {
     public class Shield : Equippable {
-        public readonly int staminaUse;
-        public readonly float arc;
+        public readonly float staminaUseMod;
+        public readonly float arcMod;
+        
+        
+        [NonSerialized] public readonly int staminaUse;
+        protected readonly float arc;
 
         public Shield(ShieldTemplate template) : base(template) {
-            staminaUse = template.staminaUse;
-            arc = template.arc;
+            staminaUseMod = GetModifier();
+            arcMod = GetModifier();
+            prefix = Utils.GetRandomEnum<ShieldPrefixes>();
+            
+            staminaUse = (int)(template.staminaUse * staminaUseMod);
+            arc = template.arc * arcMod;
         }
 
         public override void Activate() {
@@ -25,6 +35,14 @@ namespace TimefulDungeon.Items {
             name = "";
             Debug.Log("Wrote file to " + path);
             JsonUtility.FromJsonOverwrite(File.ReadAllText(path), this);
+        }
+
+        protected override string CalculateTooltipText() {
+            return
+                GetNameLevelDescription() +
+                $"{FormatFloat(arc)}\u00b0 guard\n" +
+                $"{staminaUse} stamina/second" +
+                GetFormattedRedText();
         }
     }
     

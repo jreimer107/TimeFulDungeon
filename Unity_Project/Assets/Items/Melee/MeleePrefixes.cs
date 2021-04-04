@@ -1,4 +1,4 @@
-﻿namespace TimefulDungeon.Items {
+﻿namespace TimefulDungeon.Items.Melee {
     public enum MeleePrefixes {
         AttackUp,
         AttackDown,

@@ -1,16 +1,31 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace TimefulDungeon.Items {
-    [System.Serializable]
+    [Serializable]
     public class Item {
+        private const float RandomizationRange = 0.25f;
+
+        protected const string FloatFormat = "F1";
+
         // Randomized fields, configured on construction
         public string name;
         public int count;
         public float cooldown;
-        
-        
+
+
         protected readonly ItemTemplate template;
-        
+
+        private string _toolTipText;
+
+        public Item(ItemTemplate template) {
+            this.template = template;
+            name = template.name;
+            count = template.count;
+            cooldown = template.cooldown;
+        }
+
         // Template fields, not changeable
         public int id => template.id;
         public string description => template.description;
@@ -21,14 +36,15 @@ namespace TimefulDungeon.Items {
         public AnimationClip idleClip => template.idleClip;
         public AnimationClip actionClip => template.actionClip;
         public AudioClip soundEffect => template.soundEffect;
-        
-        public Item(ItemTemplate template) {
-            this.template = template;
-            name = template.name;
-            count = template.count;
-            cooldown = template.cooldown;
+
+        protected static string FormatFloat(float value) {
+            return value.ToString(FloatFormat);
         }
-        
+
+        protected static float GetModifier() {
+            return 1 + Random.Range(-RandomizationRange, RandomizationRange);
+        }
+
         public bool Equals(Item other) {
             return !ReferenceEquals(other, null) && id == other.id;
         }
@@ -67,13 +83,21 @@ namespace TimefulDungeon.Items {
         public static bool operator false(Item a) {
             return ReferenceEquals(a, null);
         }
-        
+
         public bool ToBool() {
             return !ReferenceEquals(this, null);
         }
 
-        public virtual string GetTooltipText() {
+        protected virtual string CalculateTooltipText() {
             return $"<size=32>{name}</size>\n{description}\n<color=red>{redText}</color>";
+        }
+
+        public string GetTooltipText() {
+            return _toolTipText ??= CalculateTooltipText();
+        }
+
+        protected string GetFormattedRedText() {
+            return redText != "" ? $"<color=red>{redText}</color>" : "";
         }
     }
 }

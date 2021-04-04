@@ -1,30 +1,31 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TimefulDungeon.Core;
 using TimefulDungeon.Misc;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace TimefulDungeon.Items.Melee {
     public class Melee : Weapon {
-        public readonly float arc;
+        public readonly float arcMod;
+        
+        protected readonly float arc;
 
         public Melee(MeleeTemplate template) : base(template) {
-            arc = template.arc;
-            prefix = (MeleePrefixes) Random.Range(0, Enum.GetNames(typeof(MeleePrefixes)).Length - 1);
+            arcMod = GetModifier();
+            prefix = Utils.GetRandomEnum<MeleePrefixes>();
+            
+            arc = template.arc * arcMod;
         }
 
-        public override string GetTooltipText() {
+        protected override string CalculateTooltipText() {
             return
-                $"<size=32>{Translations.Get(prefix) + " " + name}</size>\n" +
-                (description != "" ? $"{description}\n" : "") +
-                $"{damage} dmg\n" +
-                $"{arc}\u00b0 arc\n" +
-                $"{rate}\u00b0/sec\n" +
+                GetNameLevelDescription() +
+                $"{damage} damage/hit\n" +
+                $"{FormatFloat(arc)}\u00b0 arc\n" +
+                $"{FormatFloat(rate)} attacks/sec\n" +
                 $"{range}m range\n" +
-                $"{cooldown}s cooldown\n" +
-                (redText != "" ? $"<color=red>{redText}</color>" : "");
+                $"{FormatFloat(cooldown)}s cooldown\n" +
+                GetFormattedRedText();
         }
         
         
