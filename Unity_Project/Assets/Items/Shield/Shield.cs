@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using TimefulDungeon.Misc;
 using UnityEngine;
 
@@ -21,11 +22,17 @@ namespace TimefulDungeon.Items.Shield {
             arc = template.arc * arcMod;
         }
 
-        public override void Activate() {
-            base.Activate();
+        public override void OnEnable() {
+            base.OnEnable();
             
-            SaveTest();
-            
+            var arcCenter = new Vector2(-holdingPoint.radius, 0);
+            holdingPoint.Barrier.enabled = true;
+            holdingPoint.Barrier.SetPoints(Utils.GetArcPoints(holdingPoint.radius, arc, arcCenter).ToList());
+        }
+
+        public override void OnDisable() {
+            base.OnDisable();
+            holdingPoint.Barrier.enabled = false;
         }
 
         private void SaveTest() {

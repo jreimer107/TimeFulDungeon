@@ -26,4 +26,4 @@ MonoBehaviour:
   soundEffect: {fileID: 0}
   type: 2
   staminaUse: 10
-  arc: 30
+  arc: 90
