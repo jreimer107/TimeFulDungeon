@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace TimefulDungeon.Items.Shield {
     public class Shield : Equippable {
-        public readonly float staminaUseMod;
+        public readonly float staminaMod;
         public readonly float arcMod;
         
         
@@ -14,11 +14,11 @@ namespace TimefulDungeon.Items.Shield {
         protected readonly float arc;
 
         public Shield(ShieldTemplate template) : base(template) {
-            staminaUseMod = GetModifier();
+            staminaMod = GetModifier();
             arcMod = GetModifier();
             prefix = new Prefix<Shield>();
             
-            staminaUse = (int)(template.staminaUse * staminaUseMod);
+            staminaUse = (int)(template.staminaUse * staminaMod);
             arc = template.arc * arcMod;
             prefix.Apply(this);
         }

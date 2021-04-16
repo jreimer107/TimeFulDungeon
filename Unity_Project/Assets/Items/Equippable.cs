@@ -3,19 +3,23 @@ using System.Reflection;
 using TimefulDungeon.Core;
 using TimefulDungeon.Misc;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace TimefulDungeon.Items {
     public abstract class Equippable : Item {
         private readonly Inventory _inventory;
 
         protected readonly HoldingPoint holdingPoint;
-        public int level;
+        protected readonly int level;
+        protected float levelScale => Mathf.Pow(1.1f, level);
         protected Prefix prefix;
 
         protected Equippable(EquippableTemplate template) : base(template) {
             var player = Player.instance;
             holdingPoint = player.HoldingPoint;
             _inventory = player.Inventory;
+
+            level = Random.Range(1, 6);
         }
 
         public EquipType type => ((EquippableTemplate) template).type;

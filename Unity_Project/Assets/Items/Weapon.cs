@@ -16,7 +16,7 @@ namespace TimefulDungeon.Items {
             rangeMod = GetModifier();
             rateMod = GetModifier();
             
-            damage = (int)(template.damage * damageMod);
+            damage = Mathf.Max((int)(template.damage * damageMod * levelScale), 1);
             range = (int)(template.range * rangeMod);
             rate = template.rate * rateMod;
         }

@@ -1,6 +1,4 @@
-using TimefulDungeon.Misc;
 using UnityEngine;
-using Random = System.Random;
 
 namespace TimefulDungeon.Items.Ranged {
     public class Ranged : Weapon {

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using TimefulDungeon.Misc;
-using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace TimefulDungeon.Items {
     public abstract class Prefix {
         private const float PrefixModifier = 0.2f;
-        protected const BindingFlags Flags = BindingFlags.Default;
+        protected const BindingFlags FLAGS = BindingFlags.Default;
         private static readonly Regex UpDownRegex = new Regex(@"(.+?)(Up|Down)");
 
         public string value { get; protected set; }
@@ -20,7 +20,8 @@ namespace TimefulDungeon.Items {
         public void Apply(Equippable equippable) {
             var matches = UpDownRegex.Matches(value);
             foreach (Match match in matches) {
-                var field = match.Groups[1].Value.ToLower();
+                var field = match.Groups[1].Value;
+                field = char.ToLowerInvariant(field[0]) + field.Substring(1);
                 var up = match.Groups[2].Value == "Up";
                 var mode = up ? ModifierMode.Add : ModifierMode.Subtract;
                 equippable.AdjustModifier(field, PrefixModifier, mode);
@@ -31,28 +32,28 @@ namespace TimefulDungeon.Items {
     [SuppressMessage("ReSharper", "StaticMemberInGenericType")]
     public class Prefix<T> : Prefix where T : Equippable {
         private static readonly List<string> Prefixes = new List<string>();
-        private static string translationPath;
+        private static readonly string TranslationPath;
 
         static Prefix() {
-            translationPath = $"{typeof(T).Name}Prefixes";
+            TranslationPath = $"{typeof(T).Name}Prefixes";
             GetPrefixesFromTranslations();
         }
 
         public Prefix() {
             value = GetRandomPrefix();
-            translatedValue = Translations.GetAt(value, translationPath);
+            translatedValue = Translations.GetAt(value, TranslationPath);
         }
         
 
         private static void GetPrefixesFromTranslations() {
-            var keys = Translations.GetAllAt(translationPath).Keys;
+            var keys = Translations.GetAllAt(TranslationPath).Keys;
             foreach (var key in keys) {
                 Prefixes.Add(key);
             }
         }
 
         private static void GetPrefixesFromFields() {
-            var fields = typeof(T).GetFields(Flags).Select(f => f.Name)
+            var fields = typeof(T).GetFields(FLAGS).Select(f => f.Name)
                 .Where(f => f.Contains("Mod"));
             foreach (var field in fields) {
                 Prefixes.Add(field + "Up");
