@@ -1,7 +1,7 @@
 ﻿{
   "RangedPrefixes": {
-    "AttackUp": "Dangerous",
-    "AttackDown": "Lumpy",
+    "DamageUp": "Dangerous",
+    "DamageDown": "Lumpy",
     "RangeUp": "Extended",
     "RangeDown": "Limp",
     "RateUp": "Modded",

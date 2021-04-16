@@ -1,7 +1,7 @@
 ﻿{
   "MeleePrefixes": {
-    "AttackUp": "Viscous",
-    "AttackDown": "Wimpy",
+    "DamageUp": "Viscous",
+    "DamageDown": "Wimpy",
     "RangeUp": "Long",
     "RangeDown": "Short",
     "RateUp": "Quick",

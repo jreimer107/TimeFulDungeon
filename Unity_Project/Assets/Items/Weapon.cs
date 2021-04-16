@@ -1,8 +1,11 @@
+using System;
+using UnityEngine;
+
 namespace TimefulDungeon.Items {
     public abstract class Weapon : Equippable {
-        public readonly float damageMod;
-        public readonly float rangeMod;
-        public readonly float rateMod;
+        public float damageMod;
+        public float rangeMod;
+        public float rateMod;
 
         protected readonly int damage;
         protected readonly int range;

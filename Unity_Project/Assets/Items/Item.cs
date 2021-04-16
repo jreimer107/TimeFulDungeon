@@ -1,4 +1,5 @@
 ﻿using System;
+using TimefulDungeon.Misc;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -97,7 +98,7 @@ namespace TimefulDungeon.Items {
         }
 
         protected string GetFormattedRedText() {
-            return redText != "" ? $"<color=red>{redText}</color>" : "";
+            return redText != "" ? $"<color=red>{Translations.Get(redText)}</color>\n" : "";
         }
     }
 }

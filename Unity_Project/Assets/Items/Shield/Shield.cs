@@ -16,10 +16,11 @@ namespace TimefulDungeon.Items.Shield {
         public Shield(ShieldTemplate template) : base(template) {
             staminaUseMod = GetModifier();
             arcMod = GetModifier();
-            prefix = Utils.GetRandomEnum<ShieldPrefixes>();
+            prefix = new Prefix<Shield>();
             
             staminaUse = (int)(template.staminaUse * staminaUseMod);
             arc = template.arc * arcMod;
+            prefix.Apply(this);
         }
 
         public override void OnEnable() {
@@ -48,8 +49,7 @@ namespace TimefulDungeon.Items.Shield {
             return
                 GetNameLevelDescription() +
                 $"{FormatFloat(arc)}\u00b0 guard\n" +
-                $"{staminaUse} stamina/second" +
-                GetFormattedRedText();
+                $"{staminaUse} stamina/second";
         }
     }
     

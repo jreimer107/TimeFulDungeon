@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using TimefulDungeon.Core;
 using TimefulDungeon.Misc;
 using UnityEngine;
@@ -9,7 +10,7 @@ namespace TimefulDungeon.Items {
 
         protected readonly HoldingPoint holdingPoint;
         public int level;
-        protected Enum prefix;
+        protected Prefix prefix;
 
         protected Equippable(EquippableTemplate template) : base(template) {
             var player = Player.instance;
@@ -60,9 +61,44 @@ namespace TimefulDungeon.Items {
 
         protected string GetNameLevelDescription() {
             return
-                $"<size=32>{Translations.Get(prefix) + " " + Translations.Get(name)}</size>\n" +
+                $"<size=32>{prefix.translatedValue} {Translations.Get(name)}</size>\n" +
                 $"Lv. {level}\n" +
-                (description != "" ? $"{Translations.Get(description)}\n" : "");
+                (description != "" ? $"{Translations.Get(description)}\n" : "") +
+                GetFormattedRedText();
         }
+        
+        public T GetValue<T>(string fieldName) {
+            var fieldInfo = GetFieldInfo(fieldName);
+            if (fieldInfo != null && fieldInfo.FieldType == typeof(T)) {
+                return (T) fieldInfo.GetValue(this);
+            }
+            throw new ArgumentException("Requested field is not given type or is not a field.");
+        }
+
+        public void SetValue<T>(string fieldName, T newValue) {
+            var fieldInfo = GetFieldInfo(fieldName);
+            if (fieldInfo.FieldType == typeof(T)) {
+                fieldInfo.SetValue(this, newValue);
+            }
+            throw new ArgumentException("Requested field is not given type or is not a field.");
+        }
+
+        public void AdjustModifier(string fieldName, float modifier, ModifierMode mode) {
+            var fieldInfo = GetModifierInfo(fieldName);
+            if (fieldInfo == null)
+                throw new ArgumentException("Requested field is not a valid modifier.");
+            var modifiedValue = mode switch {
+                ModifierMode.Add => (float) fieldInfo.GetValue(this) + modifier,
+                ModifierMode.Subtract => (float) fieldInfo.GetValue(this) - modifier,
+                ModifierMode.Multiply => (float) fieldInfo.GetValue(this) * modifier,
+                ModifierMode.Divide => (float) fieldInfo.GetValue(this) / modifier,
+                _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
+            };
+            fieldInfo.SetValue(this, modifiedValue);
+        }
+
+        private FieldInfo GetFieldInfo(string fieldName) => GetType().GetField(fieldName);
+
+        private FieldInfo GetModifierInfo(string modifierName) => GetType().GetField( modifierName + "Mod");
     }
 }
