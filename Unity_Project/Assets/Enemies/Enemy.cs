@@ -4,7 +4,7 @@ using TimefulDungeon.UI;
 using UnityEngine;
 
 namespace TimefulDungeon.Enemies {
-    public abstract class Enemy : Brain, IDamageable {
+    public abstract class Enemy : Brain, IDamageable, IPushable {
         private static LayerMask obstacleMask;
 
         public int maxHealth;
@@ -39,9 +39,9 @@ namespace TimefulDungeon.Enemies {
             var player = other.collider.GetComponent<Player>();
             if (!player) return;
             player.Damage(damage);
-            var knockback = (transform.Position2D() - player.transform.Position2D()) * 100 * _rigidbody.mass;
-            _rigidbody.AddForce(knockback, ForceMode2D.Impulse);
-            player.ApplyKnockback(knockback * -1);
+            var knockback = (transform.Position2D() - player.transform.Position2D()) * 100;
+            Push(knockback);
+            player.Push(-knockback);
         }
         
         public void SetTarget(Transform newTarget) {
@@ -57,6 +57,10 @@ namespace TimefulDungeon.Enemies {
             if (!inRange) return false;
             var hit = Physics2D.Linecast(ourPosition, targetPosition, obstacleMask);
             return !hit.collider;
+        }
+
+        public void Push(Vector2 force) {
+            _rigidbody.AddForce(force * _rigidbody.mass, ForceMode2D.Impulse);
         }
     }
 }

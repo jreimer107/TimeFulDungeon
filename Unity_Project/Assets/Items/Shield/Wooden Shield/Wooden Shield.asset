@@ -25,5 +25,6 @@ MonoBehaviour:
   actionClip: {fileID: 0}
   soundEffect: {fileID: 0}
   type: 2
+  armor: 7
   staminaUse: 10
   arc: 90

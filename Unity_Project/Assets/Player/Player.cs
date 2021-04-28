@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace TimefulDungeon.Core {
     [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
-    public class Player : MonoBehaviour, IDamageable {
+    public class Player : MonoBehaviour, IDamageable, IPushable {
         public static Player instance;
         public delegate void OnHealthChanged();
 
@@ -48,7 +48,7 @@ namespace TimefulDungeon.Core {
                 Die();
         }
 
-        public void ApplyKnockback(Vector2 force) {
+        public void Push(Vector2 force) {
             _rigidbody.AddForce(force, ForceMode2D.Impulse);
         }
 
