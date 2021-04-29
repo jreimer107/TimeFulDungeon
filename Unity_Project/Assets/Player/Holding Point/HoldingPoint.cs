@@ -101,6 +101,10 @@ namespace TimefulDungeon.Core {
             InHand?.OnCollision(other);
         }
 
+        private void OnCollisionEnter2D(Collision2D other) {
+            InHand?.OnCollision(other.collider);
+        }
+
         public void OnEquipmentChange(EquipType changedType) {
             if (changedType == CurrType || changedType != EquipType.Shield && CurrType == EquipType.None) {
                 Transition(changedType);

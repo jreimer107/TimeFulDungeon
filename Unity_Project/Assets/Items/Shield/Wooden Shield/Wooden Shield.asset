@@ -28,3 +28,4 @@ MonoBehaviour:
   armor: 7
   staminaUse: 10
   arc: 90
+  knockback: 20

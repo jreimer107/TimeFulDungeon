@@ -2,8 +2,6 @@ using System;
 using System.IO;
 using System.Linq;
 using TimefulDungeon.Core;
-using TimefulDungeon.Enemies;
-using TimefulDungeon.Entities;
 using TimefulDungeon.Misc;
 using UnityEngine;
 
@@ -13,7 +11,6 @@ namespace TimefulDungeon.Items.Shield {
         public readonly float arcMod;
         public readonly float armorMod;
         public readonly float knockbackMod;
-        
         
         [NonSerialized] public readonly int staminaUse;
         protected readonly int armor;
@@ -45,17 +42,13 @@ namespace TimefulDungeon.Items.Shield {
         public override void OnCollision(Collider2D other) {
             base.OnCollision(other);
             Debug.Log("Shield collision");
-            other.TryGetComponent<BulletParticle>(out var projectile);
-            if (projectile) {
-                var stamina = Player.instance.Stamina;
-                stamina.SingleUse(projectile.damage * stamina.max / armor);
+            other.TryGetComponent<IDamaging>(out var damaging);
+            if (damaging != null) {
+                ConsumeStaminaOnDamage(damaging.GetDamage());
             }
-            else {
-                other.TryGetComponent<Enemy>(out var enemy);
-                if (enemy) {
-                    enemy.Push((holdingPoint.Position2D() - enemy.Position2D()) * 100);
-                }
-            }
+
+            other.TryGetComponent<IPushable>(out var pushable);
+            pushable?.Push(holdingPoint.Position2D(), knockback);
         }
 
         public override void OnDisable() {
@@ -78,6 +71,12 @@ namespace TimefulDungeon.Items.Shield {
                 $"{armor} armor\n" +
                 $"{FormatFloat(arc)}\u00b0 guard\n" +
                 $"{staminaUse} stamina/second";
+        }
+
+        protected void ConsumeStaminaOnDamage(int damage) {
+            // Armor is amount of damage shield would absorb at 100 stamina
+            var stamina = Player.instance.Stamina;
+            stamina.SingleUse(damage / (float) armor * 100);
         }
     }
     
