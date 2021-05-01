@@ -1,4 +1,3 @@
-using TimefulDungeon.Misc;
 using UnityEngine;
 
 namespace TimefulDungeon.Items.Ranged {
@@ -18,12 +17,13 @@ namespace TimefulDungeon.Items.Ranged {
             penetrateMod = GetModifier();
             spreadMod =  GetModifier();
             projectile = template.projectile;
-            prefix = Utils.GetRandomEnum<RangedPrefixes>();
+            prefix = new Prefix<Ranged>();
             
             
             speed = template.speed * speedMod;
             penetrate = (int)(template.penetrate * penetrateMod);
             spread = template.spread * spreadMod;
+            prefix.Apply(this);
         }
         
         public override void OnEnable() {
@@ -54,8 +54,7 @@ namespace TimefulDungeon.Items.Ranged {
                 $"{FormatFloat(spread)}\u00b0 spread\n" +
                 (penetrate > 1
                     ? $"Penetrates {penetrate} enemies\n"
-                    : "") +
-                GetFormattedRedText();
+                    : "");
         }
     }
 }

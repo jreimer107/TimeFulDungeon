@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TimefulDungeon.Core;
 using TMPro;
 using UnityEngine;
@@ -24,23 +25,35 @@ namespace TimefulDungeon.Misc {
             return CreateWorldText(parent, text, localPosition, fontSize, (Color) color, textAnchor, textAlignment,
                 sortingOrder);
         }
+        
+        public static IEnumerable<Vector2> GetArcPoints(float radius, float angleDegrees, Vector2 pos = default, int resolution = 32) {
+            var angleRad = angleDegrees * Mathf.Deg2Rad;
+            
+            // Start halfway through so angle is centered at the given position
+            var currentAngle = -angleRad / 2;
+            
+            // Scale the number of points based on the radius, angle size, and resolution. Minimum 3 points to make a triangle
+            var numPoints = Mathf.Max(Mathf.CeilToInt(radius * angleRad * resolution / (2 * Mathf.PI)), 3);
+            
+            // Get angle change per segment. One fewer segment than points
+            var deltaAngle = angleRad / (numPoints - 1);
+            
+            for (var i = 0; i < numPoints; i++) {
+                yield return new Vector2(
+                    Mathf.Cos(currentAngle) * radius + pos.x, 
+                    Mathf.Sin(currentAngle) * radius + pos.y
+                );
+                currentAngle += deltaAngle;
+            }
+        }
 
-        public static void DrawDebugCircle(Vector2 pos, float radius, Color color) {
-            var angle = 0f;
-            var segments = radius * 32;
-            var deltaAngle = 2 * Mathf.PI / segments;
-            var currPoint = Vector2.up * radius;
-            var nextPoint = Vector2.zero;
-
-
-            for (var i = 0; i < segments; i++) {
-                angle += deltaAngle;
-                nextPoint.x = Mathf.Sin(angle) * radius;
-                nextPoint.y = Mathf.Cos(angle) * radius;
-
-                Debug.DrawLine(currPoint + pos, nextPoint + pos, color, 1);
-
-                currPoint = nextPoint;
+        public static void DrawDebugCircle(Vector2 pos, float radius, Color color, float arcDegrees = 360) {
+            var prev = Vector2.zero;
+            foreach (var curr in GetArcPoints(radius, arcDegrees, pos)) {
+                if (prev != default) {
+                    Debug.DrawLine(prev, curr, color, 1);
+                }
+                prev = curr;
             }
         }
 

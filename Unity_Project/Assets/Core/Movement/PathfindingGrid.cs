@@ -23,28 +23,21 @@ namespace TimefulDungeon.Core.Movement {
             _grid = new WorldGrid<bool>(gridWidth, gridHeight, cellSize);
             _pathfinding = new Pathfinding();
             obstacleMask = LayerMask.GetMask("Obstacle");
+            UpdateGrid();
+            if (doPeriodicUpdates) InvokeRepeating(nameof(UpdateGrid), updateInterval, updateInterval);
         }
 
         private void Update() {
             if (Input.GetKeyDown(KeyCode.O)) _grid.ShowDebug();
         }
 
-        private void FixedUpdate() {
-            if (!doPeriodicUpdates) return;
-            if (_intervalCounter >= updateInterval) {
-                for (var x = 0; x < _grid.Width; x++)
-                for (var y = 0; y < _grid.Height; y++) {
-                    // Check for collisions
-                    var worldPos = _grid.GetWorldPosition(x, y);
-                    var middle = new Vector2(worldPos.x + _grid.CellSize / 2, worldPos.y + _grid.CellSize / 2);
-                    _grid[x, y] = Physics2D.OverlapBox(middle, new Vector2(_grid.CellSize / 2, _grid.CellSize / 2), 0f,
-                        obstacleMask);
-                }
-
-                _intervalCounter = 0;
-            }
-            else {
-                _intervalCounter += Time.fixedDeltaTime;
+        private void UpdateGrid() {
+            var boxSize = Vector2.one * _grid.CellSize / 2;
+            for (var x = 0; x < _grid.Width; x++)
+            for (var y = 0; y < _grid.Height; y++) {
+                // Check for collisions
+                var middle = _grid.GetWorldPosition(x, y) + boxSize;
+                _grid[x, y] = Physics2D.OverlapBox(middle, boxSize, 0f, obstacleMask);
             }
         }
 
@@ -158,7 +151,6 @@ namespace TimefulDungeon.Core.Movement {
             // Set the first potential waypoint to the next spot
             var turnIndex = path.Count - 2;
             var turn = path[turnIndex];
-            var turnWorld = GetWorldPosition(turn);
 
             // Create the list and add the start
             waypoints = new List<Vector2> {currWorld};
@@ -182,12 +174,11 @@ namespace TimefulDungeon.Core.Movement {
                     if (Vector2.Dot(dir, vector) != 0) inLine = false;
                 }
 
-                turnWorld = GetWorldPosition(turn);
+                var turnWorld = GetWorldPosition(turn);
 
                 // Find the last node after the turn that is still visible from the current waypoint, this is the next waypoint
                 do {
-                    var hit = Physics2D.Raycast(currWorld, turnWorld - currWorld,
-                        Vector2.Distance(turnWorld, currWorld), obstacleMask);
+                    var hit = Physics2D.Linecast(currWorld, turnWorld, obstacleMask);
                     if (hit.collider) {
                         // Obstacle hit, so spot before this was a waypoint. Move curr to right behind turn, and add to list
                         curr = path[turnIndex + 1];

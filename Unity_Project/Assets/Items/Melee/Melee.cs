@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using TimefulDungeon.Core;
-using TimefulDungeon.Misc;
 using UnityEngine;
 
 namespace TimefulDungeon.Items.Melee {
@@ -12,9 +11,11 @@ namespace TimefulDungeon.Items.Melee {
 
         public Melee(MeleeTemplate template) : base(template) {
             arcMod = GetModifier();
-            prefix = Utils.GetRandomEnum<MeleePrefixes>();
             
             arc = template.arc * arcMod;
+            prefix = new Prefix<Melee>();
+            prefix.Apply(this);
+
         }
 
         protected override string CalculateTooltipText() {
@@ -24,8 +25,7 @@ namespace TimefulDungeon.Items.Melee {
                 $"{FormatFloat(arc)}\u00b0 arc\n" +
                 $"{FormatFloat(rate)} attacks/sec\n" +
                 $"{range}m range\n" +
-                $"{FormatFloat(cooldown)}s cooldown\n" +
-                GetFormattedRedText();
+                $"{FormatFloat(cooldown)}s cooldown\n";
         }
         
         

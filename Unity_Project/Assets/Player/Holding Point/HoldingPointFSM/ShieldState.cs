@@ -20,11 +20,13 @@ namespace TimefulDungeon.Core.HoldingPointFSM {
                 _previousType = holdingPoint.CurrType;
             }
             _shield = playerEquipment.Shield;
+            _shield.Activate();
             playerStamina.StartContinuousUse(_shield.staminaUse);
         }
 
         public override void Exit() {
             playerStamina.StopContinuousUse(_shield.staminaUse);
+            _shield.Deactivate();
         }
 
         public override EquipType Update() {

@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace TimefulDungeon.Misc {
     public static class Translations {
         private static readonly Dictionary<string, string> TranslationsDict = new Dictionary<string, string>();
-        private static bool initialized;
-        
+
         private static readonly Regex KeyValueRegex = new Regex(@"""(.*)""\s*:\s*""(.*)""");
         private static readonly Regex GroupStartRegex = new Regex(@"""(.*)""\s*:\s*{?");
         private static readonly Regex GroupEndRegex = new Regex(@"}");
 
         private static readonly Stack<string> KeyPathStack = new Stack<string>();
 
-        public static void Initialize() {
+        static Translations() {
             var currentLanguage = Get2LetterIsoCodeFromSystemLanguage().ToLower();
             Debug.Log("Current language: " + currentLanguage);
             var translationFiles = Resources.LoadAll<TextAsset>(currentLanguage);
@@ -26,14 +26,39 @@ namespace TimefulDungeon.Misc {
                     ParseJsonLine(line);
                 }
             }
-
-            initialized = true;
         }
 
         public static string Get(string key) {
-            if (!initialized) Initialize();
             TranslationsDict.TryGetValue(key, out var value);
             return value ?? key;
+        }
+
+        public static string GetAt(string key, string path) => Get($"{path}.{key}");
+
+        public static Dictionary<string, string> GetAll(string search) {
+            Debug.Log("Getting from " + search);
+            return TranslationsDict
+                .Where(x => x.Key.Contains(search))
+                .ToDictionary(pair => pair.Key, pair => pair.Value);
+        }
+
+        public static Dictionary<string, string> GetAllAt(string path) {
+            Debug.Log("Getting from " + path);
+            var subset = new Dictionary<string, string>();
+            var pathRegex = new Regex(path + @"\.(\w+)");
+            foreach (var pair in TranslationsDict) {
+                var match = pathRegex.Match(pair.Key);
+                if (match.Success) {
+                    subset.Add(match.Groups[1].Value, pair.Value);
+                }
+            }
+
+            return subset;
+            
+            
+            // return TranslationsDict
+            //     .Where(x => x.Key.StartsWith(path))
+            //     .ToDictionary(pair => pair.Key.Split(path)[1], pair => pair.Value);
         }
         
         /// <summary>

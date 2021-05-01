@@ -4,7 +4,6 @@ using TimefulDungeon.Entities;
 using TimefulDungeon.Items;
 using TimefulDungeon.Misc;
 using UnityEngine;
-using VoraUtils;
 
 namespace TimefulDungeon.Core {
     /// <summary>
@@ -13,7 +12,7 @@ namespace TimefulDungeon.Core {
     /// </summary>
     public class HoldingPoint : FiniteStateMachineBehavior<EquipType> {
         // Configuration
-        [Range(0, 5)] [SerializeField] private float radius = 1;
+        [Range(0, 5)] public float radius = 1;
 
         // State controlled by currently held item
         [NonSerialized] public float angle;
@@ -31,6 +30,7 @@ namespace TimefulDungeon.Core {
         // Components, configured by currently held item
         public SpriteRenderer SpriteRenderer { get; private set; }
         public PolygonCollider2D Hitbox { get; private set; }
+        public EdgeCollider2D Barrier { get; private set; }
         public Animator Animator { get; private set; }
         public AnimatorOverrideController AnimatorOverrideController { get; private set; }
         public AudioSource AudioSource { get; private set; }
@@ -45,6 +45,8 @@ namespace TimefulDungeon.Core {
             SpriteRenderer = GetComponent<SpriteRenderer>();
             Hitbox = GetComponent<PolygonCollider2D>();
             Hitbox.enabled = false;
+            Barrier = GetComponent<EdgeCollider2D>();
+            Barrier.enabled = false;
             Particles = GetComponentInChildren<ParticleSystem>();
             Bullet = Particles.GetComponent<BulletParticle>();
             Particles.gameObject.SetActive(false);
@@ -97,6 +99,10 @@ namespace TimefulDungeon.Core {
 
         private void OnTriggerEnter2D(Collider2D other) {
             InHand?.OnCollision(other);
+        }
+
+        private void OnCollisionEnter2D(Collision2D other) {
+            InHand?.OnCollision(other.collider);
         }
 
         public void OnEquipmentChange(EquipType changedType) {

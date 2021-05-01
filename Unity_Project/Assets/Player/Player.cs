@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace TimefulDungeon.Core {
     [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
-    public class Player : MonoBehaviour, IDamageable {
+    public class Player : MonoBehaviour, IDamageable, IPushable {
         public static Player instance;
         public delegate void OnHealthChanged();
 
@@ -48,10 +48,6 @@ namespace TimefulDungeon.Core {
                 Die();
         }
 
-        public void ApplyKnockback(Vector2 force) {
-            _rigidbody.AddForce(force, ForceMode2D.Impulse);
-        }
-
         public void Heal(int heal) {
             health = Math.Min(maxHealth, health + heal);
             onHealthChangedCallback.Invoke();
@@ -63,6 +59,10 @@ namespace TimefulDungeon.Core {
 #if UNITY_EDITOR
             EditorApplication.ExitPlaymode();
 #endif
+        }
+
+        public void Push(Vector2 point, float magnitude = 1) {
+            _rigidbody.AddForce((transform.Position2D() - point).normalized * magnitude * _rigidbody.mass * 100, ForceMode2D.Impulse);
         }
     }
 }

@@ -1,8 +1,11 @@
+using System;
+using UnityEngine;
+
 namespace TimefulDungeon.Items {
     public abstract class Weapon : Equippable {
-        public readonly float damageMod;
-        public readonly float rangeMod;
-        public readonly float rateMod;
+        public float damageMod;
+        public float rangeMod;
+        public float rateMod;
 
         protected readonly int damage;
         protected readonly int range;
@@ -13,7 +16,7 @@ namespace TimefulDungeon.Items {
             rangeMod = GetModifier();
             rateMod = GetModifier();
             
-            damage = (int)(template.damage * damageMod);
+            damage = Mathf.Max((int)(template.damage * damageMod * levelScale), 1);
             range = (int)(template.range * rangeMod);
             rate = template.rate * rateMod;
         }
