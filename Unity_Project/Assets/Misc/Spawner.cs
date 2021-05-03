@@ -7,7 +7,7 @@ using UnityEngine;
 namespace TimefulDungeon.Misc {
     public class Spawner : MonoBehaviour {
         private Player _player;
-        public Enemy enemyPrefab;
+        public Enemy[] enemyPrefabs;
         public int maxEnemies = 100;
         private Enemy[] _enemyPool;
 
@@ -16,6 +16,7 @@ namespace TimefulDungeon.Misc {
             _player = Player.instance;
             _enemyPool = new Enemy[maxEnemies];
             for (var i = 0; i < maxEnemies; i++) {
+                var enemyPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
                 _enemyPool[i] = Instantiate(enemyPrefab, Vector2.zero, Quaternion.identity);
                 _enemyPool[i].gameObject.SetActive(false);
             }

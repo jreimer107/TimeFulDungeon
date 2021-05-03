@@ -1,0 +1,1146 @@
+fileFormatVersion: 2
+guid: e66ab44c8970a2647b79919b462f65f0
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3410319812607059870
+    second: SpoopSpritesheet_0
+  - first:
+      213: 8044165056426961630
+    second: SpoopSpritesheet_1
+  - first:
+      213: -1322657485321950234
+    second: SpoopSpritesheet_2
+  - first:
+      213: 4427663456536920298
+    second: SpoopSpritesheet_3
+  - first:
+      213: -3261685104137760157
+    second: SpoopSpritesheet_4
+  - first:
+      213: -5443208299540851179
+    second: SpoopSpritesheet_5
+  - first:
+      213: -5700525834007210297
+    second: SpoopSpritesheet_6
+  - first:
+      213: 3254893182594942537
+    second: SpoopSpritesheet_7
+  - first:
+      213: 8266273563457829252
+    second: SpoopSpritesheet_8
+  - first:
+      213: 4733232781008784721
+    second: SpoopSpritesheet_9
+  - first:
+      213: -7446217468299407782
+    second: SpoopSpritesheet_10
+  - first:
+      213: -7016969572865530910
+    second: SpoopSpritesheet_11
+  - first:
+      213: 9103905869334291018
+    second: SpoopSpritesheet_12
+  - first:
+      213: -6007175811310375508
+    second: SpoopSpritesheet_13
+  - first:
+      213: 1604483575636575095
+    second: SpoopSpritesheet_14
+  - first:
+      213: -7405207379720441713
+    second: SpoopSpritesheet_15
+  - first:
+      213: 8339800022187334719
+    second: SpoopSpritesheet_16
+  - first:
+      213: -1747642795835514319
+    second: SpoopSpritesheet_17
+  - first:
+      213: -6295278614122077243
+    second: SpoopSpritesheet_18
+  - first:
+      213: -5558019205038344135
+    second: SpoopSpritesheet_19
+  - first:
+      213: -4607914764908097040
+    second: SpoopSpritesheet_20
+  - first:
+      213: 5727751272562348230
+    second: SpoopSpritesheet_21
+  - first:
+      213: -1886829382262546212
+    second: SpoopSpritesheet_22
+  - first:
+      213: -7184493916336005234
+    second: SpoopSpritesheet_23
+  - first:
+      213: -2290783723831659876
+    second: SpoopSpritesheet_24
+  - first:
+      213: 1794184095415871241
+    second: SpoopSpritesheet_25
+  - first:
+      213: 2891475361666515668
+    second: SpoopSpritesheet_26
+  - first:
+      213: -1825030955535671717
+    second: SpoopSpritesheet_27
+  - first:
+      213: 8286581225001740523
+    second: SpoopSpritesheet_41
+  - first:
+      213: 318993234205906370
+    second: SpoopSpritesheet_28
+  - first:
+      213: -275332501086502106
+    second: SpoopSpritesheet_29
+  - first:
+      213: 5081560519052043810
+    second: SpoopSpritesheet_30
+  - first:
+      213: -5071664824920937870
+    second: SpoopSpritesheet_29
+  - first:
+      213: 8383153247104806366
+    second: SpoopSpritesheet_30
+  - first:
+      213: 4988662872888315846
+    second: SpoopSpritesheet_30
+  - first:
+      213: -1720859808463102643
+    second: SpoopSpritesheet_32
+  - first:
+      213: -7211050203439970771
+    second: SpoopSpritesheet_33
+  - first:
+      213: 2006675080164895180
+    second: SpoopSpritesheet_34
+  - first:
+      213: 6405444623789389472
+    second: SpoopSpritesheet_35
+  - first:
+      213: 8482501751006281883
+    second: SpoopSpritesheet_36
+  - first:
+      213: -8258460322049947295
+    second: SpoopSpritesheet_37
+  - first:
+      213: -916483506074957175
+    second: SpoopSpritesheet_38
+  - first:
+      213: 4741271180292088272
+    second: SpoopSpritesheet_41
+  - first:
+      213: -9062316607374158894
+    second: SpoopSpritesheet_40
+  - first:
+      213: -7340014121076832961
+    second: SpoopSpritesheet_42
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: SpoopSpritesheet_0
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 343
+        width: 17
+        height: 16
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2685417f23c1ca0d0800000000000000
+      internalID: -3410319812607059870
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_1
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 343
+        width: 16
+        height: 17
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eda60febf7d92af60800000000000000
+      internalID: 8044165056426961630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_2
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 343
+        width: 14
+        height: 18
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6ebafdb560af4ade0800000000000000
+      internalID: -1322657485321950234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_3
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 343
+        width: 13
+        height: 18
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ae08cd77478327d30800000000000000
+      internalID: 4427663456536920298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_4
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 309
+        width: 13
+        height: 18
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3629faecdaa2cb2d0800000000000000
+      internalID: -3261685104137760157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_5
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 309
+        width: 14
+        height: 17
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 516d86314e6d574b0800000000000000
+      internalID: -5443208299540851179
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_6
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 309
+        width: 16
+        height: 17
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c61017e4f9a3e0b0800000000000000
+      internalID: -5700525834007210297
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_7
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 309
+        width: 17
+        height: 16
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 946896aba14bb2d20800000000000000
+      internalID: 3254893182594942537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_8
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 275
+        width: 16
+        height: 17
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4893b166204b7b270800000000000000
+      internalID: 8266273563457829252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_9
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 275
+        width: 14
+        height: 18
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 15d4347f222dfa140800000000000000
+      internalID: 4733232781008784721
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_10
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 275
+        width: 13
+        height: 18
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a5e84b11aa8b9a890800000000000000
+      internalID: -7446217468299407782
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_11
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 275
+        width: 13
+        height: 18
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2e320a9d957be9e90800000000000000
+      internalID: -7016969572865530910
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_12
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 241
+        width: 14
+        height: 17
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a42a3425722975e70800000000000000
+      internalID: 9103905869334291018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_13
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 241
+        width: 16
+        height: 17
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cada68f4d6932aca0800000000000000
+      internalID: -6007175811310375508
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_14
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 241
+        width: 17
+        height: 16
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 77344c5af45444610800000000000000
+      internalID: 1604483575636575095
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_15
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 241
+        width: 19
+        height: 15
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f8079a36f1b6b3990800000000000000
+      internalID: -7405207379720441713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_16
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 207
+        width: 21
+        height: 14
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f3c554c1febecb370800000000000000
+      internalID: 8339800022187334719
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_17
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 207
+        width: 21
+        height: 13
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 13224f7f2202fb7e0800000000000000
+      internalID: -1747642795835514319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_18
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 207
+        width: 23
+        height: 12
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5c3e32b447da2a8a0800000000000000
+      internalID: -6295278614122077243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_19
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 207
+        width: 18
+        height: 15
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 938f3ec0bf2fdd2b0800000000000000
+      internalID: -5558019205038344135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_20
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 173
+        width: 16
+        height: 16
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0f110626fe56d00c0800000000000000
+      internalID: -4607914764908097040
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_21
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 173
+        width: 16
+        height: 18
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6c0deda7f6f0d7f40800000000000000
+      internalID: 5727751272562348230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_22
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 173
+        width: 17
+        height: 19
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cd0a8767ca2a0d5e0800000000000000
+      internalID: -1886829382262546212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_23
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 173
+        width: 16
+        height: 19
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e8f56d129dc8b4c90800000000000000
+      internalID: -7184493916336005234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_24
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 138
+        width: 17
+        height: 20
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c9274cb17508530e0800000000000000
+      internalID: -2290783723831659876
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_25
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 139
+        width: 17
+        height: 17
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9072be4cde836e810800000000000000
+      internalID: 1794184095415871241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_26
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 138
+        width: 19
+        height: 16
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4d24de09585902820800000000000000
+      internalID: 2891475361666515668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_27
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 138
+        width: 20
+        height: 18
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b5e543fe3003ca6e0800000000000000
+      internalID: -1825030955535671717
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_41
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 3
+        width: 13
+        height: 3
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: be866ae48b9dff270800000000000000
+      internalID: 8286581225001740523
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_28
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 104
+        width: 21
+        height: 22
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c5989a08aa4d6400800000000000000
+      internalID: 318993234205906370
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_30
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 105
+        width: 20
+        height: 21
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2262fba6e54558640800000000000000
+      internalID: 5081560519052043810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_29
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 104
+        width: 18
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 27a6eba66b3dd99b0800000000000000
+      internalID: -5071664824920937870
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_31
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 105
+        width: 22
+        height: 15
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: edd285f5671f65470800000000000000
+      internalID: 8383153247104806366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_32
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 71
+        width: 17
+        height: 16
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d4d5f482f174e18e0800000000000000
+      internalID: -1720859808463102643
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_33
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 71
+        width: 19
+        height: 15
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d26c376bb043deb90800000000000000
+      internalID: -7211050203439970771
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_34
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 71
+        width: 21
+        height: 14
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cc96bd48a5429db10800000000000000
+      internalID: 2006675080164895180
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_35
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 71
+        width: 21
+        height: 13
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a6f665a2f5b4e850800000000000000
+      internalID: 6405444623789389472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_36
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 37
+        width: 23
+        height: 12
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b90cb5b7666e7b570800000000000000
+      internalID: 8482501751006281883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_37
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 37
+        width: 25
+        height: 11
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1690e80a71e046d80800000000000000
+      internalID: -8258460322049947295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_38
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 37
+        width: 24
+        height: 9
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 98ac5e16b1ff743f0800000000000000
+      internalID: -916483506074957175
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_39
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 37
+        width: 22
+        height: 7
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0d16b15a4016cc140800000000000000
+      internalID: 4741271180292088272
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_40
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 3
+        width: 19
+        height: 5
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2d3175f4f0f2c3280800000000000000
+      internalID: -9062316607374158894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpoopSpritesheet_42
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 2
+        width: 11
+        height: 7
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f354dd2cb08032a90800000000000000
+      internalID: -7340014121076832961
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

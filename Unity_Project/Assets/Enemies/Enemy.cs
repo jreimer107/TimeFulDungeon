@@ -31,10 +31,14 @@ namespace TimefulDungeon.Enemies {
         public void Damage(int damage) {
             _health -= damage;
             Popup.CreatePopup(damage.ToString(), transform.position, Color.yellow);
-            // if (_health <= 0) Destroy(gameObject);
-            if (_health <= 0) gameObject.SetActive(false);
+            if (_health <= 0) Die();
         }
-    
+
+        public virtual void Die() {
+            gameObject.SetActive(false);
+            // Destroy(gameObject);
+        }
+
         private void OnCollisionEnter2D(Collision2D other) {
             var player = other.collider.GetComponent<Player>();
             if (!player) return;

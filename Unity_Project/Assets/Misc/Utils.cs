@@ -47,11 +47,16 @@ namespace TimefulDungeon.Misc {
             }
         }
 
-        public static void DrawDebugCircle(Vector2 pos, float radius, Color color, float arcDegrees = 360) {
+        public static void DrawDebugCircle(Vector2 pos, float radius, Color color, float duration = float.NaN, float arcDegrees = 360) {
             var prev = Vector2.zero;
             foreach (var curr in GetArcPoints(radius, arcDegrees, pos)) {
                 if (prev != default) {
-                    Debug.DrawLine(prev, curr, color, 1);
+                    if (float.IsNaN(duration)) {
+                        Debug.DrawLine(prev, curr, color);
+                    }
+                    else {
+                        Debug.DrawLine(prev, curr, color, duration);
+                    }
                 }
                 prev = curr;
             }

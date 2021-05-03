@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TimefulDungeon.Misc;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 namespace TimefulDungeon.AI {
     public class ContextSteering : MonoBehaviour {
@@ -14,6 +15,7 @@ namespace TimefulDungeon.AI {
         [SerializeField] private float wallAvoidRange = 1f;
         [SerializeField] private float panicSeconds = 3;
         [SerializeField] private LayerMask obstacleMask;
+        [SerializeField] private bool debug;
 
         #endregion
 
@@ -115,31 +117,30 @@ namespace TimefulDungeon.AI {
 
             if (_panicking) Panic();
             Direction = Vector2.MoveTowards(Direction, CalculateSumInterest(), 0.05f);
+            
+            if (debug) DrawDebug();
         }
 
-#if UNITY_EDITOR
-        private void OnDrawGizmos() {
-            if (!EditorApplication.isPlaying) return;
+        private void DrawDebug() {
             Vector2 position = transform.position;
-            Gizmos.color = Color.black;
-            Gizmos.DrawWireSphere(position, 0.5f);
+            Utils.DrawDebugCircle(position, 0.5f, Color.gray);
             for (var i = 0; i < resolution; i++) {
                 var start = position + _mapVectors[i] / 2;
                 float desirability;
+                Color lineColor;
                 if (_obstacleMap[i] < wallAvoidRange) {
                     desirability = _obstacleMap[i] * 0.1f;
-                    Gizmos.color = Color.cyan;
+                    lineColor = Color.cyan;
                 }
                 else {
                     desirability = _interestMap[i];
-                    Gizmos.color = desirability < 0 ? Color.red : Color.green;
+                    lineColor = desirability < 0 ? Color.red : Color.green;
                 }
 
-                var desireVector = 2 * _mapVectors[i] * Mathf.Abs(desirability);
-                Gizmos.DrawLine(start, start + desireVector);
+                var desireVector = _mapVectors[i] * (2 * Mathf.Abs(desirability));
+                Debug.DrawLine(start, start + desireVector, lineColor);
             }
         }
-#endif
 
         #endregion
 
