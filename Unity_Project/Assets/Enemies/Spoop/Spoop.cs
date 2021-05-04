@@ -15,7 +15,6 @@ namespace TimefulDungeon.Enemies.Spoop {
         
         private FiniteStateMachine<AggroStates> _searchFsm;
         private Animator _animator;
-        private Rigidbody2D _rigidbody;
         
         private bool _attacking;
 
@@ -24,14 +23,13 @@ namespace TimefulDungeon.Enemies.Spoop {
             _searchFsm = new FiniteStateMachine<AggroStates>(AggroStates.Wander, this);
             SetTarget(Player.instance.transform);
             _animator = GetComponent<Animator>();
-            _rigidbody = GetComponent<Rigidbody2D>();
         }
 
         protected override void Update() {
             base.Update();
             _searchFsm.Update();
 
-            _animator.SetFloat(Speed, _rigidbody.velocity.magnitude);
+            _animator.SetFloat(Speed, rigidbody.velocity.magnitude);
             var targetClose = transform.Position2D().CloserThan(target.Position2D(), meleeAttackRange);
             switch (_attacking) {
                 case true when !targetClose:

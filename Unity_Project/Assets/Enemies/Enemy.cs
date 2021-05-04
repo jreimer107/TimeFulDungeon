@@ -18,12 +18,12 @@ namespace TimefulDungeon.Enemies {
         public Transform target { get; private set; }
 
 
-        private Rigidbody2D _rigidbody;
+        protected new Rigidbody2D rigidbody;
 
         protected override void Awake() {
             base.Awake();
             _health = maxHealth;
-            _rigidbody = GetComponent<Rigidbody2D>();
+            rigidbody = GetComponent<Rigidbody2D>();
             spawn = transform.Position2D();
             if (obstacleMask.value == 0) obstacleMask = LayerMask.GetMask("Obstacle");
         }
@@ -65,7 +65,7 @@ namespace TimefulDungeon.Enemies {
         public int GetDamage() => damage;
 
         public void Push(Vector2 point, float magnitude = 1) {
-            _rigidbody.AddForce((transform.Position2D() - point).normalized * magnitude * _rigidbody.mass * 100, ForceMode2D.Impulse);
+            rigidbody.AddForce((transform.Position2D() - point).normalized * magnitude * rigidbody.mass * 100, ForceMode2D.Impulse);
         }
     }
 }

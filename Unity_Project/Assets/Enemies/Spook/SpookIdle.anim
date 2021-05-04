@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SpoopIdle
+  m_Name: SpookIdle
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -20,31 +20,34 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: -3410319812607059870, guid: e66ab44c8970a2647b79919b462f65f0,
+      value: {fileID: 8946404616419074372, guid: e7516c96fdde405f907f116ab9cfb468,
         type: 3}
-    - time: 0.083333336
-      value: {fileID: 8044165056426961630, guid: e66ab44c8970a2647b79919b462f65f0,
-        type: 3}
-    - time: 0.16666667
-      value: {fileID: -1322657485321950234, guid: e66ab44c8970a2647b79919b462f65f0,
+    - time: 0.125
+      value: {fileID: -8783518377761465583, guid: e7516c96fdde405f907f116ab9cfb468,
         type: 3}
     - time: 0.25
-      value: {fileID: 4427663456536920298, guid: e66ab44c8970a2647b79919b462f65f0,
+      value: {fileID: -8345979995447910870, guid: e7516c96fdde405f907f116ab9cfb468,
         type: 3}
-    - time: 0.33333334
-      value: {fileID: -3261685104137760157, guid: e66ab44c8970a2647b79919b462f65f0,
-        type: 3}
-    - time: 0.41666666
-      value: {fileID: -5443208299540851179, guid: e66ab44c8970a2647b79919b462f65f0,
+    - time: 0.375
+      value: {fileID: 1603252846722165516, guid: e7516c96fdde405f907f116ab9cfb468,
         type: 3}
     - time: 0.5
-      value: {fileID: -5700525834007210297, guid: e66ab44c8970a2647b79919b462f65f0,
+      value: {fileID: 7101112289760051335, guid: e7516c96fdde405f907f116ab9cfb468,
+        type: 3}
+    - time: 0.625
+      value: {fileID: 960828295087150052, guid: e7516c96fdde405f907f116ab9cfb468,
+        type: 3}
+    - time: 0.75
+      value: {fileID: -3758327297496658602, guid: e7516c96fdde405f907f116ab9cfb468,
+        type: 3}
+    - time: 0.875
+      value: {fileID: -6475404910360013469, guid: e7516c96fdde405f907f116ab9cfb468,
         type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
     script: {fileID: 0}
-  m_SampleRate: 12
+  m_SampleRate: 8
   m_WrapMode: 0
   m_Bounds:
     m_Center: {x: 0, y: 0, z: 0}
@@ -59,19 +62,20 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: -3410319812607059870, guid: e66ab44c8970a2647b79919b462f65f0, type: 3}
-    - {fileID: 8044165056426961630, guid: e66ab44c8970a2647b79919b462f65f0, type: 3}
-    - {fileID: -1322657485321950234, guid: e66ab44c8970a2647b79919b462f65f0, type: 3}
-    - {fileID: 4427663456536920298, guid: e66ab44c8970a2647b79919b462f65f0, type: 3}
-    - {fileID: -3261685104137760157, guid: e66ab44c8970a2647b79919b462f65f0, type: 3}
-    - {fileID: -5443208299540851179, guid: e66ab44c8970a2647b79919b462f65f0, type: 3}
-    - {fileID: -5700525834007210297, guid: e66ab44c8970a2647b79919b462f65f0, type: 3}
+    - {fileID: 8946404616419074372, guid: e7516c96fdde405f907f116ab9cfb468, type: 3}
+    - {fileID: -8783518377761465583, guid: e7516c96fdde405f907f116ab9cfb468, type: 3}
+    - {fileID: -8345979995447910870, guid: e7516c96fdde405f907f116ab9cfb468, type: 3}
+    - {fileID: 1603252846722165516, guid: e7516c96fdde405f907f116ab9cfb468, type: 3}
+    - {fileID: 7101112289760051335, guid: e7516c96fdde405f907f116ab9cfb468, type: 3}
+    - {fileID: 960828295087150052, guid: e7516c96fdde405f907f116ab9cfb468, type: 3}
+    - {fileID: -3758327297496658602, guid: e7516c96fdde405f907f116ab9cfb468, type: 3}
+    - {fileID: -6475404910360013469, guid: e7516c96fdde405f907f116ab9cfb468, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.5833333
+    m_StopTime: 1
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -90,11 +94,4 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events:
-  - time: 0
-    functionName: 
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
+  m_Events: []

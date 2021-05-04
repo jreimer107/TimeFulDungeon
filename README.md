@@ -1,3 +1,5 @@
 # TimeFulDungeon
 
-Casual Roguelike game for Madison Game Design and Development club.
+Roguelite game inspired by Diablo, Pokemon Mystery Dungeon, and Borderlands.
+
+![Enemies.gif] (https://github.com/jreimer107/TimeFulDungeon/tree/master/other/Spooks.gif)

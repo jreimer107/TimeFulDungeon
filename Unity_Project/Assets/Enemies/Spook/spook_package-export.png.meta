@@ -1,3 +1,1428 @@
-﻿fileFormatVersion: 2
+fileFormatVersion: 2
 guid: e7516c96fdde405f907f116ab9cfb468
-timeCreated: 1619888983
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8946404616419074372
+    second: spook_package-export_0
+  - first:
+      213: -8783518377761465583
+    second: spook_package-export_1
+  - first:
+      213: -8345979995447910870
+    second: spook_package-export_2
+  - first:
+      213: 1603252846722165516
+    second: spook_package-export_3
+  - first:
+      213: 7101112289760051335
+    second: spook_package-export_4
+  - first:
+      213: 960828295087150052
+    second: spook_package-export_5
+  - first:
+      213: -3758327297496658602
+    second: spook_package-export_6
+  - first:
+      213: -6475404910360013469
+    second: spook_package-export_7
+  - first:
+      213: 160668759691543933
+    second: spook_package-export_8
+  - first:
+      213: -7666021128580409379
+    second: spook_package-export_9
+  - first:
+      213: 6377772896114737724
+    second: spook_package-export_10
+  - first:
+      213: -9159423105895664412
+    second: spook_package-export_11
+  - first:
+      213: 8381543284203604105
+    second: spook_package-export_12
+  - first:
+      213: 6261385564279911414
+    second: spook_package-export_13
+  - first:
+      213: 3239006349308548594
+    second: spook_package-export_14
+  - first:
+      213: -7456960854292006394
+    second: spook_package-export_15
+  - first:
+      213: 3854180306544730367
+    second: spook_package-export_16
+  - first:
+      213: -1527020137412795245
+    second: spook_package-export_17
+  - first:
+      213: -3441922102644386950
+    second: spook_package-export_18
+  - first:
+      213: 7834393270328625658
+    second: spook_package-export_19
+  - first:
+      213: 8343391699594737848
+    second: spook_package-export_20
+  - first:
+      213: 6458673432733648372
+    second: spook_package-export_21
+  - first:
+      213: 6280154603353712355
+    second: spook_package-export_22
+  - first:
+      213: 8438217768939313607
+    second: spook_package-export_23
+  - first:
+      213: -2424016929240704403
+    second: spook_package-export_24
+  - first:
+      213: -1129677700762645094
+    second: spook_package-export_25
+  - first:
+      213: 4302895706435152869
+    second: spook_package-export_26
+  - first:
+      213: 8522172082039140694
+    second: spook_package-export_27
+  - first:
+      213: -4837514628126540374
+    second: spook_package-export_28
+  - first:
+      213: -4299715803642683940
+    second: spook_package-export_29
+  - first:
+      213: -5123476444916994209
+    second: spook_package-export_30
+  - first:
+      213: 2422202257171579701
+    second: spook_package-export_31
+  - first:
+      213: -2288191184875263377
+    second: spook_package-export_32
+  - first:
+      213: 8988673228170704313
+    second: spook_package-export_33
+  - first:
+      213: -6622459564978422464
+    second: spook_package-export_34
+  - first:
+      213: 4937182313059746297
+    second: spook_package-export_35
+  - first:
+      213: -8578710852209866682
+    second: spook_package-export_36
+  - first:
+      213: 6410872794162108970
+    second: spook_package-export_37
+  - first:
+      213: -5666737018847718869
+    second: spook_package-export_38
+  - first:
+      213: -5030204792938514769
+    second: spook_package-export_39
+  - first:
+      213: -809876969855088284
+    second: spook_package-export_40
+  - first:
+      213: 2537116582960668164
+    second: spook_package-export_41
+  - first:
+      213: -1980981824474481830
+    second: spook_package-export_42
+  - first:
+      213: -5525605987066655124
+    second: spook_package-export_43
+  - first:
+      213: 1164567023225507893
+    second: spook_package-export_44
+  - first:
+      213: 35849502792544029
+    second: spook_package-export_45
+  - first:
+      213: -6734915936622292648
+    second: spook_package-export_46
+  - first:
+      213: 8313884196164199528
+    second: spook_package-export_47
+  - first:
+      213: 4976123400137401741
+    second: spook_package-export_48
+  - first:
+      213: 2908434405320456600
+    second: spook_package-export_49
+  - first:
+      213: -7669558186239905618
+    second: spook_package-export_50
+  - first:
+      213: 7174366860245096051
+    second: spook_package-export_51
+  - first:
+      213: -455962087494324976
+    second: spook_package-export_52
+  - first:
+      213: -39359164550371445
+    second: spook_package-export_53
+  - first:
+      213: -4250340396788730249
+    second: spook_package-export_54
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: spook_package-export_0
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 503
+        width: 25
+        height: 21
+      alignment: 9
+      pivot: {x: 0.64, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 441e29a3993082c70800000000000000
+      internalID: 8946404616419074372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_1
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 503
+        width: 23
+        height: 22
+      alignment: 9
+      pivot: {x: 0.65217394, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 11b996f829caa1680800000000000000
+      internalID: -8783518377761465583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_2
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 503
+        width: 21
+        height: 23
+      alignment: 9
+      pivot: {x: 0.6666667, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a2e9fccb96f1d2c80800000000000000
+      internalID: -8345979995447910870
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_3
+      rect:
+        serializedVersion: 2
+        x: 206
+        y: 503
+        width: 19
+        height: 24
+      alignment: 9
+      pivot: {x: 0.6315789, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c0b220e38f5ef3610800000000000000
+      internalID: 1603252846722165516
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_4
+      rect:
+        serializedVersion: 2
+        x: 272
+        y: 503
+        width: 19
+        height: 24
+      alignment: 9
+      pivot: {x: 0.6315789, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7800f4511083c8260800000000000000
+      internalID: 7101112289760051335
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_5
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 453
+        width: 19
+        height: 24
+      alignment: 9
+      pivot: {x: 0.6315789, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e350d26e3c855d00800000000000000
+      internalID: 960828295087150052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_6
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 453
+        width: 23
+        height: 23
+      alignment: 9
+      pivot: {x: 0.65217394, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 65dce034c3db7dbc0800000000000000
+      internalID: -3758327297496658602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_7
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 453
+        width: 25
+        height: 22
+      alignment: 9
+      pivot: {x: 0.64, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 365db2dca8db226a0800000000000000
+      internalID: -6475404910360013469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_8
+      rect:
+        serializedVersion: 2
+        x: 202
+        y: 453
+        width: 25
+        height: 21
+      alignment: 9
+      pivot: {x: 0.64, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d75caebb26fca3200800000000000000
+      internalID: 160668759691543933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_9
+      rect:
+        serializedVersion: 2
+        x: 269
+        y: 453
+        width: 23
+        height: 22
+      alignment: 9
+      pivot: {x: 0.65217394, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dd7535e5662dc9590800000000000000
+      internalID: -7666021128580409379
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_10
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 403
+        width: 21
+        height: 23
+      alignment: 9
+      pivot: {x: 0.6666667, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c32880b78a6628850800000000000000
+      internalID: 6377772896114737724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_11
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 403
+        width: 23
+        height: 25
+      alignment: 9
+      pivot: {x: 0.5217391, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e47591c63133e080800000000000000
+      internalID: -9159423105895664412
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_12
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 403
+        width: 19
+        height: 24
+      alignment: 9
+      pivot: {x: 0.6315789, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 988448ca539315470800000000000000
+      internalID: 8381543284203604105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_13
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 403
+        width: 23
+        height: 23
+      alignment: 9
+      pivot: {x: 0.65217394, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6f3b9a81ff8e4e650800000000000000
+      internalID: 6261385564279911414
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_14
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 403
+        width: 25
+        height: 22
+      alignment: 9
+      pivot: {x: 0.64, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f555cb1d1343fc20800000000000000
+      internalID: 3239006349308548594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_15
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 353
+        width: 23
+        height: 22
+      alignment: 9
+      pivot: {x: 0.65217394, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 60a7ee79c9d838890800000000000000
+      internalID: -7456960854292006394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_16
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 353
+        width: 18
+        height: 24
+      alignment: 9
+      pivot: {x: 0.6111111, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ff0a7e7819ccc7530800000000000000
+      internalID: 3854180306544730367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_17
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 353
+        width: 19
+        height: 26
+      alignment: 9
+      pivot: {x: 0.68421054, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 39464a8864feecae0800000000000000
+      internalID: -1527020137412795245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_18
+      rect:
+        serializedVersion: 2
+        x: 202
+        y: 353
+        width: 22
+        height: 28
+      alignment: 9
+      pivot: {x: 0.72727275, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a73d05f6516db30d0800000000000000
+      internalID: -3441922102644386950
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_19
+      rect:
+        serializedVersion: 2
+        x: 265
+        y: 353
+        width: 25
+        height: 23
+      alignment: 9
+      pivot: {x: 0.76, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: af906a4cb2b59bc60800000000000000
+      internalID: 7834393270328625658
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_20
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 303
+        width: 13
+        height: 29
+      alignment: 9
+      pivot: {x: 0.53846157, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8b8794cab8ea9c370800000000000000
+      internalID: 8343391699594737848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_21
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 303
+        width: 25
+        height: 27
+      alignment: 9
+      pivot: {x: 0.35999998, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4f5875e7441d1a950800000000000000
+      internalID: 6458673432733648372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_22
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 303
+        width: 33
+        height: 12
+      alignment: 9
+      pivot: {x: 0.27272728, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3e6ae6b8657972750800000000000000
+      internalID: 6280154603353712355
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_23
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 303
+        width: 33
+        height: 13
+      alignment: 9
+      pivot: {x: 0.27272728, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c9540f6a529a1570800000000000000
+      internalID: 8438217768939313607
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_24
+      rect:
+        serializedVersion: 2
+        x: 275
+        y: 303
+        width: 33
+        height: 19
+      alignment: 9
+      pivot: {x: 0.27272728, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d6a131322792c5ed0800000000000000
+      internalID: -2424016929240704403
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_25
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 253
+        width: 26
+        height: 27
+      alignment: 9
+      pivot: {x: 0.34615386, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a9dcc5fcd149250f0800000000000000
+      internalID: -1129677700762645094
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_26
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 253
+        width: 23
+        height: 29
+      alignment: 9
+      pivot: {x: 0.39130434, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5ebee97e8d4f6bb30800000000000000
+      internalID: 4302895706435152869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_27
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 253
+        width: 16
+        height: 26
+      alignment: 9
+      pivot: {x: 0.6875, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 651b1b03b56d44670800000000000000
+      internalID: 8522172082039140694
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_28
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 253
+        width: 23
+        height: 22
+      alignment: 9
+      pivot: {x: 0.65217394, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aadf2c27312bddcb0800000000000000
+      internalID: -4837514628126540374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_29
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 253
+        width: 18
+        height: 24
+      alignment: 9
+      pivot: {x: 0.6111111, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cdd9eb8e1475454c0800000000000000
+      internalID: -4299715803642683940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_30
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 203
+        width: 18
+        height: 26
+      alignment: 9
+      pivot: {x: 0.6111111, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f5f24a59151c5e8b0800000000000000
+      internalID: -5123476444916994209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_31
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 203
+        width: 19
+        height: 28
+      alignment: 9
+      pivot: {x: 0.6315789, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5338cd89e146d9120800000000000000
+      internalID: 2422202257171579701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_32
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 203
+        width: 18
+        height: 30
+      alignment: 9
+      pivot: {x: 0.6666667, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f6a645f9d36be30e0800000000000000
+      internalID: -2288191184875263377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_33
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 203
+        width: 18
+        height: 32
+      alignment: 9
+      pivot: {x: 0.6111111, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b5bd2f4dae2ebc70800000000000000
+      internalID: 8988673228170704313
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_34
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 203
+        width: 18
+        height: 34
+      alignment: 9
+      pivot: {x: 0.6111111, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 04db21aec1c4814a0800000000000000
+      internalID: -6622459564978422464
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_35
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 153
+        width: 18
+        height: 34
+      alignment: 9
+      pivot: {x: 0.6111111, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9f18449c725648440800000000000000
+      internalID: 4937182313059746297
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_36
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 153
+        width: 19
+        height: 35
+      alignment: 9
+      pivot: {x: 0.6315789, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6480e3f8eeb42f880800000000000000
+      internalID: -8578710852209866682
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_37
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 153
+        width: 16
+        height: 35
+      alignment: 9
+      pivot: {x: 0.625, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a2a9f3c07def7f850800000000000000
+      internalID: 6410872794162108970
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_38
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 153
+        width: 14
+        height: 35
+      alignment: 9
+      pivot: {x: 0.6428572, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b22960c74b4bb51b0800000000000000
+      internalID: -5666737018847718869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_39
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 153
+        width: 12
+        height: 34
+      alignment: 9
+      pivot: {x: 0.6666667, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fa6be69546f113ab0800000000000000
+      internalID: -5030204792938514769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_40
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 103
+        width: 18
+        height: 29
+      alignment: 9
+      pivot: {x: 0.6111111, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4698404df2db2c4f0800000000000000
+      internalID: -809876969855088284
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_41
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 103
+        width: 23
+        height: 24
+      alignment: 9
+      pivot: {x: 0.65217394, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 40e9f190716a53320800000000000000
+      internalID: 2537116582960668164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_42
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 103
+        width: 25
+        height: 21
+      alignment: 9
+      pivot: {x: 0.64, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a5b71bdb6832284e0800000000000000
+      internalID: -1980981824474481830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_43
+      rect:
+        serializedVersion: 2
+        x: 202
+        y: 103
+        width: 25
+        height: 19
+      alignment: 9
+      pivot: {x: 0.64, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c6ece1471aa1153b0800000000000000
+      internalID: -5525605987066655124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_44
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 103
+        width: 25
+        height: 21
+      alignment: 9
+      pivot: {x: 0.64, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5309d78998f592010800000000000000
+      internalID: 1164567023225507893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_45
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 53
+        width: 23
+        height: 22
+      alignment: 9
+      pivot: {x: 0.65217394, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d1fe25fceec5f7000800000000000000
+      internalID: 35849502792544029
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_46
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 53
+        width: 25
+        height: 21
+      alignment: 9
+      pivot: {x: 0.64, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 851d28583a5c882a0800000000000000
+      internalID: -6734915936622292648
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_47
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 53
+        width: 25
+        height: 19
+      alignment: 9
+      pivot: {x: 0.64, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 864e918a0a9d06370800000000000000
+      internalID: 8313884196164199528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_48
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 53
+        width: 22
+        height: 17
+      alignment: 9
+      pivot: {x: 0.6363636, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d85e2b72eddbe0540800000000000000
+      internalID: 4976123400137401741
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_49
+      rect:
+        serializedVersion: 2
+        x: 272
+        y: 53
+        width: 19
+        height: 14
+      alignment: 9
+      pivot: {x: 0.6315789, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 89976ad9ea5dc5820800000000000000
+      internalID: 2908434405320456600
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_50
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 3
+        width: 17
+        height: 10
+      alignment: 9
+      pivot: {x: 0.64705884, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ea03bf4f671409590800000000000000
+      internalID: -7669558186239905618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_51
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 3
+        width: 15
+        height: 9
+      alignment: 9
+      pivot: {x: 0.6666667, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3765e31e5a8709360800000000000000
+      internalID: 7174366860245096051
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_52
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 3
+        width: 13
+        height: 6
+      alignment: 9
+      pivot: {x: 0.6923077, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 01deadfa5e81ca9f0800000000000000
+      internalID: -455962087494324976
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_53
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 3
+        width: 12
+        height: 3
+      alignment: 9
+      pivot: {x: 0.6666667, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b87a1526c0b247ff0800000000000000
+      internalID: -39359164550371445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spook_package-export_54
+      rect:
+        serializedVersion: 2
+        x: 281
+        y: 4
+        width: 3
+        height: 3
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7763aeaade1c305c0800000000000000
+      internalID: -4250340396788730249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
