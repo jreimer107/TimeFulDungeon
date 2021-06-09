@@ -15,13 +15,13 @@ namespace TimefulDungeon.Core {
         private bool HasSpace => bag.Count < enabledSlots;
 
         public bool CanAdd(Item newItem) {
-            return HasSpace || newItem.stackable && bag.Any(item => item == newItem);
+            return HasSpace || newItem.Stackable && bag.Any(item => item == newItem);
         }
 
         //Adds an item to the inventory, if possible.
         public bool Add(Item newItem) {
             //If item is stackable, check if we already have some
-            if (newItem.stackable)
+            if (newItem.Stackable)
                 for (var i = 0; i < Count; i++) {
                     if (bag[i] != newItem) continue;
                     bag[i].count += newItem.count;

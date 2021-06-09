@@ -3,7 +3,7 @@ using TimefulDungeon.Core;
 using TimefulDungeon.UI;
 using UnityEngine;
 
-namespace TimefulDungeon.Items {
+namespace TimefulDungeon.Items.Pickup {
     //Simple GameObject wrapper for item class. Item contains all functional aspects of the item.
     //This simply a dropped object that, when picked up, gives the player the attached item.
     [RequireComponent(typeof(SpriteRenderer), typeof(Rigidbody2D))]
@@ -11,12 +11,12 @@ namespace TimefulDungeon.Items {
         [SerializeField] private ItemTemplate template;
         
         // Resources
-        private static Pickup pickupPrefab;
-        private static PhysicsMaterial2D pickupMaterial;
+        private static Pickup _pickupPrefab;
+        private static PhysicsMaterial2D _pickupMaterial;
         
         // Dependencies
-        private static Tooltip tooltip;
-        private static Inventory inventory;
+        private static Tooltip _tooltip;
+        private static Inventory _inventory;
         
         // The item we contain
         public Item item;
@@ -57,23 +57,23 @@ namespace TimefulDungeon.Items {
             _triggerCollider = GetComponent<CircleCollider2D>();
             _rigidbody = GetComponent<Rigidbody2D>();
 
-            pickupPrefab ??= Resources.Load<Pickup>("Pickup");
-            pickupMaterial ??= Resources.Load<PhysicsMaterial2D>("PickupMaterial");
+            _pickupPrefab ??= Resources.Load<Pickup>("Pickup");
+            _pickupMaterial ??= Resources.Load<PhysicsMaterial2D>("PickupMaterial");
         }
 
         private void Start() {
             // Get dependencies
-            tooltip ??= Tooltip.instance;
-            inventory ??= Player.instance.Inventory;
+            _tooltip ??= Tooltip.instance;
+            _inventory ??= Player.instance.Inventory;
             
             if (template) {
                 item = template.GetInstance();
             }
 
             // Set sprite and create the hitbox
-            _spriteRenderer.sprite = item.sprite;
+            _spriteRenderer.sprite = item.Sprite;
             _hitbox = gameObject.AddComponent<PolygonCollider2D>();
-            _hitbox.sharedMaterial = pickupMaterial;
+            _hitbox.sharedMaterial = _pickupMaterial;
             
             // Push the pickup
             if (spawnVelocity != Vector2.zero) {
@@ -96,7 +96,7 @@ namespace TimefulDungeon.Items {
             }
             else if (_beingPickedUp && _distanceToTarget < pickupDistance) {
                 // Pickups can fail, so undo picking up if it does
-                if (inventory.AddItem(item)) {
+                if (_inventory.AddItem(item)) {
                     Debug.Log("Item picked up by player");
                     Destroy(gameObject);
                 }
@@ -130,13 +130,13 @@ namespace TimefulDungeon.Items {
             Debug.Log("Trigger enter: " + other.name, gameObject);
             // Player entered pickup range, begin pick up
             if (other.CompareTag("Player")) {
-                if (_pickUpDisabled || !inventory.CanAdd(item)) return;
+                if (_pickUpDisabled || !_inventory.CanAdd(item)) return;
                 Debug.Log("Pickup check passed!");
                 _beingPickedUp = true;
                 _target = other.transform;
             }
             // We are stackable and can stack with nearby pickup, begin merge
-            else if (item.stackable && other.CompareTag("Pickup")) {
+            else if (item.Stackable && other.CompareTag("Pickup")) {
                 var otherPickup = other.GetComponent<Pickup>();
                 if (item != otherPickup.item) return;
                 _target = other.transform;
@@ -178,7 +178,7 @@ namespace TimefulDungeon.Items {
                 return;
             }
 
-            var pickup = Instantiate(pickupPrefab, position, Quaternion.identity);
+            var pickup = Instantiate(_pickupPrefab, position, Quaternion.identity);
             pickup.item = item;
             pickup.spawnVelocity = velocity;
 
@@ -194,11 +194,11 @@ namespace TimefulDungeon.Items {
 
         #region TooltipHover
         private void OnMouseEnter() {
-            tooltip.ShowTextOnDelay(item.GetTooltipText(), 300);
+            _tooltip.ShowTextOnDelay(item.GetTooltipText(), 300);
         }
 
         private void OnMouseExit() {
-            tooltip.Hide();
+            _tooltip.Hide();
         }
         #endregion
     }

@@ -25,7 +25,7 @@ namespace TimefulDungeon.Items {
             return
                 GetNameLevelDescription() +
                 $"{damage} damage/hit\n" +
-                $"{rate.ToString(FloatFormat)} attacks/sec\n" +
+                $"{rate.ToString(FLOAT_FORMAT)} attacks/sec\n" +
                 $"{range}m range\n";
         }
     }

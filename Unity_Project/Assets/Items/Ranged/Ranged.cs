@@ -39,7 +39,7 @@ namespace TimefulDungeon.Items.Ranged {
             shape.arc = spread;
             shape.rotation = new Vector3(0, 0, -spread / 2);
 
-            var bulletSpawnPoint = (sprite.rect.width - sprite.pivot.x) / sprite.pixelsPerUnit;
+            var bulletSpawnPoint = (Sprite.rect.width - Sprite.pivot.x) / Sprite.pixelsPerUnit;
             shape.position = new Vector2(bulletSpawnPoint, 0);
         }
 

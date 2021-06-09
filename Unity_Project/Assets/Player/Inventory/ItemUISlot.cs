@@ -1,10 +1,10 @@
 ﻿using TimefulDungeon.Core;
 using TimefulDungeon.Items;
+using TimefulDungeon.Items.Pickup;
 using TimefulDungeon.Misc;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using VoraUtils;
 
 namespace TimefulDungeon.UI {
     [RequireComponent(typeof(Button))]
@@ -77,7 +77,7 @@ namespace TimefulDungeon.UI {
             }
 
             //Set up slot to render sprite
-            icon.sprite = item.sprite;
+            icon.sprite = item.Sprite;
             icon.preserveAspect = true;
             icon.enabled = true;
 

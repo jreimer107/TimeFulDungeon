@@ -7,15 +7,13 @@ namespace TimefulDungeon.Items {
     [Serializable]
     public class Item {
         private const float RandomizationRange = 0.25f;
-
-        protected const string FloatFormat = "F1";
+        protected const string FLOAT_FORMAT = "F1";
 
         // Randomized fields, configured on construction
         public string name;
         public int count;
         public float cooldown;
-
-
+        
         protected readonly ItemTemplate template;
 
         private string _toolTipText;
@@ -28,18 +26,18 @@ namespace TimefulDungeon.Items {
         }
 
         // Template fields, not changeable
-        public int id => template.id;
-        public string description => template.description;
-        public string redText => template.redText;
-        public bool stackable => template.stackable;
-        public bool autoPickup => template.autoPickup;
-        public Sprite sprite => template.sprite;
-        public AnimationClip idleClip => template.idleClip;
-        public AnimationClip actionClip => template.actionClip;
-        public AudioClip soundEffect => template.soundEffect;
+        public int ID => template.id;
+        public string Description => template.description;
+        public string RedText => template.redText;
+        public bool Stackable => template.stackable;
+        public bool AutoPickup => template.autoPickup;
+        public Sprite Sprite => template.sprite;
+        public AnimationClip IdleClip => template.idleClip;
+        public AnimationClip ActionClip => template.actionClip;
+        public AudioClip SoundEffect => template.soundEffect;
 
         protected static string FormatFloat(float value) {
-            return value.ToString(FloatFormat);
+            return value.ToString(FLOAT_FORMAT);
         }
 
         protected static float GetModifier() {
@@ -47,7 +45,7 @@ namespace TimefulDungeon.Items {
         }
 
         public bool Equals(Item other) {
-            return !ReferenceEquals(other, null) && id == other.id;
+            return !ReferenceEquals(other, null) && ID == other.ID;
         }
 
         public virtual void Select() { } //Left mouse click
@@ -58,7 +56,7 @@ namespace TimefulDungeon.Items {
         }
 
         public override int GetHashCode() {
-            return base.GetHashCode();
+            return name.GetHashCode();
         }
 
         public override bool Equals(object other) {
@@ -90,7 +88,7 @@ namespace TimefulDungeon.Items {
         }
 
         protected virtual string CalculateTooltipText() {
-            return $"<size=32>{name}</size>\n{description}\n<color=red>{redText}</color>";
+            return $"<size=32>{name}</size>\n{Description}\n<color=red>{RedText}</color>";
         }
 
         public string GetTooltipText() {
@@ -98,7 +96,7 @@ namespace TimefulDungeon.Items {
         }
 
         protected string GetFormattedRedText() {
-            return redText != "" ? $"<color=red>{Translations.Get(redText)}</color>\n" : "";
+            return RedText != "" ? $"<color=red>{Translations.Get(RedText)}</color>\n" : "";
         }
     }
 }

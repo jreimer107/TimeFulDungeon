@@ -48,11 +48,11 @@ namespace TimefulDungeon.Items.Melee {
             base.OnEnable();
 
             // Configure animation speed
-            var animationTime = actionClip.length;
+            var animationTime = ActionClip.length;
             var speedMultiplier = animationTime * rate;
             Debug.Log("Setting speed to " + speedMultiplier);
             holdingPoint.Animator.speed = speedMultiplier;
-            holdingPoint.AudioSource.clip = soundEffect;
+            holdingPoint.AudioSource.clip = SoundEffect;
 
             // Configure particles
             holdingPoint.Particles.gameObject.SetActive(false);

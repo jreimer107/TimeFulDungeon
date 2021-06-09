@@ -22,7 +22,7 @@ namespace TimefulDungeon.UI {
         public void SetHeldItem(Item newItem) {
             item = newItem;
             icon.enabled = true;
-            icon.sprite = newItem.sprite;
+            icon.sprite = newItem.Sprite;
             icon.preserveAspect = true;
         }
 

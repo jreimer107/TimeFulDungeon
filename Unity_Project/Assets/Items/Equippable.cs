@@ -36,14 +36,14 @@ namespace TimefulDungeon.Items {
         public virtual void Update() { }
 
         public virtual void OnEnable() {
-            if (idleClip && actionClip) {
-                holdingPoint.AnimatorOverrideController["idle"] = idleClip;
-                holdingPoint.AnimatorOverrideController["action"] = actionClip;
+            if (IdleClip && ActionClip) {
+                holdingPoint.AnimatorOverrideController["idle"] = IdleClip;
+                holdingPoint.AnimatorOverrideController["action"] = ActionClip;
                 holdingPoint.Animator.enabled = true;
             }
             else {
                 holdingPoint.Animator.enabled = false;
-                holdingPoint.SpriteRenderer.sprite = sprite;
+                holdingPoint.SpriteRenderer.sprite = Sprite;
             }
 
             holdingPoint.SpriteRenderer.enabled = true;
@@ -67,7 +67,7 @@ namespace TimefulDungeon.Items {
             return
                 $"<size=32>{prefix.translatedValue} {Translations.Get(name)}</size>\n" +
                 $"Lv. {level}\n" +
-                (description != "" ? $"{Translations.Get(description)}\n" : "") +
+                (Description != "" ? $"{Translations.Get(Description)}\n" : "") +
                 GetFormattedRedText();
         }
         
