@@ -1,31 +1,30 @@
 ﻿using System;
+using System.IO;
+using System.Runtime.Serialization;
 using TimefulDungeon.Misc;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace TimefulDungeon.Items {
     [Serializable]
-    public class Item {
+    public class Item : ISerializationSurrogate {
         private const float RandomizationRange = 0.25f;
         protected const string FLOAT_FORMAT = "F1";
-
-        // Randomized fields, configured on construction
-        public string name;
-        public int count;
-        public float cooldown;
         
-        protected readonly ItemTemplate template;
+        public int count;
+        
+        [SerializeField] protected ItemTemplate template;
 
         private string _toolTipText;
 
         public Item(ItemTemplate template) {
             this.template = template;
-            name = template.name;
             count = template.count;
-            cooldown = template.cooldown;
         }
 
         // Template fields, not changeable
+        public string Name => template.name;
+        public float Cooldown => template.cooldown;
         public int ID => template.id;
         public string Description => template.description;
         public string RedText => template.redText;
@@ -52,11 +51,11 @@ namespace TimefulDungeon.Items {
 
         public virtual void Use() {
             //Right mouse click
-            Debug.Log("Using item " + name);
+            Debug.Log("Using item " + Name);
         }
 
         public override int GetHashCode() {
-            return name.GetHashCode();
+            return Name.GetHashCode();
         }
 
         public override bool Equals(object other) {
@@ -88,7 +87,7 @@ namespace TimefulDungeon.Items {
         }
 
         protected virtual string CalculateTooltipText() {
-            return $"<size=32>{name}</size>\n{Description}\n<color=red>{RedText}</color>";
+            return $"<size=32>{Name}</size>\n{Description}\n<color=red>{RedText}</color>";
         }
 
         public string GetTooltipText() {
@@ -97,6 +96,30 @@ namespace TimefulDungeon.Items {
 
         protected string GetFormattedRedText() {
             return RedText != "" ? $"<color=red>{Translations.Get(RedText)}</color>\n" : "";
+        }
+
+        public void Serialize() {
+            var path = Application.persistentDataPath + "/" + Name + ".item";
+            File.WriteAllText(path, JsonUtility.ToJson(this));
+        }
+        
+        public static Item Deserialize(string json) {
+            var dummyItem = JsonUtility.FromJson<Item>(json);
+            var realItem = dummyItem.template.GetInstance();
+
+            return realItem;
+            // var path = Application.persistentDataPath + "/" + Name + ".item";
+            // Debug.Log("Wrote file to " + path);
+            // JsonUtility.FromJsonOverwrite(File.ReadAllText(path), this);
+        }
+
+        public void GetObjectData(object obj, SerializationInfo info, StreamingContext context) { }
+
+        public virtual object SetObjectData(object obj, SerializationInfo info, StreamingContext context, ISurrogateSelector selector) {
+            var dummyItem = (Item) obj;
+            var realItem = dummyItem.template.GetInstance();
+            realItem.count = (int) info.GetValue("count", typeof(int));
+            return realItem;
         }
     }
 }

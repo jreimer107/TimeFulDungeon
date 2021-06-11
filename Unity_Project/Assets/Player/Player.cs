@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using TimefulDungeon.Core.Movement;
 using TimefulDungeon.UI;
 using UnityEditor;
@@ -38,6 +39,15 @@ namespace TimefulDungeon.Core {
             if (Input.GetKeyDown(KeyCode.G)) Damage(1);
             if (Input.GetKeyDown(KeyCode.H)) Heal(1);
             if (Input.GetKeyDown(KeyCode.T)) ChatBubble.Create(transform, new Vector3(.5f, .5f), "Quack damn you!");
+            
+            if (Input.GetKeyDown(KeyCode.P)) {
+                var path = Application.persistentDataPath + "/inventory.json";
+                File.WriteAllText(path, JsonUtility.ToJson(Inventory, true));
+            }
+
+            if (Input.GetKeyDown(KeyCode.L)) {
+                
+            }
         }
 
         public void Damage(int damage) {

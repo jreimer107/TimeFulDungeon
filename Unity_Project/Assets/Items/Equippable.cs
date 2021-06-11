@@ -6,7 +6,8 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace TimefulDungeon.Items {
-    public abstract class Equippable : Item {
+    [Serializable]
+    public class Equippable : Item {
         private readonly Inventory _inventory;
 
         protected readonly HoldingPoint holdingPoint;
@@ -65,7 +66,7 @@ namespace TimefulDungeon.Items {
 
         protected string GetNameLevelDescription() {
             return
-                $"<size=32>{prefix.translatedValue} {Translations.Get(name)}</size>\n" +
+                $"<size=32>{prefix.translatedValue} {Translations.Get(Name)}</size>\n" +
                 $"Lv. {level}\n" +
                 (Description != "" ? $"{Translations.Get(Description)}\n" : "") +
                 GetFormattedRedText();

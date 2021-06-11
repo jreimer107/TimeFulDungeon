@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using TimefulDungeon.Core;
 using TimefulDungeon.Misc;
@@ -55,16 +54,7 @@ namespace TimefulDungeon.Items.Shield {
             base.OnDisable();
             holdingPoint.Barrier.enabled = false;
         }
-
-        private void SaveTest() {
-            name = "garbage";
-            var path = Application.persistentDataPath + "/shieldTest.dat";
-            File.WriteAllText(path, JsonUtility.ToJson(this));
-            name = "";
-            Debug.Log("Wrote file to " + path);
-            JsonUtility.FromJsonOverwrite(File.ReadAllText(path), this);
-        }
-
+        
         protected override string CalculateTooltipText() {
             return
                 GetNameLevelDescription() +

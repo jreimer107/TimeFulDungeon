@@ -25,7 +25,7 @@ namespace TimefulDungeon.Items.Melee {
                 $"{FormatFloat(arc)}\u00b0 arc\n" +
                 $"{FormatFloat(rate)} attacks/sec\n" +
                 $"{range}m range\n" +
-                $"{FormatFloat(cooldown)}s cooldown\n";
+                $"{FormatFloat(Cooldown)}s cooldown\n";
         }
         
         
